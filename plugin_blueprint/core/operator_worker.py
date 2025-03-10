@@ -3,14 +3,13 @@
 import logging
 from typing import List
 
-from climatoology.base.artifact import create_markdown_artifact
-from climatoology.base.baseoperator import ComputationResources, BaseOperator, _Artifact, AoiProperties
-from climatoology.base.info import _Info
 import shapely
+from climatoology.base.artifact import create_markdown_artifact
+from climatoology.base.baseoperator import AoiProperties, BaseOperator, ComputationResources, _Artifact
+from climatoology.base.info import _Info
 
 from plugin_blueprint.core.info import get_info
 from plugin_blueprint.core.input import ComputeInput
-
 
 log = logging.getLogger(__name__)
 
@@ -19,7 +18,7 @@ class Operator(BaseOperator[ComputeInput]):
     def info(self) -> _Info:
         return get_info()
 
-    def compute(
+    def compute(  # dead: disable
         self,
         resources: ComputationResources,
         aoi: shapely.MultiPolygon,
