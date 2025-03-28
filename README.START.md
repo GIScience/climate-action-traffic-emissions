@@ -32,6 +32,8 @@ Yet, we highly encourage you to create smaller intermediate MRs for review!
 ### Plugin name
 
 We have to replace `"plugin-blueprint"` with the name of your plugin in multiple places.
+Make sure to choose a meaningful name now.
+Although we can rename it later, this can be cumbersome and have unwanted side-effects.
 
 1. Update your [pyproject.toml](pyproject.toml).
    In that file, replace the name, description and author attributes with your
