@@ -506,7 +506,7 @@ test = ["pytest-cov"]
 
 [[package]]
 name = "climatoology"
-version = "6.3.0"
+version = "6.3.1"
 description = "This package provides the underlying functionality to implement Climate Action Operators and Plugins and to interact with the backend."
 optional = false
 python-versions = "~3.11.5"
@@ -537,8 +537,8 @@ tqdm = "^4.66.1"
 [package.source]
 type = "git"
 url = "ssh://git@gitlab.heigit.org:2022/climate-action/climatoology.git"
-reference = "6.3.0"
-resolved_reference = "6c42329467d04c2d4eb970ae71200dacde554b4d"
+reference = "6.3.1"
+resolved_reference = "aa047cb65982702603e31041ecc15c0247767fdf"
 
 [[package]]
 name = "colorama"
@@ -2283,4 +2283,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.11.5"
-content-hash = "5ffddd469c8ba0684ce7f8a1fec606abb6a0708e87a8037a8a9f58dd8fb3c807"
+content-hash = "bc056d04000b2e7d24cd45944db0c46986119da8b0448aa579a45ca636cc18e6"
