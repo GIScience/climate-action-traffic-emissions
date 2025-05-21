@@ -12,6 +12,7 @@ pydantic = "^2.8.2"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.3"
+pytest-cov = "^6.1.1"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.0.1"
@@ -40,6 +41,9 @@ select=[
     # auto-remove unused 'noqa' comments
     "RUF100", "RUF101",
 ]
+
+[tool.coverage.run]
+omit = ["test/*" , "plugin_blueprint/core/*"]
 
 [build-system]
 requires = ["poetry-core"]
