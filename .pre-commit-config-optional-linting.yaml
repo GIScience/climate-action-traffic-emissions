@@ -3,4 +3,4 @@ repos:
     rev: v0.9.9
     hooks:
       - id: ruff
-        args: [--select, FIX, ERA, D417, D419]
+        args: [ --select, "FIX,ERA,D417,D419" ]
