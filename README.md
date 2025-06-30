@@ -45,5 +45,6 @@ To release a new plugin version
    You can think of your plugin methods (info method, input parameters and artifacts) as the public API of your plugin.
 3. Update the version attribute in the [pyproject.toml](pyproject.toml) (e.g. by running
    `poetry version {patch|minor|major}`)
-4. Create a [release]((https://docs.gitlab.com/ee/user/project/releases/#create-a-release-in-the-releases-page)) on
+4. Create a [release](https://docs.gitlab.com/ee/user/project/releases/#create-a-release-in-the-releases-page) on
    GitLab, including a changelog
+5. Create a MR in the [infrastructure](https://gitlab.heigit.org/climate-action/dev-ops/infrastructure/-/blob/main/doc/Add_Service.md) repository to activate your plugin in production
