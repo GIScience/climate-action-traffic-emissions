@@ -43,7 +43,7 @@ Although we can rename it later, this can be cumbersome and have unwanted side-e
 3. Refactor the name of the package itself ([plugin_blueprint/](plugin_blueprint)).
    Rename it to the project name you have defined above in your `pyproject.toml`.
 4. Your plugin directory is also copied to the Docker container we use for deployment.
-   Therefore, you have to change the name also in the [Dockerfile.Kaniko](Dockerfile.Kaniko).
+   Therefore, you have to change the name also in the [Dockerfile](Dockerfile).
 5. Finally, update your plugin name and details in [README.md](README.md).
 
 ### Plugin icon
