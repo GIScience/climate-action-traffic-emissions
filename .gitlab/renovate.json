@@ -12,6 +12,12 @@
         "minor"
       ],
       "groupName": "dependency feature release updates"
+    },
+    {
+      "matchPackageNames": [
+        "python"
+      ],
+      "allowedVersions": "<3.12"
     }
   ]
 }
