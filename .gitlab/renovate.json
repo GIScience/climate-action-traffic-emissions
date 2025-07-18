@@ -1,5 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "schedule": [
+    "* * 1 * *"
+  ],
   "packageRules": [
     {
       "matchUpdateTypes": [
@@ -14,13 +17,14 @@
       "groupName": "dependency feature release updates"
     },
     {
-      "matchPackageNames": [
-        "python"
-      ],
       "matchDepNames": [
         "python"
       ],
-      "allowedVersions": "<3.12"
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
+      "enabled": false
     }
   ]
 }
