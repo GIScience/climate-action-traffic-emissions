@@ -48,12 +48,19 @@ Although we can rename it later, this can be cumbersome and have unwanted side-e
 
 ### Plugin icon
 
-In order to standardise the visual language of the plugin icons, we have chosen a specific library and theme (Color from Icons8) from where icons have to be chosen from.
+In order to standardise the visual language of the plugin icons, we have chosen a specific library and theme (Color from
+Icons8) from where icons have to be chosen from.
 
-1. Please visit https://icons8.com/icons/color. The theme is already pre-selected, ensure you do not switch away to another one.
-2. Search for an icon using your plugin's general subject. Since the initial results that come up are ones that are explicitly tagged by your search term, you may use the AI toggle to increase the relevancy of results (requires logging in).
-3. Select an icon, hit *Download*, and under *PNG sizes*, ensure you select **Custom size: 100 x 100**. Proceed to download.
-4. As Climatoology currently only supports JPEG files for icons, please use an [online conversion tool](https://www.freeconvert.com/png-to-jpg) to convert your PNG file to JPEG. Please ensure that in *Advanced Settings*, the *Background Color* option is set to `#FAFAFA`.
+1. Please visit https://icons8.com/icons/color. The theme is already pre-selected, ensure you do not switch away to
+   another one.
+2. Search for an icon using your plugin's general subject. Since the initial results that come up are ones that are
+   explicitly tagged by your search term, you may use the AI toggle to increase the relevancy of results (requires
+   logging in).
+3. Select an icon, hit *Download*, and under *PNG sizes*, ensure you select **Custom size: 100 x 100**. Proceed to
+   download.
+4. As Climatoology currently only supports JPEG files for icons, please use
+   an [online conversion tool](https://www.freeconvert.com/png-to-jpg) to convert your PNG file to JPEG. Please ensure
+   that in *Advanced Settings*, the *Background Color* option is set to `#FAFAFA`.
 
 ### Python Environment
 
@@ -222,6 +229,11 @@ Because you are doing rigorous testing, we can trust the code and be sure it wor
 **Please now delete this file. If you need to review these steps again in the future,
 you can access them from the [Plugin Blueprint](https://gitlab.heigit.org/climate-action/plugins/plugin-blueprint)
 repository.**
+
+##### Open sourcing code
+
+To open source your plugin, please refer
+to [the related documentation](https://heigit.atlassian.net/wiki/spaces/CA/pages/1343619118/How+to+open+source+CA+code).
 
 ## Forking this repository (for admins)
 
