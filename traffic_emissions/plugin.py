@@ -2,7 +2,7 @@ import logging.config
 
 from climatoology.app.plugin import start_plugin
 
-from plugin_blueprint.core.operator_worker import Operator
+from traffic_emissions.core.operator_worker import Operator
 
 log = logging.getLogger(__name__)
 

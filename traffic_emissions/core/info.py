@@ -5,16 +5,16 @@ from pathlib import Path
 from climatoology.base.info import PluginAuthor, _Info, generate_plugin_info
 from semver import Version
 
-from plugin_blueprint.core.input import ComputeInput
+from traffic_emissions.core.input import ComputeInput
 
 
 def get_info() -> _Info:
     authors = [PluginAuthor(name='Blueprint Author')]
     info = generate_plugin_info(
-        name='Plugin Blueprint',
+        name='Traffic Emissions',
         icon=Path('resources/icon.jpeg'),
         authors=authors,
-        version=Version.parse(importlib.metadata.version('plugin-blueprint')),
+        version=Version.parse(importlib.metadata.version('traffic-emissions')),
         concerns=set(),
         purpose=Path('resources/purpose.md'),
         teaser='A bare minimum example to act as a blueprint for new assessment tools on the CA Platform.',

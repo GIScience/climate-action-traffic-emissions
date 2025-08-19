@@ -8,8 +8,8 @@ from climatoology.base.artifact import create_markdown_artifact
 from climatoology.base.baseoperator import AoiProperties, BaseOperator, ComputationResources, _Artifact
 from climatoology.base.info import _Info
 
-from plugin_blueprint.core.info import get_info
-from plugin_blueprint.core.input import ComputeInput
+from traffic_emissions.core.info import get_info
+from traffic_emissions.core.input import ComputeInput
 
 log = logging.getLogger(__name__)
 

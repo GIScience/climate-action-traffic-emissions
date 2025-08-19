@@ -1,7 +1,7 @@
 FROM python:3.11.5-bookworm
 SHELL ["/bin/bash", "-c"]
 
-ENV PACKAGE_NAME='plugin_blueprint'
+ENV PACKAGE_NAME='traffic_emissions'
 
 RUN pip install --no-cache-dir poetry==2.1.3
 
