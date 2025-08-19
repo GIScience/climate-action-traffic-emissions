@@ -5,8 +5,8 @@ import shapely
 from climatoology.base.baseoperator import AoiProperties
 from climatoology.base.computation import ComputationScope
 
-from plugin_blueprint.core.input import ComputeInput
-from plugin_blueprint.core.operator_worker import Operator
+from traffic_emissions.core.input import ComputeInput
+from traffic_emissions.core.operator_worker import Operator
 
 
 @pytest.fixture
