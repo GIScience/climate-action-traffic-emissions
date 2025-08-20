@@ -42,7 +42,7 @@ select = [
 ]
 
 [tool.coverage.run]
-omit = ["test/*", "plugin_blueprint/core/*"]
+omit = ["test/*", "traffic_emissions/core/*"]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

@@ -1,1 +1,1 @@
-Serve as blueprint for new plugins.
+Estimate annual carbon dioxide emissions from road traffic for any area within Germany.
