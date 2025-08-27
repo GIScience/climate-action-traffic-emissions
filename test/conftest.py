@@ -20,11 +20,33 @@ def default_aoi() -> shapely.MultiPolygon:
         polygons=[
             [
                 [
-                    [12.3, 48.22],
-                    [12.3, 48.34],
-                    [12.48, 48.34],
-                    [12.48, 48.22],
-                    [12.3, 48.22],
+                    [8.65, 49.39],
+                    [8.65, 49.43],
+                    [8.74, 49.43],
+                    [8.74, 49.39],
+                    [8.65, 49.39],
+                ]
+            ]
+        ]
+    )
+
+
+@pytest.fixture
+def small_aoi() -> shapely.Polygon:
+    return shapely.box(8.673856, 49.418342, 8.677697, 49.420311)
+
+
+@pytest.fixture
+def road_test_aoi() -> shapely.MultiPolygon:
+    return shapely.MultiPolygon(
+        polygons=[
+            [
+                [
+                    [72.883, 42.160],
+                    [72.883, 42.161],
+                    [72.884, 42.161],
+                    [72.884, 42.160],
+                    [72.883, 42.160],
                 ]
             ]
         ]

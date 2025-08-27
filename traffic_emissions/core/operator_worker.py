@@ -4,10 +4,10 @@ import logging
 from typing import List
 
 import shapely
-from climatoology.base.artifact import create_markdown_artifact
 from climatoology.base.baseoperator import AoiProperties, BaseOperator, ComputationResources, _Artifact
 from climatoology.base.info import _Info
 
+from traffic_emissions.components.traffic_volume import build_traffic_volume_artifact, traffic_volume
 from traffic_emissions.core.info import get_info
 from traffic_emissions.core.input import ComputeInput
 
@@ -25,16 +25,6 @@ class Operator(BaseOperator[ComputeInput]):
         aoi_properties: AoiProperties,
         params: ComputeInput,
     ) -> List[_Artifact]:
-        # Create a placeholder markdown artifact
-        markdown_artifact = create_markdown_artifact(
-            text='A placeholder artifact showing some text results.',
-            name='Placeholder Result',
-            tl_dr='Some placeholder text',
-            resources=resources,
-            filename='markdown',
-        )
-
-        # When building your own plugin, refactor the logic for creating results by moving it to a submodule
-        # See the Plugin Showcase for a full example
-
-        return [markdown_artifact]
+        road_gdf = traffic_volume(aoi)
+        traffic_volume_artifact = build_traffic_volume_artifact(road_gdf, resources)
+        return [traffic_volume_artifact]

@@ -1,0 +1,2 @@
+Average daily traffic volume (ADTV) describes the average number of vehicles traveling on a certain road segment per day.
+The data in this map is the ADTV for each combination of road type and number of lanes for Berlin, Germany, scaled by the population density and the road length per capita in the selected area.

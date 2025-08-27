@@ -9,4 +9,4 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 
 ### Added
 
-- A minimum plugin
+- Traffic volume estimation [#18](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/18)

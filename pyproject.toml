@@ -10,10 +10,14 @@ repository = "https://gitlab.heigit.org/climate-action/plugins/traffic-emissions
 python = ">=3.11.5,<3.12"
 climatoology = { git = "ssh://git@gitlab.heigit.org:2022/climate-action/climatoology.git", tag = "6.4.3" }
 pydantic = ">=2.8.2,<3.0.0"
+ohsome = "^0.4.0"
+matplotlib = "^3.10.5"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.3"
 pytest-cov = "^6.1.1"
+approvaltests = "^15.2.1"
+vcrpy = {version = "^7.0.0", markers = "platform_python_implementation !='PyPy'"}
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.0.1"
