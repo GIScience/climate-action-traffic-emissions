@@ -2,14 +2,13 @@
 ## Input data
 
 The following input data is used:
-- OpenStreetMap (OSM) road network
-- [Average daily traffic volume (ADTV) of Berlin 2019](https://gdi.berlin.de/geonetwork/srv/ger/catalog.search#/metadata/125b728c-3ef9-49fd-94c5-24b2143ede2b), obtained from the Geoportal of the city of Berlin
-- [Population grid from Global Human Settlement Layer](https://human-settlement.emergency.copernicus.eu/download.php?ds=pop)
-- Speed-dependent fuel consumption equations ([Sobrino et al. 2014, Table 3](https://doi.org/10.1007/s11067-014-9225-y)).
-- Emission factors from COPERT ([EMEP/EEA air pollutant emission inventory guidebook 2023 – Update 2024, Tables 3-6 and 3-12](https://copert.emisia.com/wp-content/uploads/2024/07/1.A.3.b.i-iv-Road-transport-2024.pdf))
-- Market shares of cars by fuel type ([Kraftfahrt-Bundesamt](https://www.kba.de/DE/Statistik/Fahrzeuge/Bestand/Umwelt/2024/2024_b_umwelt_tabellen.html?nn=3525028&fromStatistic=3525028&yearFilter=2024&fromStatistic=3525028&yearFilter=2024))
-- Market shares of different vehicle types ([Kraftfahrt-Bundesamt](https://www.kba.de/DE/Statistik/Fahrzeuge/Bestand/FahrzeugklassenAufbauarten/2024/2024_b_fzkl_tabellen.html))
-
+* OpenStreetMap (OSM) road network
+* [Average daily traffic volume (ADTV) of Berlin 2019](https://gdi.berlin.de/geonetwork/srv/ger/catalog.search#/metadata/125b728c-3ef9-49fd-94c5-24b2143ede2b), obtained from the Geoportal of the city of Berlin
+* [Population grid from Global Human Settlement Layer](https://human-settlement.emergency.copernicus.eu/download.php?ds=pop)
+* Speed-dependent fuel consumption equations ([Sobrino et al. 2014, Table 3](https://doi.org/10.1007/s11067-014-9225-y)).
+* Emission factors from COPERT ([EMEP/EEA air pollutant emission inventory guidebook 2023 – Update 2024, Tables 3-6 and 3-12](https://copert.emisia.com/wp-content/uploads/2024/07/1.A.3.b.i-iv-Road-transport-2024.pdf))
+* Market shares of cars by fuel type ([Kraftfahrt-Bundesamt](https://www.kba.de/DE/Statistik/Fahrzeuge/Bestand/Umwelt/2024/2024_b_umwelt_tabellen.html?nn=3525028&fromStatistic=3525028&yearFilter=2024&fromStatistic=3525028&yearFilter=2024))
+* Market shares of different vehicle types ([Kraftfahrt-Bundesamt](https://www.kba.de/DE/Statistik/Fahrzeuge/Bestand/FahrzeugklassenAufbauarten/2024/2024_b_fzkl_tabellen.html))
 
 ## Traffic volume estimation
 
@@ -61,8 +60,8 @@ The speed-dependent fuel consumption is further weighted by the market shares of
 
 For roads without a `maxspeed` tag, we assume fixed traveling speeds. Using the fuel consumption functions above, this leads us to the following emission factors for roads without speed information:
 
-| Road type                        | Assumed speed [km/h] | g CO₂ / veh-km | g CO / veh-km | g NOx / veh-km |
-|----------------------------------|----------------------|-------------------|------------------|-------------------|
-| Motorways                        | 120 | 203.64            | 1.25             | 0.52              |
-| Roads outside of built-up areas  | 70 | 153.69            | 0.94             | 0.39              |
-| Roads inside of built-up areas   | 30 | 196.91            | 1.20             | 0.50              |
+| Road type                        | Speed [km/h] | g CO₂ / veh-km | g CO / veh-km | g NOx / veh-km |
+|----------------------------------|--------------|-------------------|------------------|-------------------|
+| Motorways                        | 120          | 203.64            | 1.25             | 0.52              |
+| Roads outside of built-up areas  | 70           | 153.69            | 0.94             | 0.39              |
+| Roads inside of built-up areas   | 30           | 196.91            | 1.20             | 0.50              |

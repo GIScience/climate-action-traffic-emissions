@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import pytest
 from approvaltests import verify
-from shapely import LineString
+from shapely.geometry import LineString
 from vcr import use_cassette
 
 from traffic_emissions.components.traffic_volume import (
@@ -23,18 +23,6 @@ LINE_GEOM = gpd.GeoSeries(
 
 @use_cassette
 def test_get_roads(road_test_aoi):
-    geometry = gpd.GeoSeries(
-        [LineString([(325193.9834442865, 4669724.10105637), (325111.5841199331, 4669734.855883078)])]
-    )
-    expected_df = gpd.GeoDataFrame(
-        {
-            'highway': ['trunk'],
-            'lanes': pd.Series([2], dtype='Int8'),
-            'maxspeed': pd.Series(['90'], dtype='object'),
-        },
-        geometry=geometry,
-    )
-    expected_df = expected_df[['geometry', 'highway', 'lanes', 'maxspeed']]
     road_gdf, total_length = get_roads(road_test_aoi)
     verify(road_gdf.to_csv())
     assert total_length == 83.0982247188029
@@ -58,16 +46,16 @@ def test_assign_traffic():
     road_gdf = gpd.GeoDataFrame(
         {
             'highway': ['trunk_link', 'motorway_link', 'residential', 'motorway', 'unclassified', 'tertiary_link'],
-            'lanes': pd.Series([2, np.nan, np.nan, 5, 4, 2], dtype='Int8'),
+            'lanes': pd.Series([2, np.nan, np.nan, 5, 4, 6], dtype='Int8'),
         },
         geometry=LINE_GEOM,
     )
     scaling = 1.0
     expected = gpd.GeoDataFrame(
         {
-            'highway': ['trunk', 'motorway_link', 'residential', 'motorway_4', 'unclassified_3', 'tertiary_2'],
-            'lanes': pd.Series([2, np.nan, np.nan, 5, 4, 2], dtype='Int8'),
-            'mean_dtv': [16202.2, 9320.0, 5457.2, 63882.94, 9400.0, 7831.77],
+            'highway': ['trunk', 'motorway_link', 'residential', 'motorway_4', 'unclassified_3', 'tertiary_5'],
+            'lanes': pd.Series([2, np.nan, np.nan, 5, 4, 6], dtype='Int8'),
+            'mean_dtv': [16202.2, 9320.0, 5457.2, 63882.94, 9400.0, 15340.0],
         },
         geometry=LINE_GEOM,
     )
@@ -81,16 +69,16 @@ def test_assign_traffic_with_scaling():
     road_gdf = gpd.GeoDataFrame(
         {
             'highway': ['trunk', 'motorway_link', 'residential', 'motorway', 'unclassified', 'tertiary_link'],
-            'lanes': pd.Series([2, np.nan, np.nan, 5, 4, 2], dtype='Int8'),
+            'lanes': pd.Series([2, np.nan, np.nan, 5, 4, 6], dtype='Int8'),
         },
         geometry=LINE_GEOM,
     )
     scaling = 0.5
     expected = gpd.GeoDataFrame(
         {
-            'highway': ['trunk', 'motorway_link', 'residential', 'motorway_4', 'unclassified_3', 'tertiary_2'],
-            'lanes': pd.Series([2, np.nan, np.nan, 5, 4, 2], dtype='Int8'),
-            'mean_dtv': [8101.1, 9320.0, 2728.6, 63882.94, 4700.0, 3915.89],
+            'highway': ['trunk', 'motorway_link', 'residential', 'motorway_4', 'unclassified_3', 'tertiary_5'],
+            'lanes': pd.Series([2, np.nan, np.nan, 5, 4, 6], dtype='Int8'),
+            'mean_dtv': [8101.1, 9320.0, 2728.6, 63882.94, 4700.0, 7670.0],
         },
         geometry=LINE_GEOM,
     )

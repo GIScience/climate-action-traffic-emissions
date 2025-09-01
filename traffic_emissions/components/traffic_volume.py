@@ -149,12 +149,12 @@ def build_traffic_volume_artifact(road_gdf: gpd.GeoDataFrame, resources: Computa
 
     return create_geojson_artifact(
         features=road_gdf.geometry,
-        layer_name='Average daily traffic volume',
-        caption='Average number of vehicles traveling on each road segment per day',
+        layer_name='Estimated average daily traffic volume',
+        caption='Estimated average number of vehicles traveling on each road segment per day',
         description=Path('resources/artifact_descriptions/traffic_volume_description.md').read_text(),
         color=color,
         legend_data=legend,
-        label=road_gdf['mean_dtv'],
+        label=road_gdf['mean_dtv'].round(),
         primary=True,
         resources=resources,
         filename='traffic_volume',

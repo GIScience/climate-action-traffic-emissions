@@ -42,6 +42,7 @@ def get_info() -> _Info:
         methodology=Path('resources/methodology.md'),
         demo_input_parameters=ComputeInput(),
         computation_shelf_life=timedelta(weeks=24),
+        sources=Path('resources/sources.bib'),
     )
     log.info(f'Return info {info.model_dump()}')
 

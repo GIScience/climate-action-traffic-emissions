@@ -10,3 +10,4 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 ### Added
 
 - Traffic volume estimation [#18](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/18)
+- Traffic emission estimation [#21](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/21)
