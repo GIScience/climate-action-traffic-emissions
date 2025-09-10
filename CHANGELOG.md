@@ -11,3 +11,4 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 
 - Traffic volume estimation [#18](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/18)
 - Traffic emission estimation [#21](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/21)
+- Emission summary charts with mean emissions per road-km for city districts [#19](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/19)

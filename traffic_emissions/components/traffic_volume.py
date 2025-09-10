@@ -15,18 +15,19 @@ from traffic_emissions.components.utils import POP_DENS_BERLIN, ROAD_LENGTH_PER_
 log = logging.getLogger(__name__)
 
 
-def traffic_volume(aoi):
+def traffic_volume(aoi: shapely.MultiPolygon, ohsome: OhsomeClient) -> gpd.GeoDataFrame:
     log.info('Calculating average daily traffic volume')
-    road_gdf, total_length = get_roads(aoi)
+    road_gdf, total_length = get_roads(aoi, ohsome)
     scaling = get_scaling_factor(aoi, total_length)
     road_gdf = assign_traffic(road_gdf, scaling)
     return road_gdf
 
 
-def get_roads(aoi_poly: shapely.MultiPolygon) -> tuple[gpd.GeoDataFrame, float]:
+def get_roads(aoi_poly: shapely.MultiPolygon, client: OhsomeClient) -> tuple[gpd.GeoDataFrame, float]:
     """
     Downloads and prepares OSM road network in the given AOI.
 
+    :param client: Ohsome client
     :param aoi_poly: Polygon of AOI (EPSG: 4326)
     :return: gdf_road: GeoDataFrame of OSM road network with highway, lanes, and maxspeed attributes
     :return: length_total: Length of the road network in the AOI in meters
@@ -52,7 +53,6 @@ def get_roads(aoi_poly: shapely.MultiPolygon) -> tuple[gpd.GeoDataFrame, float]:
     tag_list = [f'highway={highway_tag}' for highway_tag in highway_tags]
     ohsome_filter = f'({" or ".join(tag_list)}) and geometry:line'
 
-    client = OhsomeClient()
     gdf_road = client.elements.geometry.post(
         bpolys=aoi_poly, time=client.end_timestamp, filter=ohsome_filter, clipGeometry=True, properties='tags'
     ).as_dataframe()

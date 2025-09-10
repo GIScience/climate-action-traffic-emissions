@@ -22,8 +22,8 @@ LINE_GEOM = gpd.GeoSeries(
 
 
 @use_cassette
-def test_get_roads(road_test_aoi):
-    road_gdf, total_length = get_roads(road_test_aoi)
+def test_get_roads(operator, road_test_aoi):
+    road_gdf, total_length = get_roads(road_test_aoi, operator.ohsome)
     verify(road_gdf.to_csv())
     assert total_length == 83.0982247188029
 
@@ -96,6 +96,6 @@ def population_density():
 
 
 @use_cassette
-def test_traffic_volume(small_aoi, population_density):
-    road_gdf = traffic_volume(small_aoi)
+def test_traffic_volume(operator, small_aoi, population_density):
+    road_gdf = traffic_volume(small_aoi, operator.ohsome)
     verify(road_gdf.to_csv())

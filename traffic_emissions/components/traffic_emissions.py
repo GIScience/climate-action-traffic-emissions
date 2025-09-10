@@ -5,8 +5,12 @@ from pathlib import Path
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-from climatoology.base.artifact import _Artifact, create_geojson_artifact
+import plotly.graph_objects as go
+import shapely
+from climatoology.base.artifact import _Artifact, create_geojson_artifact, create_plotly_chart_artifact
+from climatoology.base.baseoperator import AoiProperties
 from climatoology.base.computation import ComputationResources
+from ohsome import OhsomeClient
 
 from traffic_emissions.components.utils import (
     DENSITY_DIESEL,
@@ -54,6 +58,26 @@ def traffic_emissions(road_gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     traffic_gdf = preprocess(road_gdf)
     emissions_gdf = calculate_emissions(traffic_gdf)
     return emissions_gdf
+
+
+def get_emission_sums(emissions_gdf: gpd.GeoDataFrame) -> dict:
+    emissions_gdf_with_yearly_emissions = emissions_gdf.copy()
+    emissions_gdf_with_yearly_emissions['length'] = emissions_gdf_with_yearly_emissions.geometry.length
+    emissions_gdf_with_yearly_emissions['t_CO2_yr'] = emissions_gdf_with_yearly_emissions['t_CO2_km_yr'] * (
+        emissions_gdf_with_yearly_emissions['length'] / 1000
+    )
+    emissions_gdf_with_yearly_emissions['t_CO_yr'] = emissions_gdf_with_yearly_emissions['t_CO_km_yr'] * (
+        emissions_gdf_with_yearly_emissions['length'] / 1000
+    )
+    emissions_gdf_with_yearly_emissions['t_NOx_yr'] = emissions_gdf_with_yearly_emissions['t_NOx_km_yr'] * (
+        emissions_gdf_with_yearly_emissions['length'] / 1000
+    )
+    emission_sums = {
+        'CO2': emissions_gdf_with_yearly_emissions['t_CO2_yr'].sum() / 1000,
+        'CO': emissions_gdf_with_yearly_emissions['t_CO_yr'].sum() / 1000,
+        'NOx': emissions_gdf_with_yearly_emissions['t_NOx_yr'].sum() / 1000,
+    }
+    return emission_sums
 
 
 def preprocess(gdf_traffic: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
@@ -172,6 +196,72 @@ def get_emission_artifacts(emissions_gdf: gpd.GeoDataFrame, resources: Computati
     return emission_artifacts
 
 
+def get_district_summaries(
+    emissions_gdf: gpd.GeoDataFrame,
+    aoi: shapely.MultiPolygon,
+    ohsome_client: OhsomeClient,
+) -> pd.DataFrame | None:
+    log.info('Creating summary charts of emissions by city district')
+    minimum_keys = ['admin_level', 'name']
+    boundaries = ohsome_client.elements.geometry.post(
+        properties='tags',
+        bpolys=aoi,
+        filter='geometry:polygon and boundary=administrative and admin_level=9',
+        clipGeometry=True,
+    ).as_dataframe(explode_tags=minimum_keys)
+    boundaries = boundaries.loc[boundaries.geometry.geom_type.isin(('MultiPolygon', 'Polygon'))]
+    boundaries = boundaries[boundaries.is_valid]
+    boundaries = boundaries.reset_index(drop=True)
+    if boundaries.shape[0] <= 1:
+        return None
+    else:
+        log.debug(f'Summarising emissions into {boundaries.shape[0]} boundaries')
+        boundaries = boundaries.to_crs(boundaries.estimate_utm_crs())
+        emissions_gdf = emissions_gdf.overlay(boundaries, how='identity', keep_geom_type=False)
+        mean_df = emissions_gdf.groupby('name')[['t_CO2_km_yr', 't_CO_km_yr', 't_NOx_km_yr']].mean().reset_index()
+        return mean_df
+
+
+def plot_emission_bar(df, gas, city) -> go.Figure:
+    column = f't_{gas}_km_yr'
+    overall_mean = df[column].mean()
+    overall_row = pd.Series({'name': city, column: overall_mean})
+    overall_df = overall_row.to_frame().transpose()
+
+    df_augmented = pd.concat([df.copy(), overall_df], ignore_index=True)
+    df_sorted = df_augmented.sort_values(by=column)
+
+    color_series = df_sorted.apply(
+        lambda row: '#d62728' if (row['name'] == city and row[column] == overall_mean) else '#1f77b4', axis=1
+    )
+    colors = color_series.to_list()
+
+    x_values = pd.to_numeric(df_sorted[column], errors='coerce').round(1)
+
+    fig = go.Figure()
+
+    fig.add_trace(
+        go.Bar(
+            x=x_values,
+            y=df_sorted['name'],
+            orientation='h',
+            marker_color=colors,
+            name=column,
+        )
+    )
+
+    fig.update_layout(
+        xaxis_title=f'Mean annual {gas} emissions [t/road-km]',
+        yaxis_title='District',
+        yaxis=dict(automargin=True),
+        showlegend=False,
+        template='plotly_white',
+        height=200 + len(df_sorted) * 15,
+    )
+
+    return fig
+
+
 def build_traffic_emissions_artifact(
     gas: EmissionsFactors, emissions_gdf: gpd.GeoDataFrame, resources: ComputationResources
 ) -> _Artifact:
@@ -190,3 +280,31 @@ def build_traffic_emissions_artifact(
         resources=resources,
         filename=f'traffic_{gas_name}_emissions',
     )
+
+
+def get_emission_chart_artifacts(
+    mean_df: pd.DataFrame,
+    aoi_properties: AoiProperties,
+    emission_sums: dict,
+    resources: ComputationResources,
+) -> list:
+    city_name = aoi_properties.name
+    chart_artifacts = []
+    for gas in EmissionsFactors:
+        gas_name = gas.value.get('name')
+        emission_sum = str(round(emission_sums[gas_name], 2))
+        description_template = Path('resources/artifact_descriptions/traffic_emission_chart_description.md').read_text()
+        description = description_template.format(gas=gas_name, city=city_name, total_emissions=emission_sum)
+        figure = plot_emission_bar(mean_df, gas_name, city_name)
+        artifact = create_plotly_chart_artifact(
+            figure=figure,
+            title=f'Mean annual {gas_name} emissions [t/road-km]',
+            caption=f'Mean estimated {gas_name} emissions of road traffic per city district [t per road-km per year]',
+            description=description,
+            primary=False,
+            resources=resources,
+            filename=f'traffic_{gas_name}_emissions_chart',
+        )
+        chart_artifacts.append(artifact)
+
+    return chart_artifacts
