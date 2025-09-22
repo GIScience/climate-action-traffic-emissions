@@ -10,7 +10,7 @@ from climatoology.base.computation import ComputationResources
 from ohsome import OhsomeClient
 from rasterio.mask import mask
 
-from traffic_emissions.components.utils import POP_DENS_BERLIN, ROAD_LENGTH_PER_CAPITA_BERLIN, get_colors_legend
+from traffic_emissions.components.utils import POP_DENS_BERLIN, ROAD_LENGTH_PER_CAPITA_BERLIN, Topic, get_colors_legend
 
 log = logging.getLogger(__name__)
 
@@ -155,7 +155,7 @@ def build_traffic_volume_artifact(road_gdf: gpd.GeoDataFrame, resources: Computa
         color=color,
         legend_data=legend,
         label=road_gdf['mean_dtv'].round(),
-        primary=True,
         resources=resources,
         filename='traffic_volume',
+        tags={Topic.MAPS},
     )

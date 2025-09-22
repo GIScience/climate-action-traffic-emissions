@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "traffic-emissions"
-version = "0.0.1"
+version = "0.1.0"
 description = "This indicator computes carbon dioxide emissions from road traffic in an area of interest within Germany"
 authors = ["Veit Ulrich <veit.ulrich@heigit.org>, Sebastian Block <sebastian.block@heigit.org>, Emily Wilke <emily.wilke@heigit.org>"]
 readme = "README.md"

@@ -148,4 +148,3 @@ def test_get_emission_chart_artifacts(default_aoi_properties, compute_resources)
     for artifact, expected_title in zip(artifacts, expected_titles):
         assert artifact.name == expected_title
         assert artifact.modality == ArtifactModality.CHART_PLOTLY
-        assert artifact.primary is False

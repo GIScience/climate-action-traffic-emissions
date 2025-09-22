@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, StrEnum
 
 import pandas as pd
 from climatoology.base.artifact import ContinuousLegendData
@@ -26,6 +26,11 @@ class VehicleType(Enum):
     RIGID_TRUCK = 'rigid_truck'
     ARTICULATED_TRUCK = 'articulated_truck'
     BUS = 'bus'
+
+
+class Topic(StrEnum):
+    MAPS = 'Emission maps'
+    CHARTS = 'Emission charts'
 
 
 DENSITY_PETROL = 720

@@ -16,6 +16,7 @@ from traffic_emissions.components.utils import (
     DENSITY_DIESEL,
     DENSITY_PETROL,
     MARKET_SHARES,
+    Topic,
     VehicleType,
     get_colors_legend,
 )
@@ -276,9 +277,9 @@ def build_traffic_emissions_artifact(
         color=color,
         legend_data=legend,
         label=emissions_gdf[f't_{gas_name}_km_yr'].round(2),
-        primary=True,
         resources=resources,
         filename=f'traffic_{gas_name}_emissions',
+        tags={Topic.MAPS},
     )
 
 
@@ -301,9 +302,9 @@ def get_emission_chart_artifacts(
             title=f'Mean annual {gas_name} emissions [t/road-km]',
             caption=f'Mean estimated {gas_name} emissions of road traffic per city district [t per road-km per year]',
             description=description,
-            primary=False,
             resources=resources,
             filename=f'traffic_{gas_name}_emissions_chart',
+            tags={Topic.CHARTS},
         )
         chart_artifacts.append(artifact)
 
