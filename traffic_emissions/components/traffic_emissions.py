@@ -218,6 +218,7 @@ def get_district_summaries(
     else:
         log.debug(f'Summarising emissions into {boundaries.shape[0]} boundaries')
         boundaries = boundaries.to_crs(boundaries.estimate_utm_crs())
+        emissions_gdf = emissions_gdf[emissions_gdf.geometry.type.isin(['LineString', 'MultiLineString'])]
         emissions_gdf = emissions_gdf.overlay(boundaries, how='identity', keep_geom_type=False)
         mean_df = emissions_gdf.groupby('name')[['t_CO2_km_yr', 't_CO_km_yr', 't_NOx_km_yr']].mean().reset_index()
         return mean_df
