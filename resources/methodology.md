@@ -65,3 +65,10 @@ For roads without a `maxspeed` tag, we assume fixed traveling speeds. Using the 
 | Motorways                        | 120          | 203.64            | 1.25             | 0.52              |
 | Roads outside of built-up areas  | 70           | 153.69            | 0.94             | 0.39              |
 | Roads inside of built-up areas   | 30           | 196.91            | 1.20             | 0.50              |
+
+
+## Limitations
+
+To obtain the ADTVs for the selected area, we scale the ADTVs for Berlin by the population density and the road length per capita in the selected area. While there are better proxies for traffic volume than population density, such as car ownership rates and income (Ingram & Liu 1997), we use population density, because this data is more easily available at high spatial reolution and coverage.
+
+During the estimation of traffic emissions, we assume that the traveling speed is constant and equal to the speed limit. The impact of traffic lights, congestion, or vehicles exceeding the speed limit is not accounted for. In most cases, this means that we are probably underestimating the emissions. For roads without speed limit information, we assume fixed traveling speeds, which at best represent average values and do not account for the actual road and traffic conditions. Differences between the actual vehicle fleet composition and our assumed fleet composition may lead to additional over- or underestimation of the emission estimates.

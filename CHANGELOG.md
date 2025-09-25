@@ -7,6 +7,9 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 
 ## [Unreleased](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/compare/0.1.0...main)
 
+### Changed
+- Added limitations to methodology ([#27](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/27))
+
 ## [0.1.0](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/0.1.0) - 2024-06-25
 
 ### Added
