@@ -1,5 +1,6 @@
 from enum import Enum, StrEnum
 
+import numpy as np
 import pandas as pd
 from climatoology.base.artifact import ContinuousLegendData
 from matplotlib import colors
@@ -37,13 +38,20 @@ DENSITY_PETROL = 720
 DENSITY_DIESEL = 820
 
 
-def get_colors_legend(legend_upper_cap: int, color_series: pd.Series) -> tuple[pd.Series, ContinuousLegendData]:
-    norm = colors.Normalize(vmin=0, vmax=legend_upper_cap)
+def get_colors_legend(color_series: pd.Series) -> tuple[list[Color], ContinuousLegendData]:
+    norm = colors.LogNorm(vmin=color_series.min(), vmax=color_series.max())
     cmap = colormaps.get('YlOrRd')
     cmap.set_under('#808080')
-    color = color_series.apply(lambda v: Color(colors.to_hex(cmap(norm(v)))))
+    color = [Color(colors.to_hex(col)) for col in cmap(norm(color_series))]
+
+    tick_values = np.logspace(np.log10(color_series.min()), np.log10(color_series.max()), num=5)
+    if color_series.min() < 10:
+        ticks = {f'{round(v, 1):n}': norm(v) for v in tick_values}
+    else:
+        ticks = {f'{round(v):n}': norm(v) for v in tick_values}
+
     legend = ContinuousLegendData(
         cmap_name='YlOrRd',
-        ticks={f'> {legend_upper_cap}': 1, '0': 0},
+        ticks=ticks,
     )
     return color, legend

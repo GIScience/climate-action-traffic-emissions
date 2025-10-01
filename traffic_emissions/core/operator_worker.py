@@ -1,5 +1,6 @@
 # You may ask yourself why this file has such a strange name.
 # Well ... python imports: https://discuss.python.org/t/warning-when-importing-a-local-module-with-the-same-name-as-a-2nd-or-3rd-party-module/27799
+import locale
 import logging
 from typing import List
 
@@ -37,6 +38,7 @@ class Operator(BaseOperator[ComputeInput]):
         aoi_properties: AoiProperties,
         params: ComputeInput,
     ) -> List[_Artifact]:
+        locale.setlocale(locale.LC_ALL, '')
         road_gdf = traffic_volume(aoi, self.ohsome)
         emissions_gdf = traffic_emissions(road_gdf)
         emission_sums = get_emission_sums(emissions_gdf)
@@ -47,7 +49,8 @@ class Operator(BaseOperator[ComputeInput]):
         artifacts.append(traffic_volume_artifact)
         emission_artifacts = get_emission_artifacts(emissions_gdf, resources)
         artifacts.extend(emission_artifacts)
-        emission_chart_artifacts = get_emission_chart_artifacts(mean_df, aoi_properties, emission_sums, resources)
-        artifacts.extend(emission_chart_artifacts)
+        if mean_df is not None:
+            emission_chart_artifacts = get_emission_chart_artifacts(mean_df, aoi_properties, emission_sums, resources)
+            artifacts.extend(emission_chart_artifacts)
 
         return artifacts

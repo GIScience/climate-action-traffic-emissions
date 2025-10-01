@@ -32,7 +32,6 @@ class EmissionsFactors(Enum):
         'motorway': 204,
         'inside': 197,
         'outside': 154,
-        'cap': 3000,
     }
     CO = {  # dead: disable
         'name': 'CO',
@@ -41,7 +40,6 @@ class EmissionsFactors(Enum):
         'motorway': 3.36,
         'inside': 3.25,
         'outside': 2.54,
-        'cap': 50,
     }
     NOx = {  # dead: disable
         'name': 'NOx',
@@ -50,7 +48,6 @@ class EmissionsFactors(Enum):
         'motorway': 0.54,
         'inside': 0.52,
         'outside': 0.41,
-        'cap': 8,
     }
 
 
@@ -268,7 +265,7 @@ def build_traffic_emissions_artifact(
     gas: EmissionsFactors, emissions_gdf: gpd.GeoDataFrame, resources: ComputationResources
 ) -> _Artifact:
     gas_name = gas.value.get('name')
-    color, legend = get_colors_legend(gas.value['cap'], emissions_gdf[f't_{gas_name}_km_yr'])
+    color, legend = get_colors_legend(emissions_gdf[f't_{gas_name}_km_yr'])
 
     return create_geojson_artifact(
         features=emissions_gdf.geometry,
@@ -294,9 +291,9 @@ def get_emission_chart_artifacts(
     chart_artifacts = []
     for gas in EmissionsFactors:
         gas_name = gas.value.get('name')
-        emission_sum = str(round(emission_sums[gas_name], 2))
+        emission_sum = round(emission_sums[gas_name], 2)
         description_template = Path('resources/artifact_descriptions/traffic_emission_chart_description.md').read_text()
-        description = description_template.format(gas=gas_name, city=city_name, total_emissions=emission_sum)
+        description = description_template.format(gas=gas_name, city=city_name, total_emissions=f'{emission_sum:n}')
         figure = plot_emission_bar(mean_df, gas_name, city_name)
         artifact = create_plotly_chart_artifact(
             figure=figure,

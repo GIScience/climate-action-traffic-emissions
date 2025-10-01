@@ -145,7 +145,7 @@ def assign_traffic(gdf_road: gpd.GeoDataFrame, scaling: float) -> gpd.GeoDataFra
 
 
 def build_traffic_volume_artifact(road_gdf: gpd.GeoDataFrame, resources: ComputationResources) -> _Artifact:
-    color, legend = get_colors_legend(40000, road_gdf['mean_dtv'])
+    color, legend = get_colors_legend(road_gdf['mean_dtv'])
 
     return create_geojson_artifact(
         features=road_gdf.geometry,
