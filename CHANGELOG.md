@@ -7,6 +7,10 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 
 ## [Unreleased](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/compare/0.1.0...main)
 
+### Added
+
+- Added chart artifacts with mean emissions per area ([#28](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/28))
+
 ### Changed
 - Added limitations to methodology ([#27](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/27))
 - Normalize legend colors logarithmically so the different values are better recognisable in the map ([#29](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/29))

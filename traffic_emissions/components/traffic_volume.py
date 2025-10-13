@@ -3,14 +3,18 @@ from pathlib import Path
 
 import geopandas as gpd
 import pandas as pd
-import rasterio
 import shapely
 from climatoology.base.artifact import _Artifact, create_geojson_artifact
 from climatoology.base.computation import ComputationResources
 from ohsome import OhsomeClient
-from rasterio.mask import mask
 
-from traffic_emissions.components.utils import POP_DENS_BERLIN, ROAD_LENGTH_PER_CAPITA_BERLIN, Topic, get_colors_legend
+from traffic_emissions.components.utils import (
+    POP_DENS_BERLIN,
+    ROAD_LENGTH_PER_CAPITA_BERLIN,
+    Topic,
+    calculate_mean_pop_density_polygon,
+    get_colors_legend,
+)
 
 log = logging.getLogger(__name__)
 
@@ -75,33 +79,12 @@ def get_scaling_factor(aoi_poly: shapely.MultiPolygon, length_total: float) -> f
     :return: scaling_factor: Scaling factor of population density and road length per capita
     """
     log.debug('Calculating scaling factor')
-    pop_path = 'resources/pop_dens.tif'
-    mean_pop_dens_aoi, pop_sum_aoi = calculate_mean_pop_density_polygon(pop_path, aoi_poly)
+    mean_pop_dens_aoi, pop_sum_aoi = calculate_mean_pop_density_polygon(aoi_poly)
     length_per_capita_aoi = length_total / pop_sum_aoi
     pop_scaling_factor = mean_pop_dens_aoi / POP_DENS_BERLIN
     length_scaling_factor = ROAD_LENGTH_PER_CAPITA_BERLIN / length_per_capita_aoi
     scaling_factor = pop_scaling_factor * length_scaling_factor
     return scaling_factor
-
-
-def calculate_mean_pop_density_polygon(raster_path: str, polygon: shapely.MultiPolygon) -> tuple[float, float]:
-    """
-    Calculates mean and total population in the given polygons using the GHS_POP population raster.
-
-    :param raster_path: filepath of GHS_POP population raster (EPSG: 4326)
-    :param polygon: Polygon of AOI for which population density is calculated (EPSG: 4326)
-    :return: mean_value: mean population per grid cell in the given polygons
-    :return: sum_value: total population in the given polygons
-    """
-    with rasterio.open(raster_path) as src:
-        out_image, _ = mask(src, [polygon], crop=True, nodata=-999)
-        valid_data = out_image[out_image != -999]
-        if valid_data.size == 0:
-            raise ValueError(f'No valid population data found in {raster_path} for the given area of interest.')
-
-        mean_value = valid_data.mean()
-        sum_value = valid_data.sum()
-        return mean_value, sum_value
 
 
 def assign_traffic(gdf_road: gpd.GeoDataFrame, scaling: float) -> gpd.GeoDataFrame:

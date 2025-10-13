@@ -9,9 +9,9 @@ from shapely.geometry import LineString, Polygon
 from vcr import use_cassette
 
 from test.components.test_traffic_volume import LINE_GEOM
+from traffic_emissions.components.district_summaries import get_district_summaries
 from traffic_emissions.components.traffic_emissions import (
     calculate_emissions,
-    get_district_summaries,
     get_emission_chart_artifacts,
     get_emission_sums,
     plot_emission_bar,
@@ -33,6 +33,9 @@ DISTRICT_SUMMARY_TEST_GDF = gpd.GeoDataFrame(
         't_CO2_km_yr': [50, 100, 100, 150],
         't_CO_km_yr': [5, 10, 10, 15],
         't_NOx_km_yr': [1, 2, 2, 3],
+        't_CO2_yr': [50, 100, 100, 150],
+        't_CO_yr': [5, 10, 10, 15],
+        't_NOx_yr': [1, 2, 2, 3],
     },
     geometry=DISTRICT_LINE_GEOM,
 )
@@ -98,12 +101,26 @@ def test_get_emission_sums():
         },
         geometry=LINE_GEOM,
     )
+    df = pd.DataFrame(
+        {
+            't_CO2_km_yr': [100, 100],
+            't_CO_km_yr': [100, 100],
+            't_NOx_km_yr': [100, 100],
+            'length': [83.1, 83.1],
+            't_CO2_yr': [8.3, 8.3],
+            't_CO_yr': [8.3, 8.3],
+            't_NOx_yr': [8.3, 8.3],
+        },
+    )
+    df.insert(3, 'geometry', LINE_GEOM)
+    expected_gdf_with_yearly_emissions = gpd.GeoDataFrame(df, geometry='geometry')
     expected_sums = {
         'CO2': 0.0166,
         'CO': 0.0166,
         'NOx': 0.0166,
     }
-    emission_sums = get_emission_sums(gdf)
+    emissions_gdf_with_yearly_emissions, emission_sums = get_emission_sums(gdf)
+    pd.testing.assert_frame_equal(emissions_gdf_with_yearly_emissions.round(1), expected_gdf_with_yearly_emissions)
     assert {k: round(v, 4) for k, v in emission_sums.items()} == expected_sums
 
 
@@ -124,7 +141,7 @@ def test_plot_emission_bar():
             't_CO2_km_yr': [100],
         }
     )
-    fig = plot_emission_bar(df, 'CO2', 'Gondor')
+    fig = plot_emission_bar(df, 'CO2', 'Gondor', 't/road-km', 'km_yr')
     np.testing.assert_array_equal(fig['data'][0]['name'], 't_CO2_km_yr')
     np.testing.assert_array_equal(fig['data'][0]['y'], np.array(['Minas Tirith', 'Gondor']))
 
@@ -136,13 +153,19 @@ def test_get_emission_chart_artifacts(default_aoi_properties, compute_resources)
             't_CO2_km_yr': [100],
             't_CO_km_yr': [10],
             't_NOx_km_yr': [1],
+            't_CO2_km2_yr': [100],
+            't_CO_km2_yr': [10],
+            't_NOx_km2_yr': [1],
         }
     )
     emission_sums = {'CO2': 1000.123, 'CO': 100.123, 'NOx': 10.123}
     expected_titles = [
         'Mean annual CO2 emissions [t/road-km]',
+        'Mean annual CO2 emissions [t/km²]',
         'Mean annual CO emissions [t/road-km]',
+        'Mean annual CO emissions [t/km²]',
         'Mean annual NOx emissions [t/road-km]',
+        'Mean annual NOx emissions [t/km²]',
     ]
     artifacts = get_emission_chart_artifacts(df, default_aoi_properties, emission_sums, compute_resources)
     for artifact, expected_title in zip(artifacts, expected_titles):

@@ -20,6 +20,6 @@ def test_operator_compute_request(
         params=default_compute_input,
     )
 
-    assert len(computed_artifacts) == 7
+    assert len(computed_artifacts) == 10
     for artifact in computed_artifacts:
         assert isinstance(artifact, _Artifact)

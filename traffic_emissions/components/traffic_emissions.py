@@ -6,11 +6,9 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-import shapely
 from climatoology.base.artifact import _Artifact, create_geojson_artifact, create_plotly_chart_artifact
 from climatoology.base.baseoperator import AoiProperties
 from climatoology.base.computation import ComputationResources
-from ohsome import OhsomeClient
 
 from traffic_emissions.components.utils import (
     DENSITY_DIESEL,
@@ -51,6 +49,18 @@ class EmissionsFactors(Enum):
     }
 
 
+UNITS = {
+    'KM': {
+        'column': 'km_yr',
+        'unit': 't/road-km',
+    },
+    'KM2': {
+        'column': 'km2_yr',
+        'unit': 't/km²',
+    },
+}
+
+
 def traffic_emissions(road_gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     log.info('Calculating annual traffic emissions')
     traffic_gdf = preprocess(road_gdf)
@@ -58,7 +68,7 @@ def traffic_emissions(road_gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     return emissions_gdf
 
 
-def get_emission_sums(emissions_gdf: gpd.GeoDataFrame) -> dict:
+def get_emission_sums(emissions_gdf: gpd.GeoDataFrame) -> tuple[gpd.GeoDataFrame, dict]:
     emissions_gdf_with_yearly_emissions = emissions_gdf.copy()
     emissions_gdf_with_yearly_emissions['length'] = emissions_gdf_with_yearly_emissions.geometry.length
     emissions_gdf_with_yearly_emissions['t_CO2_yr'] = emissions_gdf_with_yearly_emissions['t_CO2_km_yr'] * (
@@ -75,7 +85,7 @@ def get_emission_sums(emissions_gdf: gpd.GeoDataFrame) -> dict:
         'CO': emissions_gdf_with_yearly_emissions['t_CO_yr'].sum() / 1000,
         'NOx': emissions_gdf_with_yearly_emissions['t_NOx_yr'].sum() / 1000,
     }
-    return emission_sums
+    return emissions_gdf_with_yearly_emissions, emission_sums
 
 
 def preprocess(gdf_traffic: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
@@ -194,35 +204,8 @@ def get_emission_artifacts(emissions_gdf: gpd.GeoDataFrame, resources: Computati
     return emission_artifacts
 
 
-def get_district_summaries(
-    emissions_gdf: gpd.GeoDataFrame,
-    aoi: shapely.MultiPolygon,
-    ohsome_client: OhsomeClient,
-) -> pd.DataFrame | None:
-    log.info('Creating summary charts of emissions by city district')
-    minimum_keys = ['admin_level', 'name']
-    boundaries = ohsome_client.elements.geometry.post(
-        properties='tags',
-        bpolys=aoi,
-        filter='geometry:polygon and boundary=administrative and admin_level=9',
-        clipGeometry=True,
-    ).as_dataframe(explode_tags=minimum_keys)
-    boundaries = boundaries.loc[boundaries.geometry.geom_type.isin(('MultiPolygon', 'Polygon'))]
-    boundaries = boundaries[boundaries.is_valid]
-    boundaries = boundaries.reset_index(drop=True)
-    if boundaries.shape[0] <= 1:
-        return None
-    else:
-        log.debug(f'Summarising emissions into {boundaries.shape[0]} boundaries')
-        boundaries = boundaries.to_crs(boundaries.estimate_utm_crs())
-        emissions_gdf = emissions_gdf[emissions_gdf.geometry.type.isin(['LineString', 'MultiLineString'])]
-        emissions_gdf = emissions_gdf.overlay(boundaries, how='identity', keep_geom_type=False)
-        mean_df = emissions_gdf.groupby('name')[['t_CO2_km_yr', 't_CO_km_yr', 't_NOx_km_yr']].mean().reset_index()
-        return mean_df
-
-
-def plot_emission_bar(df, gas, city) -> go.Figure:
-    column = f't_{gas}_km_yr'
+def plot_emission_bar(df, gas, city, unit_name, unit_column) -> go.Figure:
+    column = f't_{gas}_{unit_column}'
     overall_mean = df[column].mean()
     overall_row = pd.Series({'name': city, column: overall_mean})
     overall_df = overall_row.to_frame().transpose()
@@ -250,7 +233,7 @@ def plot_emission_bar(df, gas, city) -> go.Figure:
     )
 
     fig.update_layout(
-        xaxis_title=f'Mean annual {gas} emissions [t/road-km]',
+        xaxis_title=f'Mean annual {gas} emissions [{unit_name}]',
         yaxis_title='District',
         yaxis=dict(automargin=True),
         showlegend=False,
@@ -290,20 +273,27 @@ def get_emission_chart_artifacts(
     city_name = aoi_properties.name
     chart_artifacts = []
     for gas in EmissionsFactors:
-        gas_name = gas.value.get('name')
-        emission_sum = round(emission_sums[gas_name], 2)
-        description_template = Path('resources/artifact_descriptions/traffic_emission_chart_description.md').read_text()
-        description = description_template.format(gas=gas_name, city=city_name, total_emissions=f'{emission_sum:n}')
-        figure = plot_emission_bar(mean_df, gas_name, city_name)
-        artifact = create_plotly_chart_artifact(
-            figure=figure,
-            title=f'Mean annual {gas_name} emissions [t/road-km]',
-            caption=f'Mean estimated {gas_name} emissions of road traffic per city district [t per road-km per year]',
-            description=description,
-            resources=resources,
-            filename=f'traffic_{gas_name}_emissions_chart',
-            tags={Topic.CHARTS},
-        )
-        chart_artifacts.append(artifact)
+        for unit in UNITS:
+            gas_name = gas.value.get('name')
+            emission_sum = round(emission_sums[gas_name], 2)
+            unit_name = UNITS[unit]['unit']
+            unit_column = UNITS[unit]['column']
+            description_template = Path(
+                'resources/artifact_descriptions/traffic_emission_chart_description.md'
+            ).read_text()
+            description = description_template.format(
+                gas=gas_name, city=city_name, total_emissions=f'{emission_sum:n}', unit=unit_name
+            )
+            figure = plot_emission_bar(mean_df, gas_name, city_name, unit_name, unit_column)
+            artifact = create_plotly_chart_artifact(
+                figure=figure,
+                title=f'Mean annual {gas_name} emissions [{unit_name}]',
+                caption=f'Mean estimated annual {gas_name} emissions of road traffic per city district [{unit_name}]',
+                description=description,
+                resources=resources,
+                filename=f'traffic_{gas_name}_{unit_column}_emissions_chart',
+                tags={Topic.CHARTS},
+            )
+            chart_artifacts.append(artifact)
 
     return chart_artifacts

@@ -9,8 +9,8 @@ from climatoology.base.baseoperator import AoiProperties, BaseOperator, Computat
 from climatoology.base.info import _Info
 from ohsome import OhsomeClient
 
+from traffic_emissions.components.district_summaries import get_district_summaries
 from traffic_emissions.components.traffic_emissions import (
-    get_district_summaries,
     get_emission_artifacts,
     get_emission_chart_artifacts,
     get_emission_sums,
@@ -41,8 +41,8 @@ class Operator(BaseOperator[ComputeInput]):
         locale.setlocale(locale.LC_ALL, '')
         road_gdf = traffic_volume(aoi, self.ohsome)
         emissions_gdf = traffic_emissions(road_gdf)
-        emission_sums = get_emission_sums(emissions_gdf)
-        mean_df = get_district_summaries(emissions_gdf, aoi, self.ohsome)
+        emissions_gdf_with_yearly_emissions, emission_sums = get_emission_sums(emissions_gdf)
+        mean_df = get_district_summaries(emissions_gdf_with_yearly_emissions, aoi, self.ohsome)
 
         artifacts = []
         traffic_volume_artifact = build_traffic_volume_artifact(road_gdf, resources)
