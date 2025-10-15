@@ -1,4 +1,3 @@
-# Methodology
 ## Input data
 
 The following input data is used:
@@ -14,11 +13,20 @@ The following input data is used:
 
 ### Model development
 
-In the first step, we derive the average daily traffic volume (ADTV) for every combination of OpenStreetMap (OSM) road type and number of lanes in Berlin, Germany. To this end, we first obtain the road network of Berlin from OSM, including the attributes `road type` (OSM tag “highway”) and `number of lanes` (OSM tag “lanes”). Next, we join the ADTV of Berlin from 2019 to the road network. Next, the Berlin road network is split into a training and testing set (50:50). For the training set, the ADTV is calculated for each combination of highway type and number of lanes. These ADTVs are then assigned to all OSM road segments based on their highway type and number of lanes. To validate the accuracy, the assigned ADTVs are compared to the observed ADTVs in the testing set.
+In the first step, we derive the average daily traffic volume (ADTV) for every combination of OpenStreetMap (OSM) road type and number of lanes in Berlin, Germany.
+To this end, we first obtain the road network of Berlin from OSM, including the attributes **Road type** and **Number of lanes**.
+Next, we join the ADTV of Berlin from 2019 to the road network.
+Next, the Berlin road network is split into a training and testing set (50:50).
+For the training set, the ADTV is calculated for each combination of highway type and number of lanes.
+These ADTVs are then assigned to all OSM road segments based on their highway type and number of lanes.
+To validate the accuracy, the assigned ADTVs are compared to the observed ADTVs in the testing set.
 
 ### Apply estimation to selected area
 
-In the second step, the ADTVs that have been derived for each combination of OSM road type and number of lanes in Berlin are assigned to the OSM road network in the selected area based on their highway type and number of lanes. The assigned ADTVs are scaled by the population density and the road length per capita in the selected area. This is based on the assumption that traffic volume increases with population density and decreases with road length per capita. The information on the population density is taken from the population grid of the Global Human Settlement Layer.
+In the second step, the ADTVs that have been derived for each combination of OSM road type and number of lanes in Berlin are assigned to the OSM road network in the selected area based on their highway type and number of lanes.
+The assigned ADTVs are scaled by the population density and the road length per capita in the selected area.
+This is based on the assumption that traffic volume increases with population density and decreases with road length per capita.
+The information on the population density is taken from the population grid of the Global Human Settlement Layer.
 
 
 ## Traffic emission estimation
@@ -35,7 +43,7 @@ E = ADTV * FC_speed * EF / 1000000 * 365
 
     EF: Fuel emission factor [g/l fuel]
 
-For road segments with a `maxspeed` tag, the speed-dependent fuel consumption is calculated using equations derived from [Sobrino et al. (2014)](https://doi.org/10.1007/s11067-014-9225-y), Table 3 - passenger car:
+For road segments with speed limit information in OSM, the speed-dependent fuel consumption is calculated using equations derived from [Sobrino et al. (2014)](https://doi.org/10.1007/s11067-014-9225-y), Table 3 - passenger car:
 
 | Vehicle Type       | Fuel Consumption Function (g fuel / veh-km) |
 |--------------------|------------------------------------------------------------------|
@@ -58,7 +66,7 @@ The speed-dependent fuel consumption is further weighted by the market shares of
 | Articulated truck  | 0.004        |
 | Other              | 0.042        |
 
-For roads without a `maxspeed` tag, we assume fixed traveling speeds. Using the fuel consumption functions above, this leads us to the following emission factors for roads without speed information:
+For roads without speed limit information, we assume fixed traveling speeds. Using the fuel consumption functions above, this leads us to the following emission factors for roads without speed information:
 
 | Road type                        | Speed [km/h] | g CO₂ / veh-km | g CO / veh-km | g NOx / veh-km |
 |----------------------------------|--------------|-------------------|------------------|-------------------|
@@ -69,6 +77,17 @@ For roads without a `maxspeed` tag, we assume fixed traveling speeds. Using the 
 
 ## Limitations
 
-To obtain the ADTVs for the selected area, we scale the ADTVs for Berlin by the population density and the road length per capita in the selected area. While there are better proxies for traffic volume than population density, such as car ownership rates and income (Ingram & Liu 1997), we use population density, because this data is more easily available at high spatial reolution and coverage.
+To obtain the ADTVs for the selected area, we scale the ADTVs for Berlin by the population density and the road length per capita in the selected area.
+While there are better proxies for traffic volume than population density, such as car ownership rates and income (Ingram & Liu 1997), we use population density, because this data is more easily available at high spatial resolution and coverage.
 
-During the estimation of traffic emissions, we assume that the traveling speed is constant and equal to the speed limit. The impact of traffic lights, congestion, or vehicles exceeding the speed limit is not accounted for. In most cases, this means that we are probably underestimating the emissions. For roads without speed limit information, we assume fixed traveling speeds, which at best represent average values and do not account for the actual road and traffic conditions. Differences between the actual vehicle fleet composition and our assumed fleet composition may lead to additional over- or underestimation of the emission estimates.
+During the estimation of traffic emissions, we assume that the traveling speed is constant and equal to the speed limit.
+The impact of traffic lights, congestion, or vehicles exceeding the speed limit is not accounted for.
+In most cases, this means that we are probably underestimating the emissions.
+For roads without speed limit information, we assume fixed traveling speeds, which at best represent average values and do not account for the actual road and traffic conditions.
+Differences between the actual vehicle fleet composition and our assumed fleet composition may lead to additional over- or underestimation of the emission estimates.
+
+
+## OSM Tags used in the download of the OSM road network
+- **Road type**: Tagged as [`highway=*`](https://wiki.openstreetmap.org/wiki/Key:highway) with values including: [`motorway`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dmotorway), [`trunk`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dtrunk), [`primary`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dprimary), [`secondary`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dsecondary), [`tertiary`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dtertiary), [`residential`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dresidential), [`living_street`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dliving_street), and [`unclassified`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dunclassified).
+- **Number of lanes**: Tagged as [`lanes=*`](https://wiki.openstreetmap.org/wiki/Lanes).
+- **Speed limit**: Tagged as [`maxspeed=*`](https://wiki.openstreetmap.org/wiki/Key:maxspeed).
