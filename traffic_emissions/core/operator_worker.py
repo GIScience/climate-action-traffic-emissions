@@ -4,9 +4,12 @@ import locale
 import logging
 from typing import List
 
+import ee
+import geopandas as gpd
 import shapely
 from climatoology.base.baseoperator import AoiProperties, BaseOperator, ComputationResources, _Artifact
 from climatoology.base.info import _Info
+from climatoology.utility.exception import ClimatoologyUserError
 from ohsome import OhsomeClient
 
 from traffic_emissions.components.district_summaries import get_district_summaries
@@ -19,14 +22,20 @@ from traffic_emissions.components.traffic_emissions import (
 from traffic_emissions.components.traffic_volume import build_traffic_volume_artifact, traffic_volume
 from traffic_emissions.core.info import get_info
 from traffic_emissions.core.input import ComputeInput
+from traffic_emissions.core.settings import Settings
 
 log = logging.getLogger(__name__)
 
 
 class Operator(BaseOperator[ComputeInput]):
-    def __init__(self):
+    def __init__(self, settings: Settings):
         super().__init__()
         self.ohsome = OhsomeClient()
+
+        credentials = ee.ServiceAccountCredentials(
+            settings.google_earth_engine_service_account, settings.google_earth_engine_key
+        )
+        ee.Initialize(credentials)
 
     def info(self) -> _Info:
         return get_info()
@@ -39,8 +48,10 @@ class Operator(BaseOperator[ComputeInput]):
         params: ComputeInput,
     ) -> List[_Artifact]:
         locale.setlocale(locale.LC_ALL, '')
-        road_gdf = traffic_volume(aoi, self.ohsome)
-        emissions_gdf = traffic_emissions(road_gdf)
+        self.check_aoi(aoi, aoi_properties)
+
+        road_gdf = traffic_volume(aoi=aoi, ohsome=self.ohsome)
+        emissions_gdf = traffic_emissions(road_gdf=road_gdf, aoi_poly=aoi)
         emissions_gdf_with_yearly_emissions, emission_sums = get_emission_sums(emissions_gdf)
         mean_df = get_district_summaries(emissions_gdf_with_yearly_emissions, aoi, self.ohsome)
 
@@ -54,3 +65,13 @@ class Operator(BaseOperator[ComputeInput]):
             artifacts.extend(emission_chart_artifacts)
 
         return artifacts
+
+    @staticmethod
+    def check_aoi(aoi: shapely.MultiPolygon, aoi_properties: AoiProperties) -> None:
+        germany = gpd.read_file('resources/germany_buffered_boundaries.json')
+        inside_germany = aoi.within(germany.geometry)
+        if not inside_germany[0]:
+            raise ClimatoologyUserError(
+                f'For now, estimates of traffic emissions are only available for Germany. {aoi_properties.name} is '
+                'outside Germany. We are working on expanding the tool to other countries'
+            )

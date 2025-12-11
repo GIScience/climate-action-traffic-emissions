@@ -1,4 +1,5 @@
 import uuid
+from unittest.mock import patch
 
 import pytest
 import shapely
@@ -7,6 +8,7 @@ from climatoology.base.computation import ComputationScope
 
 from traffic_emissions.core.input import ComputeInput
 from traffic_emissions.core.operator_worker import Operator
+from traffic_emissions.core.settings import Settings
 
 
 @pytest.fixture
@@ -67,4 +69,34 @@ def compute_resources():
 
 @pytest.fixture
 def operator():
-    return Operator()
+    default_gee_settings = Settings(
+        google_earth_engine_service_account='test-account', google_earth_engine_key='test-key.json'
+    )
+    with (
+        patch('traffic_emissions.core.operator_worker.ee.ServiceAccountCredentials'),
+        patch('traffic_emissions.core.operator_worker.ee.Initialize'),
+    ):
+        yield Operator(default_gee_settings)
+
+
+@pytest.fixture
+def mock_temp_dir():
+    with patch(
+        'tempfile.TemporaryDirectory.__enter__',
+        return_value='test/resources',
+    ):
+        yield
+
+
+@pytest.fixture
+def mock_get_pop_raster(mock_temp_dir):
+    with (
+        patch('traffic_emissions.components.traffic_volume.get_pop_raster'),
+    ):
+        yield
+
+
+@pytest.fixture
+def mock_get_built_up_raster(mock_temp_dir):
+    with patch('traffic_emissions.components.traffic_emissions.get_built_up_raster'):
+        yield

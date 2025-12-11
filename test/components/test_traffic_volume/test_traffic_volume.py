@@ -1,9 +1,6 @@
-from unittest.mock import patch
-
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-import pytest
 from approvaltests import verify
 from shapely.geometry import LineString
 from vcr import use_cassette
@@ -14,31 +11,24 @@ from traffic_emissions.components.traffic_volume import (
     get_scaling_factor,
     traffic_volume,
 )
-from traffic_emissions.components.utils import calculate_mean_pop_density_polygon
 
 LINE_GEOM = gpd.GeoSeries(
     [LineString([(325193.9834442865, 4669724.10105637), (325111.5841199331, 4669734.855883078)]) for _ in range(6)]
 )
 
 
-@use_cassette
+@use_cassette('test/resources/vcr_cassettes/test_get_roads.yaml')
 def test_get_roads(operator, road_test_aoi):
     road_gdf, total_length = get_roads(road_test_aoi, operator.ohsome)
     verify(road_gdf.to_csv())
     assert total_length == 83.0982247188029
 
 
-def test_get_scaling_factor(default_aoi):
+def test_get_scaling_factor(default_aoi, mock_get_pop_raster):
     total_length = 100000
-    expected = 1.56
+    expected = 1.4
     scaling_factor = get_scaling_factor(default_aoi, total_length)
     assert round(scaling_factor, 2) == expected
-
-
-def test_calculate_mean_pop_density_polygon(default_aoi):
-    mean_pop_dens_aoi, pop_sum_aoi = calculate_mean_pop_density_polygon(default_aoi)
-    assert round(mean_pop_dens_aoi, 2) == 1358.02
-    assert round(pop_sum_aoi, 0) == 74691
 
 
 def test_assign_traffic():
@@ -87,14 +77,7 @@ def test_assign_traffic_with_scaling():
     )
 
 
-@pytest.fixture
-def population_density():
-    with patch('traffic_emissions.components.traffic_volume.calculate_mean_pop_density_polygon') as mock:
-        mock.return_value = (1300.0, 70000.0)
-        yield mock
-
-
-@use_cassette
-def test_traffic_volume(operator, small_aoi, population_density):
+@use_cassette('test/resources/vcr_cassettes/test_traffic_volume.yaml')
+def test_traffic_volume(operator, small_aoi, mock_get_pop_raster):
     road_gdf = traffic_volume(small_aoi, operator.ohsome)
     verify(road_gdf.to_csv())

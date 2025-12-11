@@ -12,6 +12,8 @@ def test_operator_compute_request(
     default_aoi,
     default_aoi_properties,
     compute_resources,
+    mock_get_pop_raster,
+    mock_get_built_up_raster,
 ):
     computed_artifacts = operator.compute(
         resources=compute_resources,

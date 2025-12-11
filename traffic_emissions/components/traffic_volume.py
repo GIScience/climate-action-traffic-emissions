@@ -1,4 +1,6 @@
 import logging
+import os
+import tempfile
 from pathlib import Path
 
 import geopandas as gpd
@@ -14,12 +16,17 @@ from traffic_emissions.components.utils import (
     Topic,
     calculate_mean_pop_density_polygon,
     get_colors_legend,
+    get_pop_raster,
 )
 
 log = logging.getLogger(__name__)
 
 
 def traffic_volume(aoi: shapely.MultiPolygon, ohsome: OhsomeClient) -> gpd.GeoDataFrame:
+    """
+    Estimates mean_dtv (daily traffic volume) for each road segment.
+    :return: GeoDataFrame with following columns: geometry, highway, lanes, maxspeed, mean_dtv
+    """
     log.info('Calculating average daily traffic volume')
     road_gdf, total_length = get_roads(aoi, ohsome)
     scaling = get_scaling_factor(aoi, total_length)
@@ -79,7 +86,12 @@ def get_scaling_factor(aoi_poly: shapely.MultiPolygon, length_total: float) -> f
     :return: scaling_factor: Scaling factor of population density and road length per capita
     """
     log.debug('Calculating scaling factor')
-    mean_pop_dens_aoi, pop_sum_aoi = calculate_mean_pop_density_polygon(aoi_poly)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        pop_path = os.path.join(tmp, 'pop_raster.tif')
+        get_pop_raster(aoi=aoi_poly, pop_path=pop_path)
+        mean_pop_dens_aoi, pop_sum_aoi = calculate_mean_pop_density_polygon(polygon=aoi_poly, raster_path=pop_path)
+
     length_per_capita_aoi = length_total / pop_sum_aoi
     pop_scaling_factor = mean_pop_dens_aoi / POP_DENS_BERLIN
     length_scaling_factor = ROAD_LENGTH_PER_CAPITA_BERLIN / length_per_capita_aoi

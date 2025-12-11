@@ -1,14 +1,12 @@
-from unittest.mock import patch
-
 import geopandas as gpd
 import numpy as np
 import pandas as pd
 from approvaltests import verify
 from climatoology.base.artifact import ArtifactModality
-from shapely.geometry import LineString, Polygon
+from shapely.geometry import LineString
 from vcr import use_cassette
 
-from test.components.test_traffic_volume import LINE_GEOM
+from test.components.test_traffic_volume.test_traffic_volume import LINE_GEOM
 from traffic_emissions.components.district_summaries import get_district_summaries
 from traffic_emissions.components.traffic_emissions import (
     calculate_emissions,
@@ -38,22 +36,22 @@ DISTRICT_SUMMARY_TEST_GDF = gpd.GeoDataFrame(
         't_NOx_yr': [1, 2, 2, 3],
     },
     geometry=DISTRICT_LINE_GEOM,
+    crs='EPSG:32632',
 )
 
 
-def test_preprocess():
+def test_preprocess(default_aoi, mock_get_built_up_raster):
     roads = gpd.GeoDataFrame(
         {'highway': ['residential', 'motorway', 'secondary'], 'maxspeed': [30, 130, 90]},
-        geometry=[LineString([(0, 0), (1, 0)]), LineString([(10, 0), (20, 0)]), LineString([(0, 6), (0, 10)])],
+        geometry=[
+            LineString([(8.66, 49.4), (8.67, 49.41)]),
+            LineString([(8.66, 49.4), (8.67, 49.41)]),
+            LineString([(8.5, 49.0), (8.6, 49.1)]),
+        ],
+        crs='EPSG:4326',
     )
 
-    built_up = gpd.GeoDataFrame(
-        {'id': [1]},
-        geometry=[Polygon([(0, 0), (5, 0), (5, 5), (0, 5)])],
-    )
-
-    with patch('traffic_emissions.components.traffic_emissions.gpd.read_file', return_value=built_up):
-        processed = preprocess(roads)
+    processed = preprocess(roads, default_aoi)
 
     assert processed.loc[0, 'road_type'] == 'inside'
     assert processed.loc[1, 'road_type'] == 'motorway'
@@ -79,7 +77,7 @@ def test_calculate_emissions():
     pd.testing.assert_series_equal(received['t_NOx_km_yr'].round(2), expected_nox)
 
 
-def test_traffic_emissions():
+def test_traffic_emissions(default_aoi, mock_get_built_up_raster):
     roads = gpd.GeoDataFrame(
         {
             'highway': ['residential', 'motorway', 'secondary', 'tertiary_2', 'secondary_link', 'secondary_2'],
@@ -87,8 +85,9 @@ def test_traffic_emissions():
             'mean_dtv': [1000, 1000, 1000, 6238.3, 9980.6, 12056.4],
         },
         geometry=LINE_GEOM,
+        crs='EPSG:4326',
     )
-    emissions_gdf = traffic_emissions(roads)
+    emissions_gdf = traffic_emissions(roads, default_aoi)
     verify(emissions_gdf.to_csv())
 
 
@@ -124,7 +123,7 @@ def test_get_emission_sums():
     assert {k: round(v, 4) for k, v in emission_sums.items()} == expected_sums
 
 
-@use_cassette
+@use_cassette('test/resources/vcr_cassettes/test_get_district_summaries.yaml')
 def test_get_district_summaries(operator, default_aoi):
     mean_df = get_district_summaries(DISTRICT_SUMMARY_TEST_GDF, default_aoi, operator.ohsome)
     verify(mean_df.to_csv())

@@ -1,4 +1,6 @@
 import logging
+import os
+import tempfile
 from enum import Enum
 from pathlib import Path
 
@@ -6,6 +8,8 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+import pyproj
+import shapely
 from climatoology.base.artifact import _Artifact, create_geojson_artifact, create_plotly_chart_artifact
 from climatoology.base.baseoperator import AoiProperties
 from climatoology.base.computation import ComputationResources
@@ -16,6 +20,8 @@ from traffic_emissions.components.utils import (
     MARKET_SHARES,
     Topic,
     VehicleType,
+    get_built_up_geom,
+    get_built_up_raster,
     get_colors_legend,
 )
 
@@ -61,9 +67,14 @@ UNITS = {
 }
 
 
-def traffic_emissions(road_gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+def traffic_emissions(road_gdf: gpd.GeoDataFrame, aoi_poly: shapely.MultiPolygon) -> gpd.GeoDataFrame:
+    """
+    Calculates annual road traffic emissions [t/road-km] for each road segment.
+
+    :return: GeoDataFrame of emissions [t/road-km] for each road segment. Contains the following columns: geometry, highway, lanes, maxspeed, mean_dtv (mean daily traffic volume), road_type (inside city/outside city/motorway), t_CO2_km_yr, t_CO_km_yr, t_NOx_km_yr
+    """
     log.info('Calculating annual traffic emissions')
-    traffic_gdf = preprocess(road_gdf)
+    traffic_gdf = preprocess(road_gdf, aoi_poly)
     emissions_gdf = calculate_emissions(traffic_gdf)
     return emissions_gdf
 
@@ -88,17 +99,17 @@ def get_emission_sums(emissions_gdf: gpd.GeoDataFrame) -> tuple[gpd.GeoDataFrame
     return emissions_gdf_with_yearly_emissions, emission_sums
 
 
-def preprocess(gdf_traffic: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+def preprocess(gdf_traffic: gpd.GeoDataFrame, aoi_poly: shapely.MultiPolygon) -> gpd.GeoDataFrame:
     """
     Preprocesses gdf_traffic for emission calculation.
 
-    @param gdf_traffic: GeoDataFrame of OSM road network with estimated traffic volumes
-    @return: gdf_traffic: GeoDataFrame with roads and their attributes (inside city / outside city / motorway)
+    :param gdf_traffic: GeoDataFrame of OSM road network with estimated traffic volumes
+    :return: gdf_traffic: GeoDataFrame with roads and their attributes (inside city / outside city / motorway)
     """
-    built_up = gpd.read_file('resources/built_up.gpkg')
+    built_up = get_built_up_area(aoi_poly, gdf_traffic.crs)
     gdf_traffic['road_type'] = 'outside'
-    joined = gpd.sjoin(gdf_traffic, built_up, how='inner', predicate='intersects')
-    gdf_traffic.loc[joined.index, 'road_type'] = 'inside'
+    filtered = gdf_traffic[gdf_traffic.intersects(built_up, align=True)]
+    gdf_traffic.loc[filtered.index, 'road_type'] = 'inside'
     gdf_traffic.loc[
         gdf_traffic['highway'].isin(
             [
@@ -119,12 +130,27 @@ def preprocess(gdf_traffic: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     return gdf_traffic
 
 
+def get_built_up_area(aoi_poly: shapely.MultiPolygon, traffic_gdf_crs: pyproj.CRS) -> shapely.MultiPolygon:
+    """
+    Gets built-up areas in the AOI as a GeoSeries.
+    :param aoi_poly: Area of interest as multipolygon.
+    :param traffic_gdf_crs: CRS of traffic_gdf.
+    :return: GeoSeries with built-up areas as multipolygon.
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        built_up_path = os.path.join(tmp, 'built_up_raster.tif')
+        get_built_up_raster(aoi_poly, built_up_path)
+        built_up = get_built_up_geom(built_up_path, traffic_gdf_crs)
+
+    return built_up
+
+
 def calculate_emissions(gdf_traffic: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     """
     Calculates CO2, CO, and NOx emissions [g per day] of each road segment.
 
-    @param gdf_traffic: GeoDataFrame with roads and their attributes (inside city / outside city / motorway)
-    @return: traffic_gdf: GeoDataFrame with road segments and their CO2, CO, and NOx emissions [t per road-km per year]
+    :param gdf_traffic: GeoDataFrame with roads and their attributes (inside city / outside city / motorway)
+    :return: traffic_gdf: GeoDataFrame with road segments and their CO2, CO, and NOx emissions [t per road-km per year]
     """
     for emission_type in EmissionsFactors:
         get_single_emission(gdf_traffic, emission=emission_type)
@@ -146,9 +172,9 @@ def estimate_ghg(row: gpd.GeoSeries, emission_factors: dict) -> float:
     """
     Calculates annual emissions of the OSM road segment [t per road-km].
 
-    @param row: OSM road segment
-    @param emission_factors: Emission factors for fuel consumption, motorways, inside city, and outside city [g per vehicle-km]
-    @return: Emissions of the road segment [t per road-km per year]
+    :param row: OSM road segment
+    :param emission_factors: Emission factors for fuel consumption, motorways, inside city, and outside city [g per vehicle-km]
+    :return: Emissions of the road segment [t per road-km per year]
     """
     count_vehicles = row['mean_dtv']
     road_type = row['road_type']
