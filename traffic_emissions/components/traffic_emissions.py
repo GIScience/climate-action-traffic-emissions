@@ -10,7 +10,8 @@ import pandas as pd
 import plotly.graph_objects as go
 import pyproj
 import shapely
-from climatoology.base.artifact import _Artifact, create_geojson_artifact, create_plotly_chart_artifact
+from climatoology.base.artifact import Artifact, ArtifactMetadata, Legend
+from climatoology.base.artifact_creators import create_plotly_chart_artifact, create_vector_artifact
 from climatoology.base.baseoperator import AoiProperties
 from climatoology.base.computation import ComputationResources
 
@@ -222,7 +223,7 @@ def get_fuel_consumption(vehicle: VehicleType, speed: int) -> float:
             return (281.735 + (4186.178 / speed) + (-3.457) * speed + 0.0216 * speed**2) / DENSITY_DIESEL
 
 
-def get_emission_artifacts(emissions_gdf: gpd.GeoDataFrame, resources: ComputationResources) -> list[_Artifact]:
+def get_emission_artifacts(emissions_gdf: gpd.GeoDataFrame, resources: ComputationResources) -> list[Artifact]:
     emission_artifacts = []
     for gas in EmissionsFactors:
         emission_artifacts.append(build_traffic_emissions_artifact(gas, emissions_gdf, resources))
@@ -272,21 +273,25 @@ def plot_emission_bar(df, gas, city, unit_name, unit_column) -> go.Figure:
 
 def build_traffic_emissions_artifact(
     gas: EmissionsFactors, emissions_gdf: gpd.GeoDataFrame, resources: ComputationResources
-) -> _Artifact:
+) -> Artifact:
     gas_name = gas.value.get('name')
     color, legend = get_colors_legend(emissions_gdf[f't_{gas_name}_km_yr'])
-
-    return create_geojson_artifact(
-        features=emissions_gdf.geometry,
-        layer_name=f'Annual {gas_name} emissions [t/road-km]',
-        caption=f'Estimated {gas_name} emissions of road traffic [t per road-km per year]',
-        description=Path('resources/artifact_descriptions/traffic_emissions_description.md').read_text(),
-        color=color,
-        legend_data=legend,
-        label=emissions_gdf[f't_{gas_name}_km_yr'].round(2),
-        resources=resources,
-        filename=f'traffic_{gas_name}_emissions',
+    emissions_gdf['color'] = color
+    emissions_gdf[f't_{gas_name}_km_yr'] = emissions_gdf[f't_{gas_name}_km_yr'].round(2)
+    traffic_emissions_metadata = ArtifactMetadata(
+        name=f'Annual {gas_name} emissions [t/road-km]',
         tags={Topic.MAPS},
+        filename=f'traffic_{gas_name}_emissions',
+        summary=f'Estimated {gas_name} emissions of road traffic [t per road-km per year]',
+        description=Path('resources/artifact_descriptions/traffic_emissions_description.md').read_text(),
+    )
+
+    return create_vector_artifact(
+        data=emissions_gdf,
+        metadata=traffic_emissions_metadata,
+        legend=Legend(legend_data=legend),
+        label=f't_{gas_name}_km_yr',
+        resources=resources,
     )
 
 
@@ -311,14 +316,17 @@ def get_emission_chart_artifacts(
                 gas=gas_name, city=city_name, total_emissions=f'{emission_sum:n}', unit=unit_name
             )
             figure = plot_emission_bar(mean_df, gas_name, city_name, unit_name, unit_column)
-            artifact = create_plotly_chart_artifact(
-                figure=figure,
-                title=f'Mean annual {gas_name} emissions [{unit_name}]',
-                caption=f'Mean estimated annual {gas_name} emissions of road traffic per city district [{unit_name}]',
+            emission_chart_metadata = ArtifactMetadata(
+                name=f'Mean annual {gas_name} emissions [{unit_name}]',
+                summary=f'Mean estimated annual {gas_name} emissions of road traffic per city district [{unit_name}]',
                 description=description,
-                resources=resources,
                 filename=f'traffic_{gas_name}_{unit_column}_emissions_chart',
                 tags={Topic.CHARTS},
+            )
+            artifact = create_plotly_chart_artifact(
+                figure=figure,
+                metadata=emission_chart_metadata,
+                resources=resources,
             )
             chart_artifacts.append(artifact)
 

@@ -1,9 +1,9 @@
-from climatoology.base.artifact import _Artifact
-from climatoology.base.info import _Info
+from climatoology.base.artifact import Artifact
+from climatoology.base.plugin_info import PluginInfo
 
 
 def test_operator_info_request(operator):
-    assert isinstance(operator.info(), _Info)
+    assert isinstance(operator.info(), PluginInfo)
 
 
 def test_operator_compute_request(
@@ -24,4 +24,4 @@ def test_operator_compute_request(
 
     assert len(computed_artifacts) == 10
     for artifact in computed_artifacts:
-        assert isinstance(artifact, _Artifact)
+        assert isinstance(artifact, Artifact)

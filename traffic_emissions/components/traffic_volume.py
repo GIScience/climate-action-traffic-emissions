@@ -6,7 +6,8 @@ from pathlib import Path
 import geopandas as gpd
 import pandas as pd
 import shapely
-from climatoology.base.artifact import _Artifact, create_geojson_artifact
+from climatoology.base.artifact import Artifact, ArtifactMetadata, Legend
+from climatoology.base.artifact_creators import create_vector_artifact
 from climatoology.base.computation import ComputationResources
 from ohsome import OhsomeClient
 
@@ -139,18 +140,22 @@ def assign_traffic(gdf_road: gpd.GeoDataFrame, scaling: float) -> gpd.GeoDataFra
     return gdf_road
 
 
-def build_traffic_volume_artifact(road_gdf: gpd.GeoDataFrame, resources: ComputationResources) -> _Artifact:
+def build_traffic_volume_artifact(road_gdf: gpd.GeoDataFrame, resources: ComputationResources) -> Artifact:
     color, legend = get_colors_legend(road_gdf['mean_dtv'])
-
-    return create_geojson_artifact(
-        features=road_gdf.geometry,
-        layer_name='Estimated average daily traffic volume',
-        caption='Estimated average number of vehicles traveling on each road segment per day',
-        description=Path('resources/artifact_descriptions/traffic_volume_description.md').read_text(),
-        color=color,
-        legend_data=legend,
-        label=road_gdf['mean_dtv'].round(),
-        resources=resources,
-        filename='traffic_volume',
+    road_gdf['color'] = color
+    road_gdf['mean_dtv'] = road_gdf['mean_dtv'].round()
+    traffic_volume_metadata = ArtifactMetadata(
+        name='Estimated average daily traffic volume',
         tags={Topic.MAPS},
+        filename='traffic_volume',
+        summary='Estimated average number of vehicles traveling on each road segment per day',
+        description=Path('resources/artifact_descriptions/traffic_volume_description.md').read_text(),
+    )
+
+    return create_vector_artifact(
+        data=road_gdf,
+        metadata=traffic_volume_metadata,
+        legend=Legend(legend_data=legend),
+        label='mean_dtv',
+        resources=resources,
     )

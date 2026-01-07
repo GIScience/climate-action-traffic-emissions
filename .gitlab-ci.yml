@@ -8,9 +8,9 @@ unit_tests:
   stage: test
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == 'push'
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
   image:
-    name: python:3.11.13
+    name: python:3.13.5
   variables:
     PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
   cache:
@@ -44,14 +44,15 @@ test_coverage_threshold:
     - unit_tests
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == 'push'
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
   image:
-    name: python:3.11.13
+    name: python:3.13.5
   before_script:
     - apt-get update && apt-get install -y bc
   script:
     - coverage="$(grep -oP '<coverage[^>]+line-rate="\K[0-9.]+' "coverage.xml")"
-    - if (( $(echo "$coverage < 0.8" | bc -l) )); then
+    - |
+      if (( $(echo "$coverage < 0.8" | bc -l) )); then
         echo "Code coverage is only $(echo "$coverage*100" | bc)%. We recommend a minimum of 80%." && exit 1;
       else
         exit 0;
@@ -65,7 +66,7 @@ optional_linting:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   image:
-    name: python:3.11.13
+    name: python:3.13.5
   variables:
     PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
   cache:
@@ -128,7 +129,7 @@ build_release:
 
 deploy_staging:
   stage: deploy
-  tags: [ k8s ]
+  tags: [ k8s-kta ]
   needs:
     - build_staging
   rules:
@@ -137,8 +138,8 @@ deploy_staging:
   script:
     - |
       argocd app actions \
-        run argocd/${ARGOCD_STAGING_APPLICATION_NAME} \
+        run ca-staging/${ARGOCD_STAGING_APPLICATION_NAME} \
         restart --kind Deployment \
         --server ${ARGOCD_SERVER} \
-        --auth-token ${ARGOCD_AUTH_TOKEN} \
+        --auth-token ${ARGOCD_AUTH_TOKEN}\
         --resource-name can-${CI_PROJECT_NAME}

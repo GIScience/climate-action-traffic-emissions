@@ -7,9 +7,9 @@ from typing import List
 import ee
 import geopandas as gpd
 import shapely
-from climatoology.base.baseoperator import AoiProperties, BaseOperator, ComputationResources, _Artifact
-from climatoology.base.info import _Info
-from climatoology.utility.exception import ClimatoologyUserError
+from climatoology.base.baseoperator import AoiProperties, Artifact, BaseOperator, ComputationResources
+from climatoology.base.exception import ClimatoologyUserError
+from climatoology.base.plugin_info import PluginInfo
 from ohsome import OhsomeClient
 
 from traffic_emissions.components.district_summaries import get_district_summaries
@@ -37,7 +37,7 @@ class Operator(BaseOperator[ComputeInput]):
         )
         ee.Initialize(credentials)
 
-    def info(self) -> _Info:
+    def info(self) -> PluginInfo:
         return get_info()
 
     def compute(  # dead: disable
@@ -46,7 +46,7 @@ class Operator(BaseOperator[ComputeInput]):
         aoi: shapely.MultiPolygon,
         aoi_properties: AoiProperties,
         params: ComputeInput,
-    ) -> List[_Artifact]:
+    ) -> List[Artifact]:
         locale.setlocale(locale.LC_ALL, '')
         self.check_aoi(aoi, aoi_properties)
 
