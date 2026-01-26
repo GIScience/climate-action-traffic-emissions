@@ -6,5 +6,3 @@ __pycache__/
 .coverage
 coverage.xml
 .earth_engine_key.json
-
-CI_JOB_TOKEN

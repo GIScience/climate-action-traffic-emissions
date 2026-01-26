@@ -742,7 +742,7 @@ tqdm = ">=4.66.1,<5.0.0"
 
 [package.source]
 type = "git"
-url = "ssh://git@gitlab.heigit.org:2022/climate-action/climatoology.git"
+url = "https://gitlab.heigit.org/climate-action/climatoology.git"
 reference = "7.0.0"
 resolved_reference = "7fcb0e33f3de252e683cb709f75caba3f9f80e8e"
 
@@ -5082,4 +5082,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13.5,<3.14"
-content-hash = "d1fc4a01677cc4a4c994ccb16ac94014c35e565fa505f9e993f2abc675798e27"
+content-hash = "6af9d217dde2a92dca7386f7a900716a02d959d0b002fbacec1d724899c2345b"

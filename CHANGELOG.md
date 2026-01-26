@@ -17,6 +17,9 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 - Make plugin usable Germany-wide by integrating raster data download from Google Earth Engine ([#24](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/24))
 - Update Climatoology to version 7.0.0
 
+### Removed
+- all the shenanigans around accessing a private climatoology repository because that is now public
+
 ## [0.1.0](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/0.1.0) - 2024-06-25
 
 ### Added
