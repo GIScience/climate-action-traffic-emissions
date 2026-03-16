@@ -1,10 +1,12 @@
+import geopandas as gpd
 import pandas as pd
 import pyproj
 from climatoology.base.artifact import ContinuousLegendData
 from pydantic_extra_types.color import Color
 from shapely import wkt
 
-from traffic_emissions.components.utils import calculate_mean_pop_density_polygon, get_built_up_geom, get_colors_legend
+from test.components.test_traffic_volume.test_traffic_volume import DEFAULT_GEOM
+from traffic_emissions.components.utils import calculate_pop_in_buffer, get_built_up_geom, get_colors_legend
 
 
 def test_get_colors_legend():
@@ -20,11 +22,15 @@ def test_get_colors_legend():
     assert {k: round(v, 2) for k, v in legend.ticks.items()} == expected_legend.ticks
 
 
-def test_calculate_mean_pop_density_polygon(default_aoi):
-    pop_path = 'test/resources/pop_raster.tif'
-    mean_pop_dens_aoi, pop_sum_aoi = calculate_mean_pop_density_polygon(default_aoi, pop_path)
-    assert round(mean_pop_dens_aoi, 2) == 24.95
-    assert round(pop_sum_aoi, 0) == 109776
+def test_calculate_pop_in_buffer():
+    road_gdf = gpd.GeoDataFrame(
+        {},
+        geometry=DEFAULT_GEOM,
+        crs='EPSG:32632',
+    )
+    expected = pd.Series([2.15584], name='pop_mean_10km')
+    received = calculate_pop_in_buffer(road_gdf, 'test/resources/pop_raster.tif')
+    pd.testing.assert_series_equal(received['pop_mean_10km'].round(5), expected)
 
 
 def test_get_built_up_geom():

@@ -4,6 +4,8 @@ import tempfile
 from pathlib import Path
 
 import geopandas as gpd
+import joblib
+import numpy as np
 import pandas as pd
 import shapely
 from climatoology.base.artifact import Artifact, ArtifactMetadata, Legend
@@ -12,12 +14,11 @@ from climatoology.base.computation import ComputationResources
 from ohsome import OhsomeClient
 
 from traffic_emissions.components.utils import (
-    POP_DENS_BERLIN,
-    ROAD_LENGTH_PER_CAPITA_BERLIN,
     Topic,
-    calculate_mean_pop_density_polygon,
+    calculate_pop_in_buffer,
     get_colors_legend,
     get_pop_raster,
+    reproject_raster,
 )
 
 log = logging.getLogger(__name__)
@@ -30,8 +31,8 @@ def traffic_volume(aoi: shapely.MultiPolygon, ohsome: OhsomeClient) -> gpd.GeoDa
     """
     log.info('Calculating average daily traffic volume')
     road_gdf, total_length = get_roads(aoi, ohsome)
-    scaling = get_scaling_factor(aoi, total_length)
-    road_gdf = assign_traffic(road_gdf, scaling)
+    road_gdf = get_road_populations(aoi, road_gdf)
+    road_gdf = predict_traffic_volume(road_gdf)
     return road_gdf
 
 
@@ -78,65 +79,57 @@ def get_roads(aoi_poly: shapely.MultiPolygon, client: OhsomeClient) -> tuple[gpd
     return gdf_road, length_total
 
 
-def get_scaling_factor(aoi_poly: shapely.MultiPolygon, length_total: float) -> float:
+def get_road_populations(aoi_poly: shapely.MultiPolygon, roads: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     """
     Calculates scaling factor of population density in built-up areas and road length per capita.
 
+    :param roads: gpd.GeoDataFrame of OSM road network
     :param aoi_poly: Polygon of AOI (EPSG: 4326)
-    :param length_total: Length of the road network in the AOI in meters
-    :return: scaling_factor: Scaling factor of population density and road length per capita
     """
     log.debug('Calculating scaling factor')
 
     with tempfile.TemporaryDirectory() as tmp:
         pop_path = os.path.join(tmp, 'pop_raster.tif')
         get_pop_raster(aoi=aoi_poly, pop_path=pop_path)
-        mean_pop_dens_aoi, pop_sum_aoi = calculate_mean_pop_density_polygon(polygon=aoi_poly, raster_path=pop_path)
+        reproject_raster(raster_path=pop_path, target_crs=roads.crs)
+        roads = calculate_pop_in_buffer(roads=roads, raster_path=pop_path)
 
-    length_per_capita_aoi = length_total / pop_sum_aoi
-    pop_scaling_factor = mean_pop_dens_aoi / POP_DENS_BERLIN
-    length_scaling_factor = ROAD_LENGTH_PER_CAPITA_BERLIN / length_per_capita_aoi
-    scaling_factor = pop_scaling_factor * length_scaling_factor
-    return scaling_factor
+    return roads
 
 
-def assign_traffic(gdf_road: gpd.GeoDataFrame, scaling: float) -> gpd.GeoDataFrame:
-    """
-    Assigns mean daily traffic volumes per road class for Berlin to OSM road geometries in the AOI, scaled by population
-    density. Calculates deviations between assigned traffic volumes and traffic counts.
+def predict_traffic_volume(gdf_road: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    gdf_road_reg = gdf_road.copy()
+    gdf_road_reg = pd.get_dummies(gdf_road_reg, columns=['highway'])
 
-    :param gdf_road: GeoDataFrame of OSM road network with traffic counts of Heidelberg and Mannheim
-    :param scaling: Scaling factor of population density
-    :return: gdf_road: GeoDataFrame of OSM road network with estimated traffic volumes
-    """
+    cols_to_exclude = ['highway_living_street', 'highway_residential', 'highway_unclassified']
+    existing_exclude_cols = [c for c in cols_to_exclude if c in gdf_road_reg.columns]
 
-    def update_highway(row):
-        if row['highway'] == 'trunk_link':
-            row['highway'] = 'trunk'
-        elif row['highway'] == 'tertiary_link':
-            row['highway'] = 'tertiary'
+    if existing_exclude_cols:
+        gdf_road_reg = gdf_road_reg[~gdf_road_reg[existing_exclude_cols].any(axis=1)]
 
-        if not pd.isnull(row['lanes']):
-            if row['highway'] in ['motorway_link', 'unclassified'] and row['lanes'] > 3:
-                row['lanes'] = 3
-            if row['highway'] in ['motorway', 'residential'] and row['lanes'] > 4:
-                row['lanes'] = 4
-            if row['highway'] in ['primary', 'secondary', 'tertiary'] and row['lanes'] > 5:
-                row['lanes'] = 5
+    replacement_dict = {
+        'walk': 5,
+        'DE:urban': 50,
+        'none': np.nan,
+        'variable': np.nan,
+    }
+    gdf_road_reg = gdf_road_reg.replace(replacement_dict)
+    gdf_road_reg['lanes'] = gdf_road_reg['lanes'].astype('Int64')
+    gdf_road_reg['maxspeed'] = pd.to_numeric(gdf_road_reg['maxspeed'], errors='coerce').astype('Int64')
+    gdf_road_reg_all = gdf_road_reg.copy()
 
-        if row['highway'] in ['living_street', 'trunk', 'primary_link', 'secondary_link']:
-            return row['highway']
-        if not pd.isnull(row['lanes']):
-            return f'{row["highway"]}_{int(row["lanes"])}'
-        else:
-            return row['highway']
+    model = joblib.load(Path('resources/model.joblib'))
+    imputer = joblib.load(Path('resources/imputer.joblib'))
 
-    gdf_road['highway'] = gdf_road.apply(update_highway, axis=1)
+    x_aoi = gdf_road_reg_all.drop(columns='geometry')
+    train_cols = imputer.feature_names_in_
+    x_aoi = x_aoi.reindex(columns=train_cols, fill_value=0)
+    x_aoi_imp = imputer.transform(x_aoi)
 
-    mean_dtv = pd.read_csv('resources/mean_dtv_berlin.csv')
-    mean_dtv_mask = ~mean_dtv['highway'].str.contains('motorway', na=False)
-    mean_dtv.loc[mean_dtv_mask, 'mean_dtv'] = mean_dtv.loc[mean_dtv_mask, 'mean_dtv'] * scaling
-    gdf_road = gdf_road.merge(mean_dtv, on='highway', how='left')
+    pred_all = model.predict(x_aoi_imp)
+    gdf_road_reg_all['mean_dtv'] = pred_all
+    gdf_road = gdf_road.merge(gdf_road_reg_all[['mean_dtv']], left_index=True, right_index=True)
+
     return gdf_road
 
 

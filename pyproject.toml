@@ -20,6 +20,8 @@ dependencies = [
     "matplotlib (>=3.10.5,<4.0.0)",
     "earthengine-api (>=1.6.9,<2.0.0)",
     "geemap (>=0.36.3,<1.0.0)",
+    "rasterstats (>=0.20.0,<0.21.0)",
+    "scikit-learn (>=1.8.0,<2.0.0)",
 ]
 
 [project.urls]

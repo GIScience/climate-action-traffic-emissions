@@ -115,14 +115,7 @@ def preprocess(gdf_traffic: gpd.GeoDataFrame, aoi_poly: shapely.MultiPolygon) ->
         gdf_traffic['highway'].isin(
             [
                 'motorway',
-                'motorway_1',
-                'motorway_2',
-                'motorway_3',
-                'motorway_4',
                 'motorway_link',
-                'motorway_link_1',
-                'motorway_link_2',
-                'motorway_link_3',
             ]
         ),
         'road_type',

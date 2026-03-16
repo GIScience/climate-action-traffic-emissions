@@ -2,6 +2,7 @@ from enum import Enum, StrEnum
 
 import ee
 import geemap
+import geopandas as gpd
 import numpy as np
 import pandas as pd
 import pyproj
@@ -13,14 +14,11 @@ from matplotlib.pyplot import colormaps
 from pydantic_extra_types.color import Color
 from pyproj import Transformer
 from rasterio.features import shapes
-from rasterio.mask import mask
+from rasterio.warp import Resampling, calculate_default_transform, reproject
+from rasterstats import zonal_stats
 from shapely import MultiPolygon
 from shapely.geometry import shape
-from shapely.ops import unary_union
-
-# To recalculate these numbers, run the plugin for Berlin
-POP_DENS_BERLIN = 41  # Population density 2025 in Berlin per 100 m grid cell (from GHS-POP)
-ROAD_LENGTH_PER_CAPITA_BERLIN = 2.1  # Road length per capita in Berlin in meters
+from shapely.ops import transform, unary_union
 
 GHSL_PROJ_YEAR = 'P2023A'
 GHSL_EPOCH = '2025'
@@ -73,28 +71,39 @@ def get_colors_legend(color_series: pd.Series) -> tuple[list[Color], ContinuousL
     return color, legend
 
 
-def calculate_mean_pop_density_polygon(polygon: shapely.MultiPolygon, raster_path: str) -> tuple[float, float]:
-    """
-    Calculates mean and total population in the given polygons using the GHS_POP population raster.
+def calculate_pop_in_buffer(roads: gpd.GeoDataFrame, raster_path: str) -> gpd.GeoDataFrame:
+    roads_buf10 = roads.copy()
+    roads_buf10['geometry'] = roads_buf10.geometry.buffer(10000)
+    stats_10km = zonal_stats(roads_buf10, raster_path, stats=['mean'], all_touched=True)
+    roads['pop_mean_10km'] = [s['mean'] for s in stats_10km]
 
-    :param polygon: Polygon of AOI for which population density is calculated (EPSG: 4326)
-    :param raster_path: Path to population raster
-    :return: mean_value: mean population per grid cell in the given polygons
-    :return: sum_value: total population in the given polygons
-    """
+    return roads
+
+
+def reproject_raster(raster_path: str, target_crs):
     with rasterio.open(raster_path) as src:
-        out_image, _ = mask(src, [polygon], crop=True, nodata=np.nan)
-        valid_data = out_image[~np.isnan(out_image)]
-        if valid_data.size == 0:
-            raise ValueError(f'No valid population data found in {raster_path} for the given area of interest.')
+        transform, width, height = calculate_default_transform(src.crs, target_crs, src.width, src.height, *src.bounds)
+        profile = src.profile.copy()
+        profile.update(crs=target_crs, transform=transform, width=width, height=height)
 
-        mean_value = valid_data.mean()
-        sum_value = valid_data.sum()
-        return mean_value, sum_value
+        with rasterio.open(raster_path, 'w', **profile) as dst:
+            for i in range(1, src.count + 1):
+                reproject(
+                    source=rasterio.band(src, i),
+                    destination=rasterio.band(dst, i),
+                    src_crs=src.crs,
+                    dst_crs=target_crs,
+                    resampling=Resampling.nearest,
+                )
 
 
 def get_pop_raster(aoi: shapely.MultiPolygon, pop_path: str) -> None:
-    geom = ee.Geometry(shapely.geometry.mapping(aoi))
+    to_3857 = pyproj.Transformer.from_crs(4326, 3857, always_xy=True).transform
+    to_4326 = pyproj.Transformer.from_crs(3857, 4326, always_xy=True).transform
+    buffered = transform(to_3857, aoi).buffer(20_000)
+    buffered_4326 = transform(to_4326, buffered)
+
+    geom = ee.Geometry(shapely.geometry.mapping(buffered_4326))
     ghsl = ee.Image(f'JRC/GHSL/{GHSL_PROJ_YEAR}/GHS_POP/{GHSL_EPOCH}')
     clipped = ghsl.clip(geom).reproject('EPSG:4326', None, RASTER_SCALE)
     geemap.ee_export_image(clipped, filename=pop_path, scale=RASTER_SCALE, file_per_band=False)

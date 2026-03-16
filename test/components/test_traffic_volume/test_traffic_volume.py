@@ -6,15 +6,17 @@ from shapely.geometry import LineString
 from vcr import use_cassette
 
 from traffic_emissions.components.traffic_volume import (
-    assign_traffic,
+    get_road_populations,
     get_roads,
-    get_scaling_factor,
+    predict_traffic_volume,
     traffic_volume,
 )
 
 LINE_GEOM = gpd.GeoSeries(
     [LineString([(325193.9834442865, 4669724.10105637), (325111.5841199331, 4669734.855883078)]) for _ in range(6)]
 )
+
+DEFAULT_GEOM = gpd.GeoSeries([LineString([(477000, 5472000), (478000, 5473000)])])
 
 
 @use_cassette('test/resources/vcr_cassettes/test_get_roads.yaml')
@@ -24,57 +26,37 @@ def test_get_roads(operator, road_test_aoi):
     assert total_length == 83.0982247188029
 
 
-def test_get_scaling_factor(default_aoi, mock_get_pop_raster):
-    total_length = 100000
-    expected = 1.4
-    scaling_factor = get_scaling_factor(default_aoi, total_length)
-    assert round(scaling_factor, 2) == expected
+def test_get_pop(default_aoi, mock_get_pop_raster):
+    road_gdf = gpd.GeoDataFrame(
+        {},
+        geometry=DEFAULT_GEOM,
+        crs='EPSG:32632',
+    )
+    roads = get_road_populations(default_aoi, road_gdf)
+    assert round(roads['pop_mean_10km'][0], 5) == 2.15584
 
 
-def test_assign_traffic():
+def test_predict_traffic_volume():
     road_gdf = gpd.GeoDataFrame(
         {
-            'highway': ['trunk_link', 'motorway_link', 'residential', 'motorway', 'unclassified', 'tertiary_link'],
-            'lanes': pd.Series([2, np.nan, np.nan, 5, 4, 6], dtype='Int8'),
+            'highway': ['motorway', 'trunk', 'primary', 'secondary', 'living_street', 'residential'],
+            'maxspeed': [130, 100, 'DE:urban', np.nan, 'walk', 30],
+            'lanes': [3, 2, 2, np.nan, 1, 1],
         },
         geometry=LINE_GEOM,
     )
-    scaling = 1.0
-    expected = gpd.GeoDataFrame(
+    df = pd.DataFrame(
         {
-            'highway': ['trunk', 'motorway_link', 'residential', 'motorway_4', 'unclassified_3', 'tertiary_5'],
-            'lanes': pd.Series([2, np.nan, np.nan, 5, 4, 6], dtype='Int8'),
-            'mean_dtv': [16202.2, 9320.0, 5457.2, 63882.94, 9400.0, 15340.0],
+            'highway': ['motorway', 'trunk', 'primary', 'secondary'],
+            'maxspeed': [130, 100, 'DE:urban', np.nan],
+            'lanes': [3, 2, 2, np.nan],
+            'mean_dtv': [15274.9, 14434.0, 6283.2, 3075.0],
         },
-        geometry=LINE_GEOM,
     )
-    received = assign_traffic(road_gdf, scaling)
-    pd.testing.assert_frame_equal(
-        received.round(1).drop(columns='geometry'), expected.round(1).drop(columns='geometry'), check_dtype=False
-    )
-
-
-def test_assign_traffic_with_scaling():
-    road_gdf = gpd.GeoDataFrame(
-        {
-            'highway': ['trunk', 'motorway_link', 'residential', 'motorway', 'unclassified', 'tertiary_link'],
-            'lanes': pd.Series([2, np.nan, np.nan, 5, 4, 6], dtype='Int8'),
-        },
-        geometry=LINE_GEOM,
-    )
-    scaling = 0.5
-    expected = gpd.GeoDataFrame(
-        {
-            'highway': ['trunk', 'motorway_link', 'residential', 'motorway_4', 'unclassified_3', 'tertiary_5'],
-            'lanes': pd.Series([2, np.nan, np.nan, 5, 4, 6], dtype='Int8'),
-            'mean_dtv': [8101.1, 9320.0, 2728.6, 63882.94, 4700.0, 7670.0],
-        },
-        geometry=LINE_GEOM,
-    )
-    received = assign_traffic(road_gdf, scaling)
-    pd.testing.assert_frame_equal(
-        received.round(1).drop(columns='geometry'), expected.round(1).drop(columns='geometry'), check_dtype=False
-    )
+    df.insert(3, 'geometry', LINE_GEOM)
+    expected = gpd.GeoDataFrame(df, geometry='geometry')
+    received = round(predict_traffic_volume(road_gdf), 1)
+    pd.testing.assert_frame_equal(received, expected)
 
 
 @use_cassette('test/resources/vcr_cassettes/test_traffic_volume.yaml')
