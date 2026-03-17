@@ -129,6 +129,7 @@ def predict_traffic_volume(gdf_road: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     pred_all = model.predict(x_aoi_imp)
     gdf_road_reg_all['mean_dtv'] = pred_all
     gdf_road = gdf_road.merge(gdf_road_reg_all[['mean_dtv']], left_index=True, right_index=True)
+    gdf_road = gdf_road[gdf_road.geometry.geom_type.isin(['LineString', 'MultiLineString'])]
 
     return gdf_road
 
