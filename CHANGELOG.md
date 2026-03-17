@@ -15,8 +15,9 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 - Added limitations to methodology ([#27](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/27))
 - Normalize legend colors logarithmically so the different values are better recognisable in the map ([#29](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/29))
 - Make plugin usable Germany-wide by integrating raster data download from Google Earth Engine ([#24](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/24))
-- Update Climatoology to version 7.0.0
+- Update Climatoology to version 7.0.3
 - Switched to a gradient boosting regression model to estimate traffic volume. Minor roads not included. ([#23](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/23))
+- Updated methodology description with new traffic volume estimation method ([#36](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/36))
 
 ### Removed
 - all the shenanigans around accessing a private climatoology repository because that is now public

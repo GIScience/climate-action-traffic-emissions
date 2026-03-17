@@ -3,6 +3,7 @@
 The following input data is used:
 * OpenStreetMap (OSM) road network
 * [Average daily traffic volume (ADTV) of Berlin 2019](https://gdi.berlin.de/geonetwork/srv/ger/catalog.search#/metadata/125b728c-3ef9-49fd-94c5-24b2143ede2b), obtained from the Geoportal of the city of Berlin
+* [Average daily traffic volume (ADTV) of Nordrhein-Westfalen 2021](https://www.strassen.nrw.de/de/periodische-verkehrszaehlungen.html?file=files/a_snrw-2022/dokumente/03_nutzen-und-erleben/02_Verkehr-in-NRW/Verkehrsdaten/Shape-File%20Netz%202021.zip&cid=50989), obtained from Straßen.NRW
 * [Population grid from Global Human Settlement Layer](https://human-settlement.emergency.copernicus.eu/download.php?ds=pop)
 * Speed-dependent fuel consumption equations ([Sobrino et al. 2014, Table 3](https://doi.org/10.1007/s11067-014-9225-y)).
 * Emission factors from COPERT ([EMEP/EEA air pollutant emission inventory guidebook 2023 – Update 2024, Tables 3-6 and 3-12](https://copert.emisia.com/wp-content/uploads/2024/07/1.A.3.b.i-iv-Road-transport-2024.pdf))
@@ -11,23 +12,23 @@ The following input data is used:
 
 ## Traffic volume estimation
 
-### Model development
+We predict the average daily traffic volume (ADTV) for the roads in the area of interest using a Machine Learning model (Gradient Boosting Regression).
+The model was trained on administrative traffic count data from Berlin, Germany and the state of Nordrhein-Westfalen (NRW), Germany.
+To this end, we first obtained the road networks of Berlin and NRW from OSM, including the attributes **road type**, **number of lanes**, and **maxspeed**.
+Next, we joined the ADTV of Berlin from 2019 and the ADTV of NRW from 2021 to the road network.
+The following step was to calculate the mean population density inside a 10 km buffer around each traffic count location using the population grid of the Global Human Settlement Layer.
+Next, a Gradient Boosting Regression model was trained and validated in 10 folds, each time randomly using 80% of the data for training and 20% for validation.
+The model achieved an R² of 0.67 and a mean absolute error of 3931 vehicles per day.
 
-In the first step, we derive the average daily traffic volume (ADTV) for every combination of OpenStreetMap (OSM) road type and number of lanes in Berlin, Germany.
-To this end, we first obtain the road network of Berlin from OSM, including the attributes **Road type** and **Number of lanes**.
-Next, we join the ADTV of Berlin from 2019 to the road network.
-Next, the Berlin road network is split into a training and testing set (50:50).
-For the training set, the ADTV is calculated for each combination of highway type and number of lanes.
-These ADTVs are then assigned to all OSM road segments based on their highway type and number of lanes.
-To validate the accuracy, the assigned ADTVs are compared to the observed ADTVs in the testing set.
+The following features were used for training the model:
+- **Road type**: Tagged as [`highway=*`](https://wiki.openstreetmap.org/wiki/Key:highway) with values including: [`motorway`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dmotorway), [`trunk`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dtrunk), [`primary`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dprimary), [`secondary`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dsecondary), and [`tertiary`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dtertiary).
+- **Number of lanes**: Tagged as [`lanes=*`](https://wiki.openstreetmap.org/wiki/Lanes).
+- **Speed limit**: Tagged as [`maxspeed=*`](https://wiki.openstreetmap.org/wiki/Key:maxspeed).
+- **Mean population density in 10 km buffer** (population derived from Global Human Settlement Layer)
 
-### Apply estimation to selected area
+Note: Minor roads (residential roads, living streets, and unclassified roads) were excluded from the traffic volume estimation due to the lack of traffic count data for these road classes.
 
-In the second step, the ADTVs that have been derived for each combination of OSM road type and number of lanes in Berlin are assigned to the OSM road network in the selected area based on their highway type and number of lanes.
-The assigned ADTVs are scaled by the population density and the road length per capita in the selected area.
-This is based on the assumption that traffic volume increases with population density and decreases with road length per capita.
-The information on the population density is taken from the population grid of the Global Human Settlement Layer.
-
+When a computation is requested in the traffic emissions tool, the traffic volume is estimated by applying the model to the selected area.
 
 ## Traffic emission estimation
 
@@ -77,17 +78,11 @@ For roads without speed limit information, we assume fixed traveling speeds. Usi
 
 ## Limitations
 
-To obtain the ADTVs for the selected area, we scale the ADTVs for Berlin by the population density and the road length per capita in the selected area.
-While there are better proxies for traffic volume than population density, such as car ownership rates and income (Ingram & Liu 1997), we use population density, because this data is more easily available at high spatial resolution and coverage.
+Due to the difficulty of accessing traffic count data for roads (especially secondary and tertiary roads) in all of Germany, we trained and validated our traffic volume model with data from only Berlin and Nordrhein-Westfalen.
+The model is probably biased towards these regions and will presumably be less accurate in other regions of Germany.
 
 During the estimation of traffic emissions, we assume that the traveling speed is constant and equal to the speed limit.
 The impact of traffic lights, congestion, or vehicles exceeding the speed limit is not accounted for.
 In most cases, this means that we are probably underestimating the emissions.
 For roads without speed limit information, we assume fixed traveling speeds, which at best represent average values and do not account for the actual road and traffic conditions.
 Differences between the actual vehicle fleet composition and our assumed fleet composition may lead to additional over- or underestimation of the emission estimates.
-
-
-## OSM Tags used in the download of the OSM road network
-- **Road type**: Tagged as [`highway=*`](https://wiki.openstreetmap.org/wiki/Key:highway) with values including: [`motorway`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dmotorway), [`trunk`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dtrunk), [`primary`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dprimary), [`secondary`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dsecondary), [`tertiary`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dtertiary), [`residential`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dresidential), [`living_street`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dliving_street), and [`unclassified`](https://wiki.openstreetmap.org/wiki/Tag:highway%3Dunclassified).
-- **Number of lanes**: Tagged as [`lanes=*`](https://wiki.openstreetmap.org/wiki/Lanes).
-- **Speed limit**: Tagged as [`maxspeed=*`](https://wiki.openstreetmap.org/wiki/Key:maxspeed).
