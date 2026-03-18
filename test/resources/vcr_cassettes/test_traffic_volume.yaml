@@ -20,8 +20,8 @@ interactions:
         : {\n      \"type\" : \"Polygon\",\n      \"coordinates\" : [ [ [ -180.0,
         -90.0 ], [ 180.0, -90.0 ], [ 180.0, 90.0 ], [ -180.0, 90.0 ], [ -180.0, -90.0
         ] ] ]\n    },\n    \"temporalExtent\" : {\n      \"fromTimestamp\" : \"2007-10-08T00:00:00Z\",\n
-        \     \"toTimestamp\" : \"2025-10-01T12:00Z\"\n    },\n    \"replicationSequenceNumber\"
-        : 114413\n  }\n}"
+        \     \"toTimestamp\" : \"2026-02-19T12:00Z\"\n    },\n    \"replicationSequenceNumber\"
+        : 117797\n  }\n}"
     headers:
       Access-Control-Allow-Credentials:
       - 'true'
@@ -42,7 +42,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 05 Dec 2025 08:58:23 GMT
+      - Wed, 18 Mar 2026 09:35:50 GMT
       Keep-Alive:
       - timeout=5, max=100
       Server:
@@ -57,7 +57,7 @@ interactions:
       code: 200
       message: ''
 - request:
-    body: bpolys=%7B%22type%22%3A+%22FeatureCollection%22%2C+%22features%22%3A+%5B%7B%22id%22%3A+%220%22%2C+%22type%22%3A+%22Feature%22%2C+%22properties%22%3A+%7B%7D%2C+%22geometry%22%3A+%7B%22type%22%3A+%22Polygon%22%2C+%22coordinates%22%3A+%5B%5B%5B8.677697%2C+49.418342%5D%2C+%5B8.677697%2C+49.420311%5D%2C+%5B8.673856%2C+49.420311%5D%2C+%5B8.673856%2C+49.418342%5D%2C+%5B8.677697%2C+49.418342%5D%5D%5D%7D%7D%5D%7D&time=2025-10-01T12%3A00%3A00&filter=%28highway%3Dmotorway+or+highway%3Dmotorway_link+or+highway%3Dmotorway_junction+or+highway%3Dtrunk+or+highway%3Dtrunk_link+or+highway%3Dprimary+or+highway%3Dprimary_link+or+highway%3Dsecondary+or+highway%3Dsecondary_link+or+highway%3Dtertiary+or+highway%3Dtertiary_link+or+highway%3Dresidential+or+highway%3Dliving_street+or+highway%3Dunclassified%29+and+geometry%3Aline&properties=tags&clipGeometry=True
+    body: bpolys=%7B%22type%22%3A+%22FeatureCollection%22%2C+%22features%22%3A+%5B%7B%22id%22%3A+%220%22%2C+%22type%22%3A+%22Feature%22%2C+%22properties%22%3A+%7B%7D%2C+%22geometry%22%3A+%7B%22type%22%3A+%22Polygon%22%2C+%22coordinates%22%3A+%5B%5B%5B8.677697%2C+49.418342%5D%2C+%5B8.677697%2C+49.420311%5D%2C+%5B8.673856%2C+49.420311%5D%2C+%5B8.673856%2C+49.418342%5D%2C+%5B8.677697%2C+49.418342%5D%5D%5D%7D%7D%5D%7D&time=2026-02-19T12%3A00%3A00&filter=%28highway%3Dmotorway+or+highway%3Dmotorway_link+or+highway%3Dmotorway_junction+or+highway%3Dtrunk+or+highway%3Dtrunk_link+or+highway%3Dprimary+or+highway%3Dprimary_link+or+highway%3Dsecondary+or+highway%3Dsecondary_link+or+highway%3Dtertiary+or+highway%3Dtertiary_link%29+and+geometry%3Aline&properties=tags&clipGeometry=True
     headers:
       Accept:
       - '*/*'
@@ -66,7 +66,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '848'
+      - '770'
       Content-Type:
       - application/x-www-form-urlencoded
       user-agent:
@@ -79,182 +79,11 @@ interactions:
         \   \"text\" : \"\xA9 OpenStreetMap contributors\"\n  },\n  \"apiVersion\"
         : \"1.10.4\",\n  \"type\" : \"FeatureCollection\",\n  \"features\" : [{\n
         \   \"type\" : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"LineString\",\n
-        \     \"coordinates\" : [\n        [\n          8.6761349,\n          49.4199309\n
-        \       ],\n        [\n          8.6760776,\n          49.4198568\n        ],\n
-        \       [\n          8.6759767,\n          49.4197702\n        ]\n      ]\n
-        \   },\n    \"properties\" : {\n      \"@osmId\" : \"way/24868027\",\n      \"@snapshotTimestamp\"
-        : \"2025-10-01T12:00:00Z\",\n      \"cycleway:left\" : \"no\",\n      \"cycleway:right\"
-        : \"separate\",\n      \"destination\" : \"Universit\xE4t;Campus Im Neuenheimer
-        Feld;Uni-Klinikum;NCT;Sportzentrum-Nord;Olympiast\xFCtzpunkt;Schwimmbad;Zoo\",\n
-        \     \"highway\" : \"residential\",\n      \"lanes\" : \"1\",\n      \"lit\"
-        : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\" : \"Im Neuenheimer
-        Feld\",\n      \"name:etymology:wikidata\" : \"Q1980045\",\n      \"oneway\"
-        : \"yes\",\n      \"parking:lane:both\" : \"no\",\n      \"sidewalk\" : \"separate\",\n
-        \     \"smoothness\" : \"good\",\n      \"source:maxspeed\" : \"DE:urban\",\n
-        \     \"surface\" : \"asphalt\",\n      \"zone:maxspeed\" : \"DE:urban\",\n
-        \     \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n
-        \   \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6774879,\n          49.418342\n        ],\n        [\n
-        \         8.677437,\n          49.418428\n        ],\n        [\n          8.6774168,\n
-        \         49.4184645\n        ],\n        [\n          8.6773864,\n          49.4185051\n
-        \       ],\n        [\n          8.6771892,\n          49.4187841\n        ],\n
-        \       [\n          8.6770549,\n          49.4189736\n        ],\n        [\n
-        \         8.6770008,\n          49.4190558\n        ]\n      ]\n    },\n    \"properties\"
-        : {\n      \"@osmId\" : \"way/25039121\",\n      \"@snapshotTimestamp\" :
-        \"2025-10-01T12:00:00Z\",\n      \"cycleway:both\" : \"no\",\n      \"highway\"
-        : \"residential\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"30\",\n
-        \     \"name\" : \"Gundolfstra\xDFe\",\n      \"parking:condition\" : \"residents\",\n
-        \     \"parking:lane:left\" : \"no\",\n      \"parking:lane:right\" : \"parallel\",\n
-        \     \"parking:lane:right:parallel\" : \"on_street\",\n      \"sidewalk\"
-        : \"both\",\n      \"smoothness\" : \"good\",\n      \"surface\" : \"asphalt\"\n
-        \   }\n  }, {\n    \"type\" : \"Feature\",\n    \"geometry\" : {\n      \"type\"
-        : \"LineString\",\n      \"coordinates\" : [\n        [\n          8.6761328,\n
-        \         49.4196633\n        ],\n        [\n          8.6760798,\n          49.4196704\n
-        \       ],\n        [\n          8.6760142,\n          49.4196719\n        ],\n
-        \       [\n          8.6756977,\n          49.4196683\n        ]\n      ]\n
-        \   },\n    \"properties\" : {\n      \"@osmId\" : \"way/25156120\",\n      \"@snapshotTimestamp\"
-        : \"2025-10-01T12:00:00Z\",\n      \"cycleway:both\" : \"no\",\n      \"destination\"
-        : \"Universit\xE4t;Campus Im Neuenheimer Feld;Uni-Klinikum;NCT\",\n      \"foot\"
-        : \"use_sidepath\",\n      \"highway\" : \"residential\",\n      \"lanes\"
-        : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\"
-        : \"Im Neuenheimer Feld\",\n      \"name:etymology:wikidata\" : \"Q1980045\",\n
-        \     \"oneway\" : \"yes\",\n      \"parking:lane:both\" : \"no\",\n      \"sidewalk:left\"
-        : \"no\",\n      \"sidewalk:right\" : \"separate\",\n      \"smoothness\"
-        : \"good\",\n      \"source:maxspeed\" : \"DE:urban\",\n      \"surface\"
-        : \"asphalt\",\n      \"zone:maxspeed\" : \"DE:urban\",\n      \"zone:traffic\"
-        : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n    \"geometry\"
-        : {\n      \"type\" : \"LineString\",\n      \"coordinates\" : [\n        [\n
-        \         8.6756132,\n          49.4195557\n        ],\n        [\n          8.6757133,\n
-        \         49.4195476\n        ],\n        [\n          8.6757814,\n          49.4195349\n
-        \       ],\n        [\n          8.6758645,\n          49.4195096\n        ],\n
-        \       [\n          8.6759327,\n          49.4194794\n        ],\n        [\n
-        \         8.6759559,\n          49.4194647\n        ],\n        [\n          8.6759963,\n
-        \         49.4194377\n        ],\n        [\n          8.6760406,\n          49.4194008\n
-        \       ],\n        [\n          8.676078,\n          49.4193575\n        ]\n
-        \     ]\n    },\n    \"properties\" : {\n      \"@osmId\" : \"way/25156121\",\n
-        \     \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n      \"cycleway:left\"
-        : \"no\",\n      \"cycleway:right\" : \"separate\",\n      \"destination\"
-        : \"Mannheim;Bruchsal;Zentrum\",\n      \"highway\" : \"residential\",\n      \"lanes\"
-        : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\"
-        : \"Im Neuenheimer Feld\",\n      \"name:etymology:wikidata\" : \"Q1980045\",\n
-        \     \"oneway\" : \"yes\",\n      \"parking:lane:both\" : \"no\",\n      \"sidewalk:left\"
-        : \"no\",\n      \"sidewalk:right\" : \"separate\",\n      \"smoothness\"
-        : \"good\",\n      \"source:maxspeed\" : \"DE:urban\",\n      \"surface\"
-        : \"asphalt\",\n      \"turn:lanes\" : \"right|right\",\n      \"zone:maxspeed\"
-        : \"DE:urban\",\n      \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\"
-        : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6749653,\n          49.4196395\n        ],\n        [\n
-        \         8.6749802,\n          49.4196233\n        ],\n        [\n          8.6750654,\n
-        \         49.4195878\n        ],\n        [\n          8.6751363,\n          49.4195637\n
-        \       ]\n      ]\n    },\n    \"properties\" : {\n      \"@osmId\" : \"way/25156122\",\n
-        \     \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n      \"cycleway:left\"
-        : \"no\",\n      \"cycleway:right\" : \"separate\",\n      \"highway\" : \"residential\",\n
-        \     \"lanes\" : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n
-        \     \"name\" : \"Im Neuenheimer Feld\",\n      \"name:etymology:wikidata\"
-        : \"Q1980045\",\n      \"oneway\" : \"yes\",\n      \"parking:lane:both\"
-        : \"no\",\n      \"sidewalk:left\" : \"no\",\n      \"sidewalk:right\" : \"separate\",\n
-        \     \"smoothness\" : \"good\",\n      \"source:maxspeed\" : \"DE:urban\",\n
-        \     \"surface\" : \"asphalt\",\n      \"zone:maxspeed\" : \"DE:urban\",\n
-        \     \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n
-        \   \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6761326,\n          49.4195939\n        ],\n        [\n
-        \         8.676225,\n          49.4195928\n        ],\n        [\n          8.6762574,\n
-        \         49.419592\n        ]\n      ]\n    },\n    \"properties\" : {\n
-        \     \"@osmId\" : \"way/25156124\",\n      \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n
-        \     \"cycleway:both\" : \"no\",\n      \"destination\" : \"Weinheim;Handschuhsheim\",\n
-        \     \"foot\" : \"use_sidepath\",\n      \"highway\" : \"residential\",\n
-        \     \"lanes\" : \"1\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n
-        \     \"name\" : \"Im Neuenheimer Feld\",\n      \"name:etymology:wikidata\"
-        : \"Q1980045\",\n      \"oneway\" : \"yes\",\n      \"parking:lane:both\"
-        : \"no\",\n      \"sidewalk\" : \"separate\",\n      \"smoothness\" : \"good\",\n
-        \     \"source:maxspeed\" : \"DE:urban\",\n      \"surface\" : \"asphalt\",\n
-        \     \"zone:maxspeed\" : \"DE:urban\",\n      \"zone:traffic\" : \"DE:urban\"\n
-        \   }\n  }, {\n    \"type\" : \"Feature\",\n    \"geometry\" : {\n      \"type\"
-        : \"LineString\",\n      \"coordinates\" : [\n        [\n          8.6774168,\n
-        \         49.4184645\n        ],\n        [\n          8.677697,\n          49.4185093\n
-        \       ]\n      ]\n    },\n    \"properties\" : {\n      \"@osmId\" : \"way/25806374\",\n
-        \     \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n      \"check_date:parking:lane\"
-        : \"2022-12-23\",\n      \"cycleway:both\" : \"no\",\n      \"highway\" :
-        \"residential\",\n      \"lanes\" : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\"
-        : \"30\",\n      \"name\" : \"Im Gabelacker\",\n      \"parking:condition\"
-        : \"residents\",\n      \"parking:lane:left\" : \"no\",\n      \"parking:lane:right\"
-        : \"parallel\",\n      \"parking:lane:right:parallel\" : \"on_street\",\n
-        \     \"sidewalk\" : \"separate\",\n      \"smoothness\" : \"intermediate\",\n
-        \     \"surface\" : \"asphalt\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n
-        \   \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6772855,\n          49.420311\n        ],\n        [\n
-        \         8.6772868,\n          49.4202773\n        ],\n        [\n          8.6773042,\n
-        \         49.4199753\n        ],\n        [\n          8.677697,\n          49.4199812\n
-        \       ]\n      ]\n    },\n    \"properties\" : {\n      \"@osmId\" : \"way/25806951\",\n
-        \     \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n      \"cycleway\"
-        : \"no\",\n      \"highway\" : \"living_street\",\n      \"lit\" : \"yes\",\n
-        \     \"name\" : \"Langgewann\",\n      \"sidewalk\" : \"both\",\n      \"surface\"
-        : \"asphalt\",\n      \"vehicle\" : \"destination\"\n    }\n  }, {\n    \"type\"
-        : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6750446,\n          49.4187811\n        ],\n        [\n
-        \         8.6750447,\n          49.4187166\n        ],\n        [\n          8.6750443,\n
-        \         49.4186159\n        ],\n        [\n          8.6750439,\n          49.4185194\n
-        \       ],\n        [\n          8.6750432,\n          49.418342\n        ]\n
-        \     ]\n    },\n    \"properties\" : {\n      \"@osmId\" : \"way/28899568\",\n
-        \     \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n      \"cycleway:both\"
-        : \"no\",\n      \"highway\" : \"residential\",\n      \"lanes\" : \"2\",\n
-        \     \"lit\" : \"yes\",\n      \"maxspeed\" : \"30\",\n      \"name\" : \"Im
-        Neuenheimer Feld\",\n      \"name:etymology:wikidata\" : \"Q1980045\",\n      \"sidewalk:left\"
-        : \"separate\",\n      \"sidewalk:right\" : \"yes\",\n      \"sidewalk:right:surface\"
-        : \"paving_stones\",\n      \"smoothness\" : \"good\",\n      \"surface\"
-        : \"asphalt\",\n      \"zone:maxspeed\" : \"DE:30\",\n      \"zone:traffic\"
-        : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n    \"geometry\"
-        : {\n      \"type\" : \"LineString\",\n      \"coordinates\" : [\n        [\n
-        \         8.6761326,\n          49.4195939\n        ],\n        [\n          8.6761256,\n
-        \         49.4194772\n        ],\n        [\n          8.6761206,\n          49.4193076\n
-        \       ]\n      ]\n    },\n    \"properties\" : {\n      \"@osmId\" : \"way/34126010\",\n
-        \     \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n      \"cycleway:left\"
-        : \"no\",\n      \"cycleway:right\" : \"separate\",\n      \"highway\" : \"primary\",\n
-        \     \"lanes\" : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n
-        \     \"name\" : \"Berliner Stra\xDFe\",\n      \"name:etymology:wikidata\"
-        : \"Q64\",\n      \"oneway\" : \"yes\",\n      \"parking:lane:both\" : \"no\",\n
-        \     \"priority_road\" : \"designated\",\n      \"sidewalk\" : \"separate\",\n
-        \     \"smoothness\" : \"good\",\n      \"surface\" : \"asphalt\",\n      \"zone:maxspeed\"
-        : \"DE:urban\",\n      \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\"
-        : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6749653,\n          49.4196395\n        ],\n        [\n
-        \         8.6749553,\n          49.4197727\n        ],\n        [\n          8.6749487,\n
-        \         49.4198206\n        ],\n        [\n          8.6749244,\n          49.419869\n
-        \       ],\n        [\n          8.674899,\n          49.4198957\n        ],\n
-        \       [\n          8.6748594,\n          49.4199406\n        ],\n        [\n
-        \         8.6748343,\n          49.4199805\n        ],\n        [\n          8.6748251,\n
-        \         49.4200301\n        ],\n        [\n          8.6748232,\n          49.4200928\n
-        \       ],\n        [\n          8.6748236,\n          49.4201696\n        ],\n
-        \       [\n          8.6748237,\n          49.420311\n        ]\n      ]\n
-        \   },\n    \"properties\" : {\n      \"@osmId\" : \"way/36862309\",\n      \"@snapshotTimestamp\"
-        : \"2025-10-01T12:00:00Z\",\n      \"cycleway:right\" : \"no\",\n      \"highway\"
-        : \"residential\",\n      \"lane_markings\" : \"no\",\n      \"lcn\" : \"yes\",\n
-        \     \"lit\" : \"yes\",\n      \"maxspeed\" : \"30\",\n      \"name\" : \"Im
-        Neuenheimer Feld\",\n      \"name:etymology:wikidata\" : \"Q1980045\",\n      \"oneway\"
-        : \"yes\",\n      \"oneway:bicycle\" : \"no\",\n      \"sidewalk\" : \"both\",\n
-        \     \"sidewalk:both:surface\" : \"paving_stones\",\n      \"smoothness\"
-        : \"good\",\n      \"surface\" : \"asphalt\"\n    }\n  }, {\n    \"type\"
-        : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6756132,\n          49.4195557\n        ],\n        [\n
-        \         8.6757563,\n          49.4195954\n        ],\n        [\n          8.6759665,\n
-        \         49.4195951\n        ],\n        [\n          8.6760112,\n          49.4195951\n
-        \       ],\n        [\n          8.676078,\n          49.4195951\n        ],\n
-        \       [\n          8.6761326,\n          49.4195939\n        ]\n      ]\n
-        \   },\n    \"properties\" : {\n      \"@osmId\" : \"way/150549946\",\n      \"@snapshotTimestamp\"
-        : \"2025-10-01T12:00:00Z\",\n      \"cycleway:both\" : \"no\",\n      \"destination\"
-        : \"Weinheim;Handschuhsheim\",\n      \"foot\" : \"use_sidepath\",\n      \"highway\"
-        : \"residential\",\n      \"lanes\" : \"1\",\n      \"lit\" : \"yes\",\n      \"maxspeed\"
-        : \"50\",\n      \"name\" : \"Im Neuenheimer Feld\",\n      \"name:etymology:wikidata\"
-        : \"Q1980045\",\n      \"oneway\" : \"yes\",\n      \"parking:lane:both\"
-        : \"no\",\n      \"sidewalk:left\" : \"no\",\n      \"sidewalk:right\" : \"separate\",\n
-        \     \"smoothness\" : \"good\",\n      \"source:maxspeed\" : \"DE:urban\",\n
-        \     \"surface\" : \"asphalt\",\n      \"turn:lanes\" : \"left\",\n      \"zone:maxspeed\"
-        : \"DE:urban\",\n      \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\"
-        : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6761328,\n          49.4196633\n        ],\n        [\n
-        \         8.6761326,\n          49.4195939\n        ]\n      ]\n    },\n    \"properties\"
-        : {\n      \"@osmId\" : \"way/159626322\",\n      \"@snapshotTimestamp\" :
-        \"2025-10-01T12:00:00Z\",\n      \"cycleway:left\" : \"no\",\n      \"cycleway:right\"
+        \     \"coordinates\" : [\n        [\n          8.6761326,\n          49.4195939\n
+        \       ],\n        [\n          8.6761307,\n          49.4194808\n        ],\n
+        \       [\n          8.6761206,\n          49.4193076\n        ]\n      ]\n
+        \   },\n    \"properties\" : {\n      \"@osmId\" : \"way/34126010\",\n      \"@snapshotTimestamp\"
+        : \"2026-02-19T12:00:00Z\",\n      \"cycleway:left\" : \"no\",\n      \"cycleway:right\"
         : \"separate\",\n      \"highway\" : \"primary\",\n      \"lanes\" : \"2\",\n
         \     \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\" : \"Berliner
         Stra\xDFe\",\n      \"name:etymology:wikidata\" : \"Q64\",\n      \"oneway\"
@@ -263,23 +92,22 @@ interactions:
         : \"good\",\n      \"surface\" : \"asphalt\",\n      \"zone:maxspeed\" : \"DE:urban\",\n
         \     \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n
         \   \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6762002,\n          49.4196541\n        ],\n        [\n
-        \         8.6761328,\n          49.4196633\n        ]\n      ]\n    },\n    \"properties\"
-        : {\n      \"@osmId\" : \"way/281858706\",\n      \"@snapshotTimestamp\" :
-        \"2025-10-01T12:00:00Z\",\n      \"cycleway:both\" : \"no\",\n      \"destination\"
-        : \"Universit\xE4t;Campus Im Neuenheimer Feld;Uni-Klinikum;NCT\",\n      \"foot\"
-        : \"use_sidepath\",\n      \"highway\" : \"residential\",\n      \"lanes\"
-        : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\"
-        : \"Im Neuenheimer Feld\",\n      \"name:etymology:wikidata\" : \"Q1980045\",\n
-        \     \"oneway\" : \"yes\",\n      \"parking:lane:both\" : \"no\",\n      \"sidewalk\"
-        : \"separate\",\n      \"smoothness\" : \"good\",\n      \"source:maxspeed\"
-        : \"DE:urban\",\n      \"surface\" : \"asphalt\",\n      \"zone:maxspeed\"
-        : \"DE:urban\",\n      \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\"
-        : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
+        : [\n        [\n          8.6761328,\n          49.4196633\n        ],\n        [\n
+        \         8.6761326,\n          49.4195939\n        ]\n      ]\n    },\n    \"properties\"
+        : {\n      \"@osmId\" : \"way/159626322\",\n      \"@snapshotTimestamp\" :
+        \"2026-02-19T12:00:00Z\",\n      \"cycleway:left\" : \"no\",\n      \"cycleway:right\"
+        : \"separate\",\n      \"highway\" : \"primary\",\n      \"lanes\" : \"2\",\n
+        \     \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\" : \"Berliner
+        Stra\xDFe\",\n      \"name:etymology:wikidata\" : \"Q64\",\n      \"oneway\"
+        : \"yes\",\n      \"parking:lane:both\" : \"no\",\n      \"priority_road\"
+        : \"designated\",\n      \"sidewalk\" : \"separate\",\n      \"smoothness\"
+        : \"good\",\n      \"surface\" : \"asphalt\",\n      \"zone:maxspeed\" : \"DE:urban\",\n
+        \     \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n
+        \   \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
         : [\n        [\n          8.676138,\n          49.420311\n        ],\n        [\n
         \         8.6761321,\n          49.4201672\n        ],\n        [\n          8.6761349,\n
         \         49.4199309\n        ]\n      ]\n    },\n    \"properties\" : {\n
-        \     \"@osmId\" : \"way/294407212\",\n      \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n
+        \     \"@osmId\" : \"way/294407212\",\n      \"@snapshotTimestamp\" : \"2026-02-19T12:00:00Z\",\n
         \     \"cycleway:left\" : \"no\",\n      \"cycleway:right\" : \"separate\",\n
         \     \"highway\" : \"primary\",\n      \"lanes\" : \"2\",\n      \"lit\"
         : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\" : \"Berliner Stra\xDFe\",\n
@@ -294,7 +122,7 @@ interactions:
         \       ],\n        [\n          8.6764737,\n          49.4194326\n        ],\n
         \       [\n          8.6764702,\n          49.4194743\n        ]\n      ]\n
         \   },\n    \"properties\" : {\n      \"@osmId\" : \"way/294407219\",\n      \"@snapshotTimestamp\"
-        : \"2025-10-01T12:00:00Z\",\n      \"cycleway:left\" : \"no\",\n      \"cycleway:right\"
+        : \"2026-02-19T12:00:00Z\",\n      \"cycleway:left\" : \"no\",\n      \"cycleway:right\"
         : \"separate\",\n      \"highway\" : \"primary\",\n      \"lanes\" : \"4\",\n
         \     \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\" : \"Berliner
         Stra\xDFe\",\n      \"name:etymology:wikidata\" : \"Q64\",\n      \"oneway\"
@@ -307,7 +135,7 @@ interactions:
         \         8.6761312,\n          49.4197722\n        ],\n        [\n          8.6761303,\n
         \         49.4197341\n        ],\n        [\n          8.6761328,\n          49.4196633\n
         \       ]\n      ]\n    },\n    \"properties\" : {\n      \"@osmId\" : \"way/294407220\",\n
-        \     \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n      \"cycleway:left\"
+        \     \"@snapshotTimestamp\" : \"2026-02-19T12:00:00Z\",\n      \"cycleway:left\"
         : \"no\",\n      \"cycleway:right\" : \"separate\",\n      \"destination\"
         : \"Mannheim;Bruchsal;Schloss;Zentrum;Chirurgie\",\n      \"highway\" : \"primary\",\n
         \     \"lanes\" : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n
@@ -322,7 +150,7 @@ interactions:
         \         49.4197321\n        ],\n        [\n          8.6764894,\n          49.4199797\n
         \       ],\n        [\n          8.676484,\n          49.420311\n        ]\n
         \     ]\n    },\n    \"properties\" : {\n      \"@osmId\" : \"way/294407221\",\n
-        \     \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n      \"cycleway:left\"
+        \     \"@snapshotTimestamp\" : \"2026-02-19T12:00:00Z\",\n      \"cycleway:left\"
         : \"no\",\n      \"cycleway:right\" : \"separate\",\n      \"highway\" : \"primary\",\n
         \     \"lanes\" : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n
         \     \"name\" : \"Berliner Stra\xDFe\",\n      \"name:etymology:wikidata\"
@@ -330,69 +158,10 @@ interactions:
         \     \"sidewalk\" : \"separate\",\n      \"surface\" : \"asphalt\",\n      \"zone:maxspeed\"
         : \"DE:urban\",\n      \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\"
         : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6751363,\n          49.4195637\n        ],\n        [\n
-        \         8.6753861,\n          49.419561\n        ],\n        [\n          8.6756132,\n
-        \         49.4195557\n        ]\n      ]\n    },\n    \"properties\" : {\n
-        \     \"@osmId\" : \"way/294407222\",\n      \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n
-        \     \"cycleway:left\" : \"no\",\n      \"cycleway:right\" : \"separate\",\n
-        \     \"highway\" : \"residential\",\n      \"lanes\" : \"3\",\n      \"lit\"
-        : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\" : \"Im Neuenheimer
-        Feld\",\n      \"name:etymology:wikidata\" : \"Q1980045\",\n      \"oneway\"
-        : \"yes\",\n      \"parking:lane:both\" : \"no\",\n      \"placement\" : \"right_of:2\",\n
-        \     \"sidewalk:left\" : \"no\",\n      \"sidewalk:right\" : \"separate\",\n
-        \     \"smoothness\" : \"good\",\n      \"source:maxspeed\" : \"DE:urban\",\n
-        \     \"surface\" : \"asphalt\",\n      \"turn:lanes\" : \"left|right|right\",\n
-        \     \"zone:maxspeed\" : \"DE:urban\",\n      \"zone:traffic\" : \"DE:urban\"\n
-        \   }\n  }, {\n    \"type\" : \"Feature\",\n    \"geometry\" : {\n      \"type\"
-        : \"LineString\",\n      \"coordinates\" : [\n        [\n          8.6754947,\n
-        \         49.4196664\n        ],\n        [\n          8.6751028,\n          49.4196706\n
-        \       ],\n        [\n          8.6749653,\n          49.4196395\n        ]\n
-        \     ]\n    },\n    \"properties\" : {\n      \"@osmId\" : \"way/294407223\",\n
-        \     \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n      \"cycleway:left\"
-        : \"no\",\n      \"cycleway:right\" : \"separate\",\n      \"foot\" : \"use_sidepath\",\n
-        \     \"highway\" : \"residential\",\n      \"lanes\" : \"2\",\n      \"lit\"
-        : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\" : \"Im Neuenheimer
-        Feld\",\n      \"name:etymology:wikidata\" : \"Q1980045\",\n      \"oneway\"
-        : \"yes\",\n      \"parking:lane:both\" : \"no\",\n      \"sidewalk:left\"
-        : \"no\",\n      \"sidewalk:right\" : \"separate\",\n      \"smoothness\"
-        : \"good\",\n      \"source:maxspeed\" : \"DE:urban\",\n      \"surface\"
-        : \"asphalt\",\n      \"turn:lanes\" : \"left|through;right\",\n      \"zone:maxspeed\"
-        : \"DE:urban\",\n      \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\"
-        : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6763576,\n          49.4196027\n        ],\n        [\n
-        \         8.6763266,\n          49.4196231\n        ],\n        [\n          8.6762857,\n
-        \         49.4196337\n        ],\n        [\n          8.6762267,\n          49.4196478\n
-        \       ],\n        [\n          8.6762002,\n          49.4196541\n        ]\n
-        \     ]\n    },\n    \"properties\" : {\n      \"@osmId\" : \"way/294407231\",\n
-        \     \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n      \"cycleway:right\"
-        : \"no\",\n      \"destination\" : \"Universit\xE4t;Campus Im Neuenheimer
-        Feld;Uni-Klinikum;NCT\",\n      \"foot\" : \"use_sidepath\",\n      \"highway\"
-        : \"residential\",\n      \"lanes\" : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\"
-        : \"50\",\n      \"name\" : \"Im Neuenheimer Feld\",\n      \"name:etymology:wikidata\"
-        : \"Q1980045\",\n      \"oneway\" : \"yes\",\n      \"parking:lane:both\"
-        : \"no\",\n      \"sidewalk\" : \"separate\",\n      \"smoothness\" : \"good\",\n
-        \     \"source:maxspeed\" : \"DE:urban\",\n      \"surface\" : \"asphalt\",\n
-        \     \"turn:lanes\" : \"left|left\",\n      \"zone:maxspeed\" : \"DE:urban\",\n
-        \     \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n
-        \   \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6763576,\n          49.4196027\n        ],\n        [\n
-        \         8.6764062,\n          49.4196289\n        ],\n        [\n          8.6764474,\n
-        \         49.419661\n        ],\n        [\n          8.6764782,\n          49.4196864\n
-        \       ]\n      ]\n    },\n    \"properties\" : {\n      \"@osmId\" : \"way/294407232\",\n
-        \     \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n      \"cycleway:both\"
-        : \"no\",\n      \"destination\" : \"Weinheim;Handschuhsheim\",\n      \"foot\"
-        : \"use_sidepath\",\n      \"highway\" : \"residential\",\n      \"lanes\"
-        : \"1\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\"
-        : \"Berliner Stra\xDFe\",\n      \"name:etymology:wikidata\" : \"Q64\",\n
-        \     \"oneway\" : \"yes\",\n      \"parking:lane:both\" : \"no\",\n      \"sidewalk\"
-        : \"separate\",\n      \"smoothness\" : \"good\",\n      \"source:maxspeed\"
-        : \"DE:urban\",\n      \"surface\" : \"asphalt\",\n      \"zone:maxspeed\"
-        : \"DE:urban\",\n      \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\"
-        : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
         : [\n        [\n          8.6764702,\n          49.4194743\n        ],\n        [\n
         \         8.6764782,\n          49.4196864\n        ]\n      ]\n    },\n    \"properties\"
         : {\n      \"@osmId\" : \"way/721931267\",\n      \"@snapshotTimestamp\" :
-        \"2025-10-01T12:00:00Z\",\n      \"cycleway:left\" : \"no\",\n      \"cycleway:right\"
+        \"2026-02-19T12:00:00Z\",\n      \"cycleway:left\" : \"no\",\n      \"cycleway:right\"
         : \"separate\",\n      \"destination\" : \"Weinheim;Handschuhsheim\",\n      \"highway\"
         : \"primary\",\n      \"lanes\" : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\"
         : \"50\",\n      \"name\" : \"Berliner Stra\xDFe\",\n      \"name:etymology:wikidata\"
@@ -401,157 +170,17 @@ interactions:
         : \"asphalt\",\n      \"turn:lanes\" : \"through|through\",\n      \"zone:maxspeed\"
         : \"DE:urban\",\n      \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\"
         : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6764702,\n          49.4194743\n        ],\n        [\n
-        \         8.6763576,\n          49.4196027\n        ]\n      ]\n    },\n    \"properties\"
-        : {\n      \"@osmId\" : \"way/721931268\",\n      \"@snapshotTimestamp\" :
-        \"2025-10-01T12:00:00Z\",\n      \"cycleway:both\" : \"no\",\n      \"destination\"
-        : \"Universit\xE4t;Campus Im Neuenheimer Feld;Uni-Klinikum;NCT\",\n      \"foot\"
-        : \"use_sidepath\",\n      \"highway\" : \"residential\",\n      \"lanes\"
-        : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\"
-        : \"Berliner Stra\xDFe\",\n      \"name:etymology:wikidata\" : \"Q64\",\n
-        \     \"oneway\" : \"yes\",\n      \"parking:lane:both\" : \"no\",\n      \"sidewalk\"
-        : \"separate\",\n      \"smoothness\" : \"good\",\n      \"source:maxspeed\"
-        : \"DE:urban\",\n      \"surface\" : \"asphalt\",\n      \"turn:lanes\" :
-        \"left|left\",\n      \"zone:maxspeed\" : \"DE:urban\",\n      \"zone:traffic\"
-        : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n    \"geometry\"
-        : {\n      \"type\" : \"LineString\",\n      \"coordinates\" : [\n        [\n
-        \         8.6749603,\n          49.4195109\n        ],\n        [\n          8.6749668,\n
-        \         49.4194843\n        ],\n        [\n          8.6750103,\n          49.4193067\n
-        \       ],\n        [\n          8.6750203,\n          49.419131\n        ],\n
-        \       [\n          8.6750364,\n          49.4190538\n        ]\n      ]\n
-        \   },\n    \"properties\" : {\n      \"@osmId\" : \"way/721931269\",\n      \"@snapshotTimestamp\"
-        : \"2025-10-01T12:00:00Z\",\n      \"cycleway:both\" : \"no\",\n      \"highway\"
-        : \"residential\",\n      \"lanes\" : \"3\",\n      \"lanes:backward\" : \"2\",\n
-        \     \"lanes:forward\" : \"1\",\n      \"lit\" : \"yes\",\n      \"name\"
-        : \"Im Neuenheimer Feld\",\n      \"name:etymology:wikidata\" : \"Q1980045\",\n
-        \     \"sidewalk:left\" : \"separate\",\n      \"sidewalk:right\" : \"yes\",\n
-        \     \"sidewalk:right:surface\" : \"paving_stones\",\n      \"smoothness\"
-        : \"good\",\n      \"surface\" : \"asphalt\",\n      \"turn:lanes:backward\"
-        : \"left|through;right\",\n      \"zone:maxspeed\" : \"DE:urban\",\n      \"zone:traffic\"
-        : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n    \"geometry\"
-        : {\n      \"type\" : \"LineString\",\n      \"coordinates\" : [\n        [\n
-        \         8.6749653,\n          49.4196395\n        ],\n        [\n          8.6749603,\n
-        \         49.4195109\n        ]\n      ]\n    },\n    \"properties\" : {\n
-        \     \"@osmId\" : \"way/721931270\",\n      \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n
-        \     \"cycleway:both\" : \"no\",\n      \"highway\" : \"residential\",\n
-        \     \"lanes\" : \"3\",\n      \"lanes:backward\" : \"2\",\n      \"lanes:forward\"
-        : \"1\",\n      \"lit\" : \"yes\",\n      \"name\" : \"Im Neuenheimer Feld\",\n
-        \     \"name:etymology:wikidata\" : \"Q1980045\",\n      \"sidewalk:left\"
-        : \"no\",\n      \"sidewalk:right\" : \"separate\",\n      \"smoothness\"
-        : \"good\",\n      \"surface\" : \"asphalt\",\n      \"zone:maxspeed\" : \"DE:urban\",\n
-        \     \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n
-        \   \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
         : [\n        [\n          8.6761206,\n          49.4193076\n        ],\n        [\n
         \         8.6761015,\n          49.418342\n        ]\n      ]\n    },\n    \"properties\"
         : {\n      \"@osmId\" : \"way/721933838\",\n      \"@snapshotTimestamp\" :
-        \"2025-10-01T12:00:00Z\",\n      \"cycleway:left\" : \"no\",\n      \"cycleway:right\"
+        \"2026-02-19T12:00:00Z\",\n      \"cycleway:left\" : \"no\",\n      \"cycleway:right\"
         : \"separate\",\n      \"highway\" : \"primary\",\n      \"lanes\" : \"2\",\n
         \     \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\" : \"Berliner
         Stra\xDFe\",\n      \"name:etymology:wikidata\" : \"Q64\",\n      \"oneway\"
         : \"yes\",\n      \"parking:lane:both\" : \"no\",\n      \"priority_road\"
         : \"designated\",\n      \"sidewalk\" : \"separate\",\n      \"smoothness\"
         : \"good\",\n      \"surface\" : \"asphalt\",\n      \"zone:maxspeed\" : \"DE:urban\",\n
-        \     \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n
-        \   \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.673856,\n          49.4196411\n        ],\n        [\n
-        \         8.6747911,\n          49.4196375\n        ],\n        [\n          8.6749653,\n
-        \         49.4196395\n        ]\n      ]\n    },\n    \"properties\" : {\n
-        \     \"@osmId\" : \"way/723084548\",\n      \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n
-        \     \"cycleway:both\" : \"separate\",\n      \"highway\" : \"residential\",\n
-        \     \"lanes\" : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n
-        \     \"name\" : \"Im Neuenheimer Feld\",\n      \"name:etymology:wikidata\"
-        : \"Q1980045\",\n      \"sidewalk:both\" : \"separate\",\n      \"source:maxspeed\"
-        : \"DE:urban\",\n      \"surface\" : \"asphalt\",\n      \"zone:maxspeed\"
-        : \"DE:urban\",\n      \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\"
-        : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6759767,\n          49.4197702\n        ],\n        [\n
-        \         8.6759065,\n          49.4197322\n        ],\n        [\n          8.6756977,\n
-        \         49.4196683\n        ]\n      ]\n    },\n    \"properties\" : {\n
-        \     \"@osmId\" : \"way/849049865\",\n      \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n
-        \     \"cycleway:left\" : \"no\",\n      \"cycleway:right\" : \"separate\",\n
-        \     \"destination\" : \"Universit\xE4t;Campus Im Neuenheimer Feld;Uni-Klinikum;NCT;Sportzentrum-Nord;Olympiast\xFCtzpunkt;Schwimmbad;Zoo\",\n
-        \     \"highway\" : \"residential\",\n      \"lanes\" : \"1\",\n      \"lit\"
-        : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\" : \"Im Neuenheimer
-        Feld\",\n      \"name:etymology:wikidata\" : \"Q1980045\",\n      \"oneway\"
-        : \"yes\",\n      \"parking:lane:both\" : \"no\",\n      \"sidewalk\" : \"separate\",\n
-        \     \"smoothness\" : \"good\",\n      \"source:maxspeed\" : \"DE:urban\",\n
-        \     \"surface\" : \"asphalt\",\n      \"zone:maxspeed\" : \"DE:urban\",\n
-        \     \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n
-        \   \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6756977,\n          49.4196683\n        ],\n        [\n
-        \         8.6754947,\n          49.4196664\n        ]\n      ]\n    },\n    \"properties\"
-        : {\n      \"@osmId\" : \"way/849049866\",\n      \"@snapshotTimestamp\" :
-        \"2025-10-01T12:00:00Z\",\n      \"cycleway:left\" : \"no\",\n      \"cycleway:right\"
-        : \"separate\",\n      \"foot\" : \"use_sidepath\",\n      \"highway\" : \"residential\",\n
-        \     \"lanes\" : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n
-        \     \"name\" : \"Im Neuenheimer Feld\",\n      \"name:etymology:wikidata\"
-        : \"Q1980045\",\n      \"oneway\" : \"yes\",\n      \"parking:lane:both\"
-        : \"no\",\n      \"sidewalk:left\" : \"no\",\n      \"sidewalk:right\" : \"separate\",\n
-        \     \"smoothness\" : \"good\",\n      \"source:maxspeed\" : \"DE:urban\",\n
-        \     \"surface\" : \"asphalt\",\n      \"zone:maxspeed\" : \"DE:urban\",\n
-        \     \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n
-        \   \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6762574,\n          49.419592\n        ],\n        [\n
-        \         8.6762845,\n          49.4195914\n        ],\n        [\n          8.6763576,\n
-        \         49.4196027\n        ]\n      ]\n    },\n    \"properties\" : {\n
-        \     \"@osmId\" : \"way/849049868\",\n      \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n
-        \     \"cycleway:both\" : \"no\",\n      \"destination\" : \"Weinheim;Handschuhsheim\",\n
-        \     \"foot\" : \"use_sidepath\",\n      \"highway\" : \"residential\",\n
-        \     \"lanes\" : \"1\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n
-        \     \"name\" : \"Im Neuenheimer Feld\",\n      \"name:etymology:wikidata\"
-        : \"Q1980045\",\n      \"oneway\" : \"yes\",\n      \"parking:lane:both\"
-        : \"no\",\n      \"sidewalk\" : \"separate\",\n      \"smoothness\" : \"good\",\n
-        \     \"source:maxspeed\" : \"DE:urban\",\n      \"surface\" : \"asphalt\",\n
-        \     \"zone:maxspeed\" : \"DE:urban\",\n      \"zone:traffic\" : \"DE:urban\"\n
-        \   }\n  }, {\n    \"type\" : \"Feature\",\n    \"geometry\" : {\n      \"type\"
-        : \"LineString\",\n      \"coordinates\" : [\n        [\n          8.676078,\n
-        \         49.4193575\n        ],\n        [\n          8.6761206,\n          49.4193076\n
-        \       ]\n      ]\n    },\n    \"properties\" : {\n      \"@osmId\" : \"way/849049869\",\n
-        \     \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n      \"cycleway:left\"
-        : \"no\",\n      \"cycleway:right\" : \"separate\",\n      \"destination\"
-        : \"Mannheim;Bruchsal;Zentrum\",\n      \"highway\" : \"residential\",\n      \"lanes\"
-        : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"50\",\n      \"name\"
-        : \"Im Neuenheimer Feld\",\n      \"name:etymology:wikidata\" : \"Q1980045\",\n
-        \     \"oneway\" : \"yes\",\n      \"parking:lane:both\" : \"no\",\n      \"sidewalk:left\"
-        : \"no\",\n      \"sidewalk:right\" : \"separate\",\n      \"smoothness\"
-        : \"excellent\",\n      \"source:maxspeed\" : \"DE:urban\",\n      \"surface\"
-        : \"asphalt\",\n      \"turn:lanes\" : \"right|right\",\n      \"zone:maxspeed\"
-        : \"DE:urban\",\n      \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\"
-        : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6750434,\n          49.4189144\n        ],\n        [\n
-        \         8.6750446,\n          49.4188135\n        ],\n        [\n          8.6750446,\n
-        \         49.4187811\n        ]\n      ]\n    },\n    \"properties\" : {\n
-        \     \"@osmId\" : \"way/999668897\",\n      \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n
-        \     \"cycleway:both\" : \"no\",\n      \"highway\" : \"residential\",\n
-        \     \"lanes\" : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"30\",\n
-        \     \"name\" : \"Im Neuenheimer Feld\",\n      \"name:etymology:wikidata\"
-        : \"Q1980045\",\n      \"sidewalk:left\" : \"separate\",\n      \"sidewalk:right\"
-        : \"yes\",\n      \"sidewalk:right:surface\" : \"paving_stones\",\n      \"smoothness\"
-        : \"good\",\n      \"surface\" : \"asphalt\",\n      \"zone:maxspeed\" : \"DE:30\",\n
-        \     \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n
-        \   \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6750364,\n          49.4190538\n        ],\n        [\n
-        \         8.6750431,\n          49.4189408\n        ],\n        [\n          8.6750434,\n
-        \         49.4189144\n        ]\n      ]\n    },\n    \"properties\" : {\n
-        \     \"@osmId\" : \"way/999668898\",\n      \"@snapshotTimestamp\" : \"2025-10-01T12:00:00Z\",\n
-        \     \"cycleway:both\" : \"no\",\n      \"highway\" : \"residential\",\n
-        \     \"lanes\" : \"2\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"30\",\n
-        \     \"name\" : \"Im Neuenheimer Feld\",\n      \"name:etymology:wikidata\"
-        : \"Q1980045\",\n      \"sidewalk:left\" : \"separate\",\n      \"sidewalk:right\"
-        : \"yes\",\n      \"sidewalk:right:surface\" : \"paving_stones\",\n      \"smoothness\"
-        : \"good\",\n      \"surface\" : \"asphalt\",\n      \"zone:maxspeed\" : \"DE:30\",\n
-        \     \"zone:traffic\" : \"DE:urban\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n
-        \   \"geometry\" : {\n      \"type\" : \"LineString\",\n      \"coordinates\"
-        : [\n        [\n          8.6770008,\n          49.4190558\n        ],\n        [\n
-        \         8.67689,\n          49.4191121\n        ]\n      ]\n    },\n    \"properties\"
-        : {\n      \"@osmId\" : \"way/1124235506\",\n      \"@snapshotTimestamp\"
-        : \"2025-10-01T12:00:00Z\",\n      \"cycleway:both\" : \"no\",\n      \"highway\"
-        : \"residential\",\n      \"lit\" : \"yes\",\n      \"maxspeed\" : \"30\",\n
-        \     \"name\" : \"Gundolfstra\xDFe\",\n      \"parking:condition\" : \"residents\",\n
-        \     \"parking:lane:left\" : \"parallel\",\n      \"parking:lane:left:parallel\"
-        : \"half_on_kerb\",\n      \"parking:lane:right\" : \"no\",\n      \"sidewalk\"
-        : \"both\",\n      \"smoothness\" : \"good\",\n      \"surface\" : \"asphalt\"\n
-        \   }\n  }]\n}\n"
+        \     \"zone:traffic\" : \"DE:urban\"\n    }\n  }]\n}\n"
     headers:
       Access-Control-Allow-Credentials:
       - 'true'
@@ -572,7 +201,7 @@ interactions:
       Content-disposition:
       - attachment;filename=ohsome.geojson
       Date:
-      - Fri, 05 Dec 2025 08:58:25 GMT
+      - Wed, 18 Mar 2026 09:35:53 GMT
       Keep-Alive:
       - timeout=5, max=100
       Server:

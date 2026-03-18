@@ -39,9 +39,9 @@ def test_get_pop(default_aoi, mock_get_pop_raster):
 def test_predict_traffic_volume():
     road_gdf = gpd.GeoDataFrame(
         {
-            'highway': ['motorway', 'trunk', 'primary', 'secondary', 'living_street', 'residential'],
-            'maxspeed': [130, 100, 'DE:urban', np.nan, 'walk', 30],
-            'lanes': [3, 2, 2, np.nan, 1, 1],
+            'highway': ['motorway', 'trunk', 'primary', 'secondary'],
+            'maxspeed': [130, 100, 'DE:urban', np.nan],
+            'lanes': [3, 2, 2, np.nan],
         },
         geometry=LINE_GEOM,
     )

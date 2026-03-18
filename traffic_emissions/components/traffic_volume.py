@@ -11,6 +11,7 @@ import shapely
 from climatoology.base.artifact import Artifact, ArtifactMetadata, Legend
 from climatoology.base.artifact_creators import create_vector_artifact
 from climatoology.base.computation import ComputationResources
+from climatoology.base.exception import ClimatoologyUserError
 from ohsome import OhsomeClient
 
 from traffic_emissions.components.utils import (
@@ -59,18 +60,17 @@ def get_roads(aoi_poly: shapely.MultiPolygon, client: OhsomeClient) -> tuple[gpd
         'secondary_link',
         'tertiary',
         'tertiary_link',
-        'residential',
-        'living_street',
-        'unclassified',
     ]
     tag_list = [f'highway={highway_tag}' for highway_tag in highway_tags]
     ohsome_filter = f'({" or ".join(tag_list)}) and geometry:line'
 
     gdf_road = client.elements.geometry.post(
         bpolys=aoi_poly, time=client.end_timestamp, filter=ohsome_filter, clipGeometry=True, properties='tags'
-    ).as_dataframe()
-    tags_df = gdf_road['@other_tags'].apply(pd.Series)
-    gdf_road = pd.concat([gdf_road, tags_df], axis=1)
+    ).as_dataframe(explode_tags=['highway', 'lanes', 'maxspeed'])
+    if len(gdf_road) == 0:
+        raise ClimatoologyUserError(
+            'There are no roads in the selected area for which traffic emissions can be estimated. Please select a larger area. Traffic emissions cannot be estimated for residential or other minor roads.'
+        )
     gdf_road = gdf_road[['geometry', 'highway', 'lanes', 'maxspeed']]
     lanes = pd.to_numeric(gdf_road['lanes'], errors='coerce')
     gdf_road['lanes'] = lanes.where((lanes % 1 == 0) & (lanes.between(0, 255))).astype('Int8')
@@ -100,12 +100,6 @@ def get_road_populations(aoi_poly: shapely.MultiPolygon, roads: gpd.GeoDataFrame
 def predict_traffic_volume(gdf_road: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     gdf_road_reg = gdf_road.copy()
     gdf_road_reg = pd.get_dummies(gdf_road_reg, columns=['highway'])
-
-    cols_to_exclude = ['highway_living_street', 'highway_residential', 'highway_unclassified']
-    existing_exclude_cols = [c for c in cols_to_exclude if c in gdf_road_reg.columns]
-
-    if existing_exclude_cols:
-        gdf_road_reg = gdf_road_reg[~gdf_road_reg[existing_exclude_cols].any(axis=1)]
 
     replacement_dict = {
         'walk': 5,

@@ -19,6 +19,9 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 - Switched to a gradient boosting regression model to estimate traffic volume. Minor roads not included. ([#23](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/23))
 - Updated methodology description with new traffic volume estimation method ([#36](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/36))
 
+### Fixed
+- Make sure computation does not fail if fields are missing in the gdf, raise error if gdf is empty ([#33](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/33))
+
 ### Removed
 - all the shenanigans around accessing a private climatoology repository because that is now public
 
