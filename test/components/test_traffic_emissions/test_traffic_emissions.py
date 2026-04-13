@@ -7,6 +7,7 @@ from shapely.geometry import LineString
 from vcr import use_cassette
 
 from test.components.test_traffic_volume.test_traffic_volume import LINE_GEOM
+from test.conftest import TEST_RESOURCES_DIR
 from traffic_emissions.components.district_summaries import get_district_summaries
 from traffic_emissions.components.traffic_emissions import (
     calculate_emissions,
@@ -40,7 +41,7 @@ DISTRICT_SUMMARY_TEST_GDF = gpd.GeoDataFrame(
 )
 
 
-def test_preprocess(default_aoi, mock_get_built_up_raster):
+def test_preprocess(default_aoi):
     roads = gpd.GeoDataFrame(
         {'highway': ['residential', 'motorway', 'secondary'], 'maxspeed': [30, 130, 90]},
         geometry=[
@@ -51,7 +52,9 @@ def test_preprocess(default_aoi, mock_get_built_up_raster):
         crs='EPSG:4326',
     )
 
-    processed = preprocess(roads, default_aoi)
+    processed = preprocess(
+        gdf_traffic=roads, aoi_poly=default_aoi, built_raster_url=TEST_RESOURCES_DIR / 'built_up_raster.tif'
+    )
 
     assert processed.loc[0, 'road_type'] == 'inside'
     assert processed.loc[1, 'road_type'] == 'motorway'
@@ -77,7 +80,7 @@ def test_calculate_emissions():
     pd.testing.assert_series_equal(received['t_NOx_km_yr'].round(2), expected_nox)
 
 
-def test_traffic_emissions(default_aoi, mock_get_built_up_raster):
+def test_traffic_emissions(default_aoi):
     roads = gpd.GeoDataFrame(
         {
             'highway': ['residential', 'motorway', 'secondary', 'tertiary_2', 'secondary_link', 'secondary_2'],
@@ -87,7 +90,9 @@ def test_traffic_emissions(default_aoi, mock_get_built_up_raster):
         geometry=LINE_GEOM,
         crs='EPSG:4326',
     )
-    emissions_gdf = traffic_emissions(roads, default_aoi)
+    emissions_gdf = traffic_emissions(
+        road_gdf=roads, aoi_poly=default_aoi, built_raster_url=TEST_RESOURCES_DIR / 'built_up_raster.tif'
+    )
     verify(emissions_gdf.to_csv())
 
 

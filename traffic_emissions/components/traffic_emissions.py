@@ -1,6 +1,4 @@
 import logging
-import os
-import tempfile
 from enum import Enum
 from pathlib import Path
 
@@ -68,14 +66,16 @@ UNITS = {
 }
 
 
-def traffic_emissions(road_gdf: gpd.GeoDataFrame, aoi_poly: shapely.MultiPolygon) -> gpd.GeoDataFrame:
+def traffic_emissions(
+    road_gdf: gpd.GeoDataFrame, aoi_poly: shapely.MultiPolygon, built_raster_url: str
+) -> gpd.GeoDataFrame:
     """
     Calculates annual road traffic emissions [t/road-km] for each road segment.
 
     :return: GeoDataFrame of emissions [t/road-km] for each road segment. Contains the following columns: geometry, highway, lanes, maxspeed, mean_dtv (mean daily traffic volume), road_type (inside city/outside city/motorway), t_CO2_km_yr, t_CO_km_yr, t_NOx_km_yr
     """
     log.info('Calculating annual traffic emissions')
-    traffic_gdf = preprocess(road_gdf, aoi_poly)
+    traffic_gdf = preprocess(road_gdf, aoi_poly, built_raster_url=built_raster_url)
     emissions_gdf = calculate_emissions(traffic_gdf)
     return emissions_gdf
 
@@ -100,14 +100,18 @@ def get_emission_sums(emissions_gdf: gpd.GeoDataFrame) -> tuple[gpd.GeoDataFrame
     return emissions_gdf_with_yearly_emissions, emission_sums
 
 
-def preprocess(gdf_traffic: gpd.GeoDataFrame, aoi_poly: shapely.MultiPolygon) -> gpd.GeoDataFrame:
+def preprocess(
+    gdf_traffic: gpd.GeoDataFrame, aoi_poly: shapely.MultiPolygon, built_raster_url: str
+) -> gpd.GeoDataFrame:
     """
     Preprocesses gdf_traffic for emission calculation.
 
+    :param built_raster_url: URL of the built-up raster in the S3 storage
+    :param aoi_poly: AOI boundary as shapely.MultiPolygon
     :param gdf_traffic: GeoDataFrame of OSM road network with estimated traffic volumes
     :return: gdf_traffic: GeoDataFrame with roads and their attributes (inside city / outside city / motorway)
     """
-    built_up = get_built_up_area(aoi_poly, gdf_traffic.crs)
+    built_up = get_built_up_area(aoi_poly=aoi_poly, traffic_gdf_crs=gdf_traffic.crs, built_raster_url=built_raster_url)
     gdf_traffic['road_type'] = 'outside'
     filtered = gdf_traffic[gdf_traffic.intersects(built_up, align=True)]
     gdf_traffic.loc[filtered.index, 'road_type'] = 'inside'
@@ -124,17 +128,18 @@ def preprocess(gdf_traffic: gpd.GeoDataFrame, aoi_poly: shapely.MultiPolygon) ->
     return gdf_traffic
 
 
-def get_built_up_area(aoi_poly: shapely.MultiPolygon, traffic_gdf_crs: pyproj.CRS) -> shapely.MultiPolygon:
+def get_built_up_area(
+    aoi_poly: shapely.MultiPolygon, traffic_gdf_crs: pyproj.CRS, built_raster_url: str
+) -> shapely.MultiPolygon:
     """
     Gets built-up areas in the AOI as a GeoSeries.
+    :param built_raster_url: URL of the built-up raster in the S3 storage
     :param aoi_poly: Area of interest as multipolygon.
     :param traffic_gdf_crs: CRS of traffic_gdf.
     :return: GeoSeries with built-up areas as multipolygon.
     """
-    with tempfile.TemporaryDirectory() as tmp:
-        built_up_path = os.path.join(tmp, 'built_up_raster.tif')
-        get_built_up_raster(aoi_poly, built_up_path)
-        built_up = get_built_up_geom(built_up_path, traffic_gdf_crs)
+    raster_dict = get_built_up_raster(aoi_poly, built_raster_url=built_raster_url)
+    built_up = get_built_up_geom(raster_dict, traffic_gdf_crs)
 
     return built_up
 

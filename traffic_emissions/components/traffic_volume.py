@@ -1,6 +1,4 @@
 import logging
-import os
-import tempfile
 from pathlib import Path
 
 import geopandas as gpd
@@ -19,20 +17,19 @@ from traffic_emissions.components.utils import (
     calculate_pop_in_buffer,
     get_colors_legend,
     get_pop_raster,
-    reproject_raster,
 )
 
 log = logging.getLogger(__name__)
 
 
-def traffic_volume(aoi: shapely.MultiPolygon, ohsome: OhsomeClient) -> gpd.GeoDataFrame:
+def traffic_volume(aoi: shapely.MultiPolygon, ohsome: OhsomeClient, pop_raster_url: str) -> gpd.GeoDataFrame:
     """
     Estimates mean_dtv (daily traffic volume) for each road segment.
     :return: GeoDataFrame with following columns: geometry, highway, lanes, maxspeed, mean_dtv
     """
     log.info('Calculating average daily traffic volume')
     road_gdf, total_length = get_roads(aoi, ohsome)
-    road_gdf = get_road_populations(aoi, road_gdf)
+    road_gdf = get_road_populations(roads=road_gdf, pop_raster_url=pop_raster_url)
     road_gdf = predict_traffic_volume(road_gdf)
     return road_gdf
 
@@ -79,20 +76,24 @@ def get_roads(aoi_poly: shapely.MultiPolygon, client: OhsomeClient) -> tuple[gpd
     return gdf_road, length_total
 
 
-def get_road_populations(aoi_poly: shapely.MultiPolygon, roads: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+def get_road_populations(roads: gpd.GeoDataFrame, pop_raster_url: str) -> gpd.GeoDataFrame:
     """
     Calculates scaling factor of population density in built-up areas and road length per capita.
 
+    :param pop_raster_url: URL of the population raster in the S3 storage
     :param roads: gpd.GeoDataFrame of OSM road network
-    :param aoi_poly: Polygon of AOI (EPSG: 4326)
     """
     log.debug('Calculating scaling factor')
+    buf_10k = roads.geometry.buffer(10000)
+    projected_buffer = buf_10k.to_crs(4326)
 
-    with tempfile.TemporaryDirectory() as tmp:
-        pop_path = os.path.join(tmp, 'pop_raster.tif')
-        get_pop_raster(aoi=aoi_poly, pop_path=pop_path)
-        reproject_raster(raster_path=pop_path, target_crs=roads.crs)
-        roads = calculate_pop_in_buffer(roads=roads, raster_path=pop_path)
+    # we could feed the raster URL directly to raster_status but due to
+    # https://github.com/perrygeo/python-rasterstats/issues/313 this is ineffective
+    # We therefore read the raster manually first
+    pop_raster, pop_transform = get_pop_raster(target_geoms=projected_buffer, pop_raster_url=pop_raster_url)
+    roads['pop_mean_10km'] = calculate_pop_in_buffer(
+        roads=projected_buffer, pop_raster=pop_raster, pop_transform=pop_transform
+    )
 
     return roads
 

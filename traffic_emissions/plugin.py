@@ -1,5 +1,4 @@
 import logging.config
-from pathlib import Path
 
 from climatoology.app.plugin import start_plugin
 
@@ -11,13 +10,6 @@ log = logging.getLogger(__name__)
 
 def init_plugin() -> int:
     settings = Settings()
-
-    key_path = Path(__file__).parent.parent / '.earth_engine_key.json'
-    with open(key_path, 'w') as file:
-        file.write(settings.google_earth_engine_key)
-
-    settings.google_earth_engine_key = str(key_path)
-
     operator = Operator(settings)
 
     log.info('Starting Plugin')

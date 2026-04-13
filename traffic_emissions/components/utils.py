@@ -1,28 +1,25 @@
 from enum import Enum, StrEnum
+from typing import Any, Dict, Tuple
 
-import ee
-import geemap
 import geopandas as gpd
 import numpy as np
 import pandas as pd
 import pyproj
 import rasterio
 import shapely
+import tqdm
+from affine import Affine
 from climatoology.base.artifact import ContinuousLegendData
 from matplotlib import colors
 from matplotlib.pyplot import colormaps
 from pydantic_extra_types.color import Color
 from pyproj import Transformer
 from rasterio.features import shapes
-from rasterio.warp import Resampling, calculate_default_transform, reproject
-from rasterstats import zonal_stats
-from shapely import MultiPolygon
-from shapely.geometry import shape
-from shapely.ops import transform, unary_union
-
-GHSL_PROJ_YEAR = 'P2023A'
-GHSL_EPOCH = '2025'
-RASTER_SCALE = 100
+from rasterio.mask import mask
+from rasterstats import gen_zonal_stats
+from shapely import MultiPolygon, box
+from shapely.geometry import mapping, shape
+from shapely.ops import unary_union
 
 MARKET_SHARES = {
     'petrol_car': 0.534,
@@ -71,66 +68,45 @@ def get_colors_legend(color_series: pd.Series) -> tuple[list[Color], ContinuousL
     return color, legend
 
 
-def calculate_pop_in_buffer(roads: gpd.GeoDataFrame, raster_path: str) -> gpd.GeoDataFrame:
-    roads_buf10 = roads.copy()
-    roads_buf10['geometry'] = roads_buf10.geometry.buffer(10000)
-    stats_10km = zonal_stats(roads_buf10, raster_path, stats=['mean'], all_touched=True)
-    roads['pop_mean_10km'] = [s['mean'] for s in stats_10km]
-
-    return roads
+def calculate_pop_in_buffer(roads: gpd.GeoSeries, pop_raster: np.ndarray, pop_transform: Affine) -> list[float]:
+    stats_10km = gen_zonal_stats(roads, pop_raster, affine=pop_transform, stats=['mean'], all_touched=True)
+    result = [s['mean'] for s in tqdm.tqdm(stats_10km, total=len(roads))]
+    return result
 
 
-def reproject_raster(raster_path: str, target_crs):
-    with rasterio.open(raster_path) as src:
-        transform, width, height = calculate_default_transform(src.crs, target_crs, src.width, src.height, *src.bounds)
-        profile = src.profile.copy()
-        profile.update(crs=target_crs, transform=transform, width=width, height=height)
+def get_pop_raster(target_geoms: gpd.GeoSeries, pop_raster_url: str) -> Tuple:
+    bounds = box(*target_geoms.total_bounds)
+    with rasterio.open(pop_raster_url) as src:
+        clipped, src_transform = mask(src, [bounds], crop=True, all_touched=True, indexes=1)
 
-        with rasterio.open(raster_path, 'w', **profile) as dst:
-            for i in range(1, src.count + 1):
-                reproject(
-                    source=rasterio.band(src, i),
-                    destination=rasterio.band(dst, i),
-                    src_crs=src.crs,
-                    dst_crs=target_crs,
-                    resampling=Resampling.nearest,
-                )
+    return clipped, src_transform
 
 
-def get_pop_raster(aoi: shapely.MultiPolygon, pop_path: str) -> None:
-    to_3857 = pyproj.Transformer.from_crs(4326, 3857, always_xy=True).transform
-    to_4326 = pyproj.Transformer.from_crs(3857, 4326, always_xy=True).transform
-    buffered = transform(to_3857, aoi).buffer(20_000)
-    buffered_4326 = transform(to_4326, buffered)
+def get_built_up_raster(poly: shapely.MultiPolygon, built_raster_url: str) -> Dict[str, Any]:
+    geom = mapping(poly)
 
-    geom = ee.Geometry(shapely.geometry.mapping(buffered_4326))
-    ghsl = ee.Image(f'JRC/GHSL/{GHSL_PROJ_YEAR}/GHS_POP/{GHSL_EPOCH}')
-    clipped = ghsl.clip(geom).reproject('EPSG:4326', None, RASTER_SCALE)
-    geemap.ee_export_image(clipped, filename=pop_path, scale=RASTER_SCALE, file_per_band=False)
+    with rasterio.open(built_raster_url) as src:
+        clipped, transform = mask(src, shapes=[geom], crop=True, all_touched=False, indexes=1)
 
-
-def get_built_up_raster(aoi: shapely.MultiPolygon, built_up_path: str) -> None:
-    """
-    Gets raster showing built-up surfaces, expressed in square metres per 100 m grid cell, in the AOI.
-    """
-    geom = ee.Geometry(shapely.geometry.mapping(aoi))
-    ghsl = ee.Image(f'JRC/GHSL/{GHSL_PROJ_YEAR}/GHS_BUILT_S/{GHSL_EPOCH}').select(['built_surface'])
-    clipped = ghsl.clip(geom).reproject('EPSG:4326', None, RASTER_SCALE)
-    geemap.ee_export_image(clipped, filename=built_up_path, scale=RASTER_SCALE, file_per_band=False)
+        return {
+            'array': clipped,
+            'transform': transform,
+            'crs': src.crs,
+            'nodata': src.nodata,
+        }
 
 
-def get_built_up_geom(raster_path: str, traffic_gdf_crs: pyproj.CRS) -> shapely.MultiPolygon:
+def get_built_up_geom(raster_dict: Dict[str, Any], traffic_gdf_crs: pyproj.CRS) -> shapely.MultiPolygon:
     """
     Extracts built-up area vector geometries from built-up raster.
-    :param raster_path: Filepath of built-up raster.
+    :param raster_dict: Dict with array and meta information of built-up raster.
     :param traffic_gdf_crs: CRS of traffic_gdf.
     :return: GeoSeries with built-up areas as multipolygon.
     """
-    with rasterio.open(raster_path) as src:
-        arr = src.read(1)
-        raster_crs = src.crs
-        transform = src.transform
-        nodata_value = src.nodata
+    arr = raster_dict['array']
+    raster_crs = raster_dict['crs']
+    transform = raster_dict['transform']
+    nodata_value = raster_dict['nodata']
 
     mask = (~np.isnan(arr)) & (arr != nodata_value) & (arr != 0)
     geoms = []

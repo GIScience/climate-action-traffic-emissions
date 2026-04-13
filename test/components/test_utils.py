@@ -1,12 +1,15 @@
-import geopandas as gpd
 import pandas as pd
 import pyproj
+import rasterio
 from climatoology.base.artifact import ContinuousLegendData
 from pydantic_extra_types.color import Color
 from shapely import wkt
 
-from test.components.test_traffic_volume.test_traffic_volume import DEFAULT_GEOM
-from traffic_emissions.components.utils import calculate_pop_in_buffer, get_built_up_geom, get_colors_legend
+from traffic_emissions.components.utils import (
+    get_built_up_geom,
+    get_built_up_raster,
+    get_colors_legend,
+)
 
 
 def test_get_colors_legend():
@@ -22,19 +25,24 @@ def test_get_colors_legend():
     assert {k: round(v, 2) for k, v in legend.ticks.items()} == expected_legend.ticks
 
 
-def test_calculate_pop_in_buffer():
-    road_gdf = gpd.GeoDataFrame(
-        {},
-        geometry=DEFAULT_GEOM,
-        crs='EPSG:32632',
-    )
-    expected = pd.Series([2.15584], name='pop_mean_10km')
-    received = calculate_pop_in_buffer(road_gdf, 'test/resources/pop_raster.tif')
-    pd.testing.assert_series_equal(received['pop_mean_10km'].round(5), expected)
-
-
 def test_get_built_up_geom():
+    with rasterio.open('test/resources/built_up_raster.tif') as src:
+        raster_dict = {
+            'array': src.read(1),
+            'transform': src.transform,
+            'crs': src.crs,
+            'nodata': src.nodata,
+        }
     df = pd.read_csv('test/resources/built_up.csv')
     geom = wkt.loads(df['geometry'].iloc[0])
-    received = get_built_up_geom('test/resources/built_up_raster.tif', pyproj.CRS('EPSG:32632'))
+    received = get_built_up_geom(raster_dict=raster_dict, traffic_gdf_crs=pyproj.CRS('EPSG:32632'))
     assert received == geom
+
+
+def test_get_built_up_raster(default_aoi, mock_s3_built_up_raster):
+    raster_dict = get_built_up_raster(default_aoi, mock_s3_built_up_raster)
+    assert raster_dict['array'].ndim == 2
+    assert raster_dict['array'].size > 0
+    assert raster_dict['array'][1][0] == 1882
+    assert raster_dict['crs'] == pyproj.CRS('EPSG:4326')
+    assert raster_dict['nodata'] == 0.0

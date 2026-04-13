@@ -2,9 +2,11 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 from approvaltests import verify
+from numpy.testing import assert_array_almost_equal
 from shapely.geometry import LineString
 from vcr import use_cassette
 
+from test.conftest import TEST_RESOURCES_DIR
 from traffic_emissions.components.traffic_volume import (
     get_road_populations,
     get_roads,
@@ -26,14 +28,14 @@ def test_get_roads(operator, road_test_aoi):
     assert total_length == 83.0982247188029
 
 
-def test_get_pop(default_aoi, mock_get_pop_raster):
+def test_get_pop(default_aoi):
     road_gdf = gpd.GeoDataFrame(
         {},
         geometry=DEFAULT_GEOM,
         crs='EPSG:32632',
     )
-    roads = get_road_populations(default_aoi, road_gdf)
-    assert round(roads['pop_mean_10km'][0], 5) == 2.15584
+    roads = get_road_populations(roads=road_gdf, pop_raster_url=TEST_RESOURCES_DIR / 'pop_raster.tif')
+    assert_array_almost_equal(roads['pop_mean_10km'], [23.974042])
 
 
 def test_predict_traffic_volume():
@@ -60,6 +62,8 @@ def test_predict_traffic_volume():
 
 
 @use_cassette('test/resources/vcr_cassettes/test_traffic_volume.yaml')
-def test_traffic_volume(operator, small_aoi, mock_get_pop_raster):
-    road_gdf = traffic_volume(small_aoi, operator.ohsome)
+def test_traffic_volume(operator, small_aoi):
+    road_gdf = traffic_volume(
+        aoi=small_aoi, ohsome=operator.ohsome, pop_raster_url=TEST_RESOURCES_DIR / 'pop_raster.tif'
+    )
     verify(road_gdf.to_csv())

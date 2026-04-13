@@ -4,13 +4,14 @@ import locale
 import logging
 from typing import List
 
-import ee
 import geopandas as gpd
+import rasterio
 import shapely
 from climatoology.base.baseoperator import AoiProperties, Artifact, BaseOperator, ComputationResources
 from climatoology.base.exception import ClimatoologyUserError
 from climatoology.base.plugin_info import PluginInfo
 from ohsome import OhsomeClient
+from rasterio.session import AWSSession
 
 from traffic_emissions.components.district_summaries import get_district_summaries
 from traffic_emissions.components.traffic_emissions import (
@@ -31,11 +32,13 @@ class Operator(BaseOperator[ComputeInput]):
     def __init__(self, settings: Settings):
         super().__init__()
         self.ohsome = OhsomeClient()
-
-        credentials = ee.ServiceAccountCredentials(
-            settings.google_earth_engine_service_account, settings.google_earth_engine_key
+        self.s3_client = AWSSession(
+            endpoint_url=settings.data_s3_endpoint,
+            aws_access_key_id=settings.data_s3_access_key,
+            aws_secret_access_key=settings.data_s3_secret_key.get_secret_value(),
         )
-        ee.Initialize(credentials)
+        self.pop_raster_url = f's3://{settings.data_s3_bucket_name}/{settings.pop_raster_object_name}'
+        self.built_raster_url = f's3://{settings.data_s3_bucket_name}/{settings.built_raster_object_name}'
 
     def info(self) -> PluginInfo:
         return get_info()
@@ -50,8 +53,10 @@ class Operator(BaseOperator[ComputeInput]):
         locale.setlocale(locale.LC_ALL, '')
         self.check_aoi(aoi, aoi_properties)
 
-        road_gdf = traffic_volume(aoi=aoi, ohsome=self.ohsome)
-        emissions_gdf = traffic_emissions(road_gdf=road_gdf, aoi_poly=aoi)
+        # this is the process to access S3 stored rasters directly, the alternative is to use pre-signed URLs
+        with rasterio.Env(self.s3_client, AWS_VIRTUAL_HOSTING=False):
+            road_gdf = traffic_volume(aoi=aoi, ohsome=self.ohsome, pop_raster_url=self.pop_raster_url)
+            emissions_gdf = traffic_emissions(road_gdf=road_gdf, aoi_poly=aoi, built_raster_url=self.built_raster_url)
         emissions_gdf_with_yearly_emissions, emission_sums = get_emission_sums(emissions_gdf)
         mean_df = get_district_summaries(emissions_gdf_with_yearly_emissions, aoi, self.ohsome)
 
