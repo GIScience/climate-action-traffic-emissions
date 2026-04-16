@@ -276,12 +276,13 @@ def build_traffic_emissions_artifact(
     color, legend = get_colors_legend(emissions_gdf[f't_{gas_name}_km_yr'])
     emissions_gdf['color'] = color
     emissions_gdf[f't_{gas_name}_km_yr'] = emissions_gdf[f't_{gas_name}_km_yr'].round(2)
+    description_path = f'resources/artifact_descriptions/traffic_emissions_description/{gas_name}.md'
     traffic_emissions_metadata = ArtifactMetadata(
         name=f'Annual {gas_name} emissions [t/road-km]',
         tags={Topic.MAPS},
         filename=f'traffic_{gas_name}_emissions',
         summary=f'Estimated {gas_name} emissions of road traffic [t per road-km per year]',
-        description=Path('resources/artifact_descriptions/traffic_emissions_description.md').read_text(),
+        description=Path(description_path).read_text(),
     )
 
     return create_vector_artifact(
