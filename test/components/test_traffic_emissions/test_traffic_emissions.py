@@ -10,6 +10,7 @@ from test.components.test_traffic_volume.test_traffic_volume import LINE_GEOM
 from test.conftest import TEST_RESOURCES_DIR
 from traffic_emissions.components.district_summaries import get_district_summaries
 from traffic_emissions.components.traffic_emissions import (
+    EmissionsFactors,
     calculate_emissions,
     get_emission_chart_artifacts,
     get_emission_sums,
@@ -139,14 +140,16 @@ def test_get_district_summaries_no_intersection(operator, road_test_aoi):
 
 
 def test_plot_emission_bar():
+    gas = EmissionsFactors.CO2
     df = pd.DataFrame(
         {
             'name': ['Minas Tirith'],
             't_CO2_km_yr': [100],
         }
     )
-    fig = plot_emission_bar(df, 'CO2', 'Gondor', 't/road-km', 'km_yr')
+    fig = plot_emission_bar(df, gas, 'Gondor', 't/road-km', 'km_yr')
     np.testing.assert_array_equal(fig['data'][0]['name'], 't_CO2_km_yr')
+
     np.testing.assert_array_equal(fig['data'][0]['y'], np.array(['Minas Tirith', 'Gondor']))
 
 
@@ -164,12 +167,12 @@ def test_get_emission_chart_artifacts(default_aoi_properties, compute_resources)
     )
     emission_sums = {'CO2': 1000.123, 'CO': 100.123, 'NOx': 10.123}
     expected_titles = [
-        'Mean annual CO2 emissions [t/road-km]',
-        'Mean annual CO2 emissions [t/km²]',
+        'Mean annual CO₂ emissions [t/road-km]',
+        'Mean annual CO₂ emissions [t/km²]',
         'Mean annual CO emissions [t/road-km]',
         'Mean annual CO emissions [t/km²]',
-        'Mean annual NOx emissions [t/road-km]',
-        'Mean annual NOx emissions [t/km²]',
+        'Mean annual NOₓ emissions [t/road-km]',
+        'Mean annual NOₓ emissions [t/km²]',
     ]
     artifacts = get_emission_chart_artifacts(df, default_aoi_properties, emission_sums, compute_resources)
     for artifact, expected_title in zip(artifacts, expected_titles):

@@ -32,7 +32,7 @@ When a computation is requested in the traffic emissions tool, the traffic volum
 
 ## Traffic emission estimation
 
-The estimation of annual road traffic CO₂, CO, and NOx emissions for each road segment is done using the following formula:
+The estimation of annual road traffic CO₂, CO, and NOₓ emissions for each road segment is done using the following formula:
 
 E = ADTV * FC_speed * EF / 1000000 * 365
 
@@ -69,7 +69,7 @@ The speed-dependent fuel consumption is further weighted by the market shares of
 
 For roads without speed limit information, we assume fixed traveling speeds. Using the fuel consumption functions above, this leads us to the following emission factors for roads without speed information:
 
-| Road type                        | Speed [km/h] | g CO₂ / veh-km | g CO / veh-km | g NOx / veh-km |
+| Road type                        | Speed [km/h] | g CO₂ / veh-km | g CO / veh-km | g NOₓ / veh-km |
 |----------------------------------|--------------|-------------------|------------------|-------------------|
 | Motorways                        | 120          | 203.64            | 1.25             | 0.52              |
 | Roads outside of built-up areas  | 70           | 153.69            | 0.94             | 0.39              |

@@ -35,6 +35,7 @@ class EmissionsFactors(Enum):
         'motorway': 204,
         'inside': 197,
         'outside': 154,
+        'display_name': 'CO₂',
     }
     CO = {  # dead: disable
         'name': 'CO',
@@ -43,6 +44,7 @@ class EmissionsFactors(Enum):
         'motorway': 3.36,
         'inside': 3.25,
         'outside': 2.54,
+        'display_name': 'CO',
     }
     NOx = {  # dead: disable
         'name': 'NOx',
@@ -51,6 +53,7 @@ class EmissionsFactors(Enum):
         'motorway': 0.54,
         'inside': 0.52,
         'outside': 0.41,
+        'display_name': 'NOₓ',
     }
 
 
@@ -230,7 +233,9 @@ def get_emission_artifacts(emissions_gdf: gpd.GeoDataFrame, resources: Computati
 
 
 def plot_emission_bar(df, gas, city, unit_name, unit_column) -> go.Figure:
-    column = f't_{gas}_{unit_column}'
+    gas_name = gas.value.get('name')
+    display_name = gas.value.get('display_name')
+    column = f't_{gas_name}_{unit_column}'
     overall_mean = df[column].mean()
     overall_row = pd.Series({'name': city, column: overall_mean})
     overall_df = overall_row.to_frame().transpose()
@@ -258,7 +263,7 @@ def plot_emission_bar(df, gas, city, unit_name, unit_column) -> go.Figure:
     )
 
     fig.update_layout(
-        xaxis_title=f'Mean annual {gas} emissions [{unit_name}]',
+        xaxis_title=f'Mean annual {display_name} emissions [{unit_name}]',
         yaxis_title='District',
         yaxis=dict(automargin=True),
         showlegend=False,
@@ -273,15 +278,16 @@ def build_traffic_emissions_artifact(
     gas: EmissionsFactors, emissions_gdf: gpd.GeoDataFrame, resources: ComputationResources
 ) -> Artifact:
     gas_name = gas.value.get('name')
+    display_name = gas.value.get('display_name')
     color, legend = get_colors_legend(emissions_gdf[f't_{gas_name}_km_yr'])
     emissions_gdf['color'] = color
     emissions_gdf[f't_{gas_name}_km_yr'] = emissions_gdf[f't_{gas_name}_km_yr'].round(2)
     description_path = f'resources/artifact_descriptions/traffic_emissions_description/{gas_name}.md'
     traffic_emissions_metadata = ArtifactMetadata(
-        name=f'Annual {gas_name} emissions [t/road-km]',
+        name=f'Annual {display_name} emissions [t/road-km]',
         tags={Topic.MAPS},
         filename=f'traffic_{gas_name}_emissions',
-        summary=f'Estimated {gas_name} emissions of road traffic [t per road-km per year]',
+        summary=f'Estimated {display_name} emissions of road traffic [t per road-km per year]',
         description=Path(description_path).read_text(),
     )
 
@@ -305,6 +311,7 @@ def get_emission_chart_artifacts(
     for gas in EmissionsFactors:
         for unit in UNITS:
             gas_name = gas.value.get('name')
+            display_name = gas.value.get('display_name')
             emission_sum = round(emission_sums[gas_name], 2)
             unit_name = UNITS[unit]['unit']
             unit_column = UNITS[unit]['column']
@@ -312,12 +319,12 @@ def get_emission_chart_artifacts(
                 'resources/artifact_descriptions/traffic_emission_chart_description.md'
             ).read_text()
             description = description_template.format(
-                gas=gas_name, city=city_name, total_emissions=f'{emission_sum:n}', unit=unit_name
+                gas=display_name, city=city_name, total_emissions=f'{emission_sum:n}', unit=unit_name
             )
-            figure = plot_emission_bar(mean_df, gas_name, city_name, unit_name, unit_column)
+            figure = plot_emission_bar(mean_df, gas, city_name, unit_name, unit_column)
             emission_chart_metadata = ArtifactMetadata(
-                name=f'Mean annual {gas_name} emissions [{unit_name}]',
-                summary=f'Mean estimated annual {gas_name} emissions of road traffic per city district [{unit_name}]',
+                name=f'Mean annual {display_name} emissions [{unit_name}]',
+                summary=f'Mean estimated annual {display_name} emissions of road traffic per city district [{unit_name}]',
                 description=description,
                 filename=f'traffic_{gas_name}_{unit_column}_emissions_chart',
                 tags={Topic.CHARTS},

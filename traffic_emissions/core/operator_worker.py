@@ -1,6 +1,5 @@
 # You may ask yourself why this file has such a strange name.
 # Well ... python imports: https://discuss.python.org/t/warning-when-importing-a-local-module-with-the-same-name-as-a-2nd-or-3rd-party-module/27799
-import locale
 import logging
 from typing import List
 
@@ -50,7 +49,6 @@ class Operator(BaseOperator[ComputeInput]):
         aoi_properties: AoiProperties,
         params: ComputeInput,
     ) -> List[Artifact]:
-        locale.setlocale(locale.LC_ALL, '')
         self.check_aoi(aoi, aoi_properties)
 
         # this is the process to access S3 stored rasters directly, the alternative is to use pre-signed URLs
