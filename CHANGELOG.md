@@ -25,6 +25,7 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
   included. ([#23](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/23))
 - Updated methodology description with new traffic volume estimation
   method ([#36](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/36))
+- Update description files for the maps and traffic volume ([#46](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/46))
 - Handle artifact count mismatch for different AOIs ([#35](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/35))
 
 ### Fixed
