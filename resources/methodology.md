@@ -27,6 +27,8 @@ The following features were used for training the model:
 - **Mean population density in 10 km buffer** (population derived from Global Human Settlement Layer)
 
 Note: Minor roads (residential roads, living streets, and unclassified roads) were excluded from the traffic volume estimation due to the lack of traffic count data for these road classes.
+While this data gap is a limitation of the current model, there are two arguments that support leaving out minor roads.
+First, ignoring minor roads can reduce model complexity (Tay et al. 2023) and second, traffic volume is heavily concentrated on a few major roads (Jiang 2009), meaning that minor roads account for only a small fraction of total traffic volume.
 
 When a computation is requested in the traffic emissions tool, the traffic volume is estimated by applying the model to the selected area.
 

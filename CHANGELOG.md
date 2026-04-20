@@ -9,13 +9,13 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 
 ### Added
 
-- Added chart artifacts with mean emissions per
+- Add chart artifacts with mean emissions per
   area ([#28](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/28))
+- Add justification why we do not estimate traffic emissions for minor roads to methodology and artifact descriptions ([#41](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/41))
+- Add limitations to methodology ([#27](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/27))
 
 ### Changed
 
-- Added limitations to
-  methodology ([#27](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/27))
 - Normalize legend colors logarithmically so the different values are better recognisable in the
   map ([#29](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/29))
 - Make plugin usable
