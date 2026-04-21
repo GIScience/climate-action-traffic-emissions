@@ -1,0 +1,118 @@
+interactions:
+- request:
+    body: bpolys=%7B%22type%22%3A+%22FeatureCollection%22%2C+%22features%22%3A+%5B%7B%22id%22%3A+%220%22%2C+%22type%22%3A+%22Feature%22%2C+%22properties%22%3A+%7B%7D%2C+%22geometry%22%3A+%7B%22type%22%3A+%22MultiPolygon%22%2C+%22coordinates%22%3A+%5B%5B%5B%5B8.4123%2C+48.9915%5D%2C+%5B8.4185%2C+48.9915%5D%2C+%5B8.4185%2C+48.9946%5D%2C+%5B8.4123%2C+48.9946%5D%2C+%5B8.4123%2C+48.9915%5D%5D%5D%5D%7D%7D%5D%7D&filter=geometry%3Apolygon+and+boundary%3Dadministrative+and+admin_level+in+%289%2C+10%29&properties=tags&clipGeometry=True
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '521'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      user-agent:
+      - ohsome-py/0.3.0
+    method: POST
+    uri: https://api.ohsome.org/v1/elements/geometry
+  response:
+    body:
+      string: "{\n  \"attribution\" : {\n    \"url\" : \"https://ohsome.org/copyrights\",\n
+        \   \"text\" : \"\xA9 OpenStreetMap contributors\"\n  },\n  \"apiVersion\"
+        : \"1.10.4\",\n  \"type\" : \"FeatureCollection\",\n  \"features\" : [{\n
+        \   \"type\" : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"Polygon\",\n
+        \     \"coordinates\" : [\n        [\n          [\n            8.4185,\n            48.9945749\n
+        \         ],\n          [\n            8.4172062,\n            48.9942407\n
+        \         ],\n          [\n            8.4154173,\n            48.9940879\n
+        \         ],\n          [\n            8.415197,\n            48.9937978\n
+        \         ],\n          [\n            8.4147401,\n            48.9937181\n
+        \         ],\n          [\n            8.4149557,\n            48.9933667\n
+        \         ],\n          [\n            8.4149664,\n            48.9931254\n
+        \         ],\n          [\n            8.4148642,\n            48.9925774\n
+        \         ],\n          [\n            8.4141654,\n            48.9922907\n
+        \         ],\n          [\n            8.4138399,\n            48.9926955\n
+        \         ],\n          [\n            8.4134635,\n            48.9931488\n
+        \         ],\n          [\n            8.413338,\n            48.9932621\n
+        \         ],\n          [\n            8.4123,\n            48.9929968\n          ],\n
+        \         [\n            8.4123,\n            48.9946\n          ],\n          [\n
+        \           8.4185,\n            48.9946\n          ],\n          [\n            8.4185,\n
+        \           48.9945749\n          ]\n        ]\n      ]\n    },\n    \"properties\"
+        : {\n      \"@osmId\" : \"relation/63393\",\n      \"@snapshotTimestamp\"
+        : \"2026-02-19T12:00:00Z\",\n      \"admin_level\" : \"10\",\n      \"boundary\"
+        : \"administrative\",\n      \"de:Stadtteilnummer\" : \"03\",\n      \"name\"
+        : \"S\xFCdstadt\",\n      \"source\" : \"http://www.nobbi.com/download/Karlsruhe%20Stadtteile.kmz\",\n
+        \     \"type\" : \"boundary\",\n      \"wikidata\" : \"Q1624401\",\n      \"wikipedia\"
+        : \"de:S\xFCdstadt (Karlsruhe)\"\n    }\n  }, {\n    \"type\" : \"Feature\",\n
+        \   \"geometry\" : {\n      \"type\" : \"Polygon\",\n      \"coordinates\"
+        : [\n        [\n          [\n            8.4123,\n            48.9929968\n
+        \         ],\n          [\n            8.413338,\n            48.9932621\n
+        \         ],\n          [\n            8.4134635,\n            48.9931488\n
+        \         ],\n          [\n            8.4138399,\n            48.9926955\n
+        \         ],\n          [\n            8.4141654,\n            48.9922907\n
+        \         ],\n          [\n            8.4148642,\n            48.9925774\n
+        \         ],\n          [\n            8.4149967,\n            48.9917156\n
+        \         ],\n          [\n            8.4151185,\n            48.9915\n          ],\n
+        \         [\n            8.4123,\n            48.9915\n          ],\n          [\n
+        \           8.4123,\n            48.9929968\n          ]\n        ]\n      ]\n
+        \   },\n    \"properties\" : {\n      \"@osmId\" : \"relation/63388\",\n      \"@snapshotTimestamp\"
+        : \"2026-02-19T12:00:00Z\",\n      \"admin_level\" : \"10\",\n      \"boundary\"
+        : \"administrative\",\n      \"de:Stadtteilnummer\" : \"14\",\n      \"name\"
+        : \"Weiherfeld-Dammerstock\",\n      \"source\" : \"http://www.nobbi.com/download/Karlsruhe%20Stadtteile.kmz\",\n
+        \     \"type\" : \"boundary\",\n      \"wikidata\" : \"Q2555365\"\n    }\n
+        \ }, {\n    \"type\" : \"Feature\",\n    \"geometry\" : {\n      \"type\"
+        : \"Polygon\",\n      \"coordinates\" : [\n        [\n          [\n            8.4151185,\n
+        \           48.9915\n          ],\n          [\n            8.4149967,\n            48.9917156\n
+        \         ],\n          [\n            8.4148642,\n            48.9925774\n
+        \         ],\n          [\n            8.4149664,\n            48.9931254\n
+        \         ],\n          [\n            8.4149557,\n            48.9933667\n
+        \         ],\n          [\n            8.4147401,\n            48.9937181\n
+        \         ],\n          [\n            8.415197,\n            48.9937978\n
+        \         ],\n          [\n            8.4154173,\n            48.9940879\n
+        \         ],\n          [\n            8.4172062,\n            48.9942407\n
+        \         ],\n          [\n            8.4185,\n            48.9945749\n          ],\n
+        \         [\n            8.4185,\n            48.9915\n          ],\n          [\n
+        \           8.4151185,\n            48.9915\n          ]\n        ]\n      ]\n
+        \   },\n    \"properties\" : {\n      \"@osmId\" : \"relation/63399\",\n      \"@snapshotTimestamp\"
+        : \"2026-02-19T12:00:00Z\",\n      \"admin_level\" : \"9\",\n      \"boundary\"
+        : \"administrative\",\n      \"de:Stadtteilnummer\" : \"19\",\n      \"description\"
+        : \"Ortschaft der Stadt Karlsruhe mit Selbstverwaltung nach \xA7 68 GemO\",\n
+        \     \"name\" : \"Durlach\",\n      \"name:prefix\" : \"Ortschaft\",\n      \"source\"
+        : \"http://www.nobbi.com/download/Karlsruhe%20Stadtteile.kmz\",\n      \"type\"
+        : \"boundary\",\n      \"wikidata\" : \"Q639876\",\n      \"wikipedia\" :
+        \"de:Durlach\"\n    }\n  }]\n}\n"
+    headers:
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Headers:
+      - Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization
+      Access-Control-Allow-Methods:
+      - POST, GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '3600'
+      Connection:
+      - Keep-Alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/geo+json;charset=utf-8
+      Content-disposition:
+      - attachment;filename=ohsome.geojson
+      Date:
+      - Tue, 21 Apr 2026 11:42:50 GMT
+      Keep-Alive:
+      - timeout=5, max=100
+      Server:
+      - Apache/2.4.58 (Ubuntu)
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubdomains;
+      Transfer-Encoding:
+      - chunked
+      vary:
+      - accept-encoding
+    status:
+      code: 200
+      message: ''
+version: 1

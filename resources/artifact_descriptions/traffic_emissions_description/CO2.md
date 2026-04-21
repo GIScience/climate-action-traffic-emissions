@@ -8,4 +8,4 @@ First, ignoring minor roads can reduce model complexity (Tay et al. 2023) and se
 
 Under the "Emission charts" tag in the computation results, you can find the mean annual CO₂ emissions in t/km² and t/road-km, summarized per city district.
 
-Note: The emission charts only appear in your computation if the selected area has administrative sub-areas (e.g. city districts) that can be compared to each other.
+Note: The emission charts only appear in your computation if the selected area has administrative districts that can be compared to each other.

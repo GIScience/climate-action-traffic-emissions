@@ -62,6 +62,23 @@ def road_test_aoi() -> shapely.MultiPolygon:
 
 
 @pytest.fixture
+def karlsruhe_aoi() -> shapely.MultiPolygon:
+    return shapely.MultiPolygon(
+        polygons=[
+            Polygon(
+                [
+                    [8.4123, 48.9915],
+                    [8.4185, 48.9915],
+                    [8.4185, 48.9946],
+                    [8.4123, 48.9946],
+                    [8.4123, 48.9915],
+                ]
+            )
+        ]
+    )
+
+
+@pytest.fixture
 def default_aoi_properties() -> AoiProperties:
     return AoiProperties(name='Heidelberg', id='heidelberg')
 

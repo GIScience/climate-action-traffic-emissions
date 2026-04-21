@@ -135,10 +135,6 @@ def test_get_district_summaries(operator, default_aoi):
     verify(mean_df.to_csv())
 
 
-def test_get_district_summaries_no_intersection(operator, road_test_aoi):
-    assert get_district_summaries(DISTRICT_SUMMARY_TEST_GDF, road_test_aoi, operator.ohsome) is None
-
-
 def test_plot_emission_bar():
     gas = EmissionsFactors.CO2
     df = pd.DataFrame(

@@ -30,9 +30,9 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 - Remove setlocale function to avoid translation error ([#42](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/42))
 
 ### Fixed
-
-- Make sure computation does not fail if fields are missing in the gdf, raise error if gdf is
-  empty ([#33](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/33))
+- Make sure computation does not fail if fields are missing in the gdf, raise error if gdf is empty ([#33](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/33))
+- Add minimum area for city districts to avoid slivers of administrative areas outside the AOI ([#32](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/issues/32))
+- Fill gaps in administrative sub-areas of the AOI by getting areas from higher admin level ([#31](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/31))
 
 ### Removed
 

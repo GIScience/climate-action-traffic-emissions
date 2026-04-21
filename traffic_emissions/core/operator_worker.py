@@ -56,16 +56,17 @@ class Operator(BaseOperator[ComputeInput]):
             road_gdf = traffic_volume(aoi=aoi, ohsome=self.ohsome, pop_raster_url=self.pop_raster_url)
             emissions_gdf = traffic_emissions(road_gdf=road_gdf, aoi_poly=aoi, built_raster_url=self.built_raster_url)
         emissions_gdf_with_yearly_emissions, emission_sums = get_emission_sums(emissions_gdf)
-        mean_df = get_district_summaries(emissions_gdf_with_yearly_emissions, aoi, self.ohsome)
 
         artifacts = []
+        with self.catch_exceptions(indicator_name='Emissions Charts', resources=resources):
+            mean_df = get_district_summaries(emissions_gdf_with_yearly_emissions, aoi, self.ohsome)
+            emission_chart_artifacts = get_emission_chart_artifacts(mean_df, aoi_properties, emission_sums, resources)
+            artifacts.extend(emission_chart_artifacts)
+
         traffic_volume_artifact = build_traffic_volume_artifact(road_gdf, resources)
         artifacts.append(traffic_volume_artifact)
         emission_artifacts = get_emission_artifacts(emissions_gdf, resources)
         artifacts.extend(emission_artifacts)
-        if mean_df is not None:
-            emission_chart_artifacts = get_emission_chart_artifacts(mean_df, aoi_properties, emission_sums, resources)
-            artifacts.extend(emission_chart_artifacts)
 
         return artifacts
 

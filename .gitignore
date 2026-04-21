@@ -5,3 +5,4 @@ __pycache__/
 .pytest_cache/
 .coverage
 coverage.xml
+ohsome_log/

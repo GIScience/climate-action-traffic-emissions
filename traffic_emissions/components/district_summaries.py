@@ -1,6 +1,9 @@
+import warnings
+
 import geopandas as gpd
 import pandas as pd
 import shapely
+from climatoology.base.exception import ClimatoologyUserError
 from ohsome import OhsomeClient
 
 from traffic_emissions.components.traffic_emissions import log
@@ -12,32 +15,72 @@ def get_district_summaries(
     ohsome_client: OhsomeClient,
 ) -> pd.DataFrame | None:
     log.info('Creating summary charts of emissions by city district')
-    minimum_keys = ['admin_level', 'name']
-    boundaries = ohsome_client.elements.geometry.post(
+    boundaries = get_admin_boundaries(ohsome_client, aoi)
+
+    log.debug(f'Summarising emissions into {boundaries.shape[0]} boundaries')
+    mean_df = get_mean_emissions(boundaries, emissions_gdf_with_yearly_emissions)
+
+    return mean_df
+
+
+def get_admin_boundaries(
+    ohsome_client: OhsomeClient, aoi: shapely.MultiPolygon, start_level: int = 9, stop_level: int = 10
+) -> gpd.GeoDataFrame:
+    admin_levels = list(range(start_level, stop_level + 1))
+    required_keys = ['admin_level', 'name']
+
+    all_boundaries = ohsome_client.elements.geometry.post(
         properties='tags',
         bpolys=aoi,
-        filter='geometry:polygon and boundary=administrative and admin_level=9',
-        clipGeometry=True,
-    ).as_dataframe(explode_tags=minimum_keys)
-    boundaries = boundaries.loc[boundaries.geometry.geom_type.isin(('MultiPolygon', 'Polygon'))]
-    boundaries = boundaries[boundaries.is_valid]
-    boundaries = boundaries.reset_index(drop=True)
-    if boundaries.shape[0] <= 1:
-        return None
-    else:
-        log.debug(f'Summarising emissions into {boundaries.shape[0]} boundaries')
-        # Implementation for population density is commented out for now, as it requires a 100m population raster
-        # boundaries["population"] = boundaries.apply(
-        #     lambda row: calculate_mean_pop_density_polygon(row.geometry),
-        #     axis=1
-        # )
-        boundaries = boundaries.to_crs(boundaries.estimate_utm_crs())
-        mean_df = get_mean_emissions(boundaries, emissions_gdf_with_yearly_emissions)
+        filter=f'geometry:polygon and boundary=administrative and admin_level in {tuple(admin_levels)}',
+        clipGeometry=False,
+    ).as_dataframe(explode_tags=required_keys)
 
-        return mean_df
+    all_boundaries = clean_admin_boundaries(boundaries=all_boundaries, aoi=aoi)
+
+    boundaries = None
+    for level, group in all_boundaries.groupby('admin_level', sort=True):
+        if boundaries is None:
+            boundaries = group.copy()
+        else:
+            already_covered = shapely.union_all(boundaries.geometry)
+            filler_boundaries = group[~group.geometry.within(already_covered.buffer(1e-6))]
+            log.debug(f'Added {len(filler_boundaries)} from admin level {level}')
+            boundaries = gpd.GeoDataFrame(pd.concat([boundaries, filler_boundaries]), crs=boundaries.crs)
+
+        already_covered = shapely.union_all(boundaries.geometry)
+        if already_covered.buffer(1e-6).contains(aoi):
+            break
+
+    if boundaries is None:
+        return gpd.GeoDataFrame(columns=['geometry'] + required_keys)
+
+    return boundaries
+
+
+def clean_admin_boundaries(boundaries: gpd.GeoDataFrame, aoi: shapely.MultiPolygon) -> gpd.GeoDataFrame:
+    clipped_geometries = boundaries.intersection(aoi)
+    with warnings.catch_warnings():
+        warnings.filterwarnings('ignore', message='Geometry is in a geographic CRS', category=UserWarning)
+        boundaries['prop_covered'] = clipped_geometries.area / boundaries.area
+
+    boundaries = boundaries.loc[boundaries.geometry.geom_type.isin(('MultiPolygon', 'Polygon'))]
+    boundaries = boundaries[boundaries['prop_covered'] > 0.9]
+    boundaries = boundaries[boundaries.is_valid]
+
+    if boundaries.shape[0] < 2:
+        raise ClimatoologyUserError(
+            'Could not be created because no administrative districts were found within the selected area.'
+        )
+
+    boundaries['admin_level'] = boundaries['admin_level'].astype(int)
+    boundaries = boundaries.drop(columns=['@other_tags', 'prop_covered'])
+    boundaries = boundaries.reset_index(drop=True)
+    return boundaries
 
 
 def get_mean_emissions(boundaries, emissions_gdf: gpd.GeoDataFrame) -> pd.DataFrame:
+    boundaries = boundaries.to_crs(boundaries.estimate_utm_crs())
     boundaries['area_km2'] = boundaries.geometry.area / 1e6
     emissions_gdf = emissions_gdf[emissions_gdf.geometry.type.isin(['LineString', 'MultiLineString'])]
     emissions_gdf = emissions_gdf.overlay(boundaries, how='identity', keep_geom_type=False)
