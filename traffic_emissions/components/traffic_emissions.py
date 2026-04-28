@@ -307,6 +307,9 @@ def get_emission_chart_artifacts(
     resources: ComputationResources,
 ) -> list:
     city_name = aoi_properties.name
+    if city_name in mean_df['name'].values:
+        mean_df.loc[mean_df['name'] == city_name, 'name'] = f'{city_name} (core area)'
+        city_name = f'{city_name} (whole area)'
     chart_artifacts = []
     for gas in EmissionsFactors:
         for unit in UNITS:
