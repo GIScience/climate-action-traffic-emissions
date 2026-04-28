@@ -10,6 +10,7 @@ from climatoology.base.baseoperator import AoiProperties, Artifact, BaseOperator
 from climatoology.base.exception import ClimatoologyUserError
 from climatoology.base.plugin_info import PluginInfo
 from ohsome import OhsomeClient
+from pydantic_extra_types.language_code import LanguageAlpha2
 from rasterio.session import AWSSession
 
 from traffic_emissions.components.district_summaries import get_district_summaries
@@ -48,6 +49,7 @@ class Operator(BaseOperator[ComputeInput]):
         aoi: shapely.MultiPolygon,
         aoi_properties: AoiProperties,
         params: ComputeInput,
+        language: LanguageAlpha2,
     ) -> List[Artifact]:
         self.check_aoi(aoi, aoi_properties)
 
