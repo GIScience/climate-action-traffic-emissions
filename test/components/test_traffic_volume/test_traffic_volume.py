@@ -18,7 +18,7 @@ LINE_GEOM = gpd.GeoSeries(
     [LineString([(325193.9834442865, 4669724.10105637), (325111.5841199331, 4669734.855883078)]) for _ in range(6)]
 )
 
-DEFAULT_GEOM = gpd.GeoSeries([LineString([(477000, 5472000), (478000, 5473000)])])
+DEFAULT_GEOM = gpd.GeoSeries([LineString([(10000, 9900), (10000, 10100)])])
 
 
 @use_cassette('test/resources/vcr_cassettes/test_get_roads.yaml')
@@ -34,8 +34,8 @@ def test_get_pop(default_aoi):
         geometry=DEFAULT_GEOM,
         crs='EPSG:32632',
     )
-    roads = get_road_populations(roads=road_gdf, pop_raster_url=TEST_RESOURCES_DIR / 'pop_raster.tif')
-    assert_array_almost_equal(roads['pop_mean_10km'], [23.974042])
+    roads = get_road_populations(roads=road_gdf, pop_raster_url=TEST_RESOURCES_DIR / 'simple_raster.tif')
+    assert_array_almost_equal(round(roads['pop_mean_10km'], 2), [2])
 
 
 def test_predict_traffic_volume():

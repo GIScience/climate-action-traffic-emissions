@@ -25,6 +25,7 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 - Update description files for the maps and traffic volume ([#46](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/46))
 - Handle artifact count mismatch for different AOIs ([#35](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/35))
 - Remove setlocale function to avoid translation error ([#42](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/42))
+- Use hand-crafted simple raster to test mean population density calculation ([#44](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/44))
 
 ### Fixed
 
