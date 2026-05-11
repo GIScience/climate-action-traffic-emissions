@@ -34,7 +34,9 @@ def traffic_volume(aoi: shapely.MultiPolygon, ohsome: OhsomeClient, pop_raster_u
     return road_gdf
 
 
-def get_roads(aoi_poly: shapely.MultiPolygon, client: OhsomeClient) -> tuple[gpd.GeoDataFrame, float]:
+def get_roads(
+    aoi_poly: shapely.MultiPolygon, client: OhsomeClient, target_timestamp=None
+) -> tuple[gpd.GeoDataFrame, float]:
     """
     Downloads and prepares OSM road network in the given AOI.
 
@@ -44,7 +46,7 @@ def get_roads(aoi_poly: shapely.MultiPolygon, client: OhsomeClient) -> tuple[gpd
     :return: length_total: Length of the road network in the AOI in meters
     """
     log.debug('Getting roads from OSM')
-
+    time = target_timestamp or client.end_timestamp
     highway_tags = [
         'motorway',
         'motorway_link',
@@ -62,7 +64,7 @@ def get_roads(aoi_poly: shapely.MultiPolygon, client: OhsomeClient) -> tuple[gpd
     ohsome_filter = f'({" or ".join(tag_list)}) and geometry:line'
 
     gdf_road = client.elements.geometry.post(
-        bpolys=aoi_poly, time=client.end_timestamp, filter=ohsome_filter, clipGeometry=True, properties='tags'
+        bpolys=aoi_poly, time=time, filter=ohsome_filter, clipGeometry=True, properties='tags'
     ).as_dataframe(explode_tags=['highway', 'lanes', 'maxspeed'])
     if len(gdf_road) == 0:
         raise ClimatoologyUserError(

@@ -1,3 +1,4 @@
+import pytest
 from climatoology.base.artifact import Artifact
 from climatoology.base.plugin_info import DEFAULT_LANGUAGE, PluginInfo
 
@@ -6,6 +7,7 @@ def test_operator_info_request(operator):
     assert isinstance(operator.info(), PluginInfo)
 
 
+@pytest.mark.vcr
 def test_operator_compute_request(
     operator,
     default_compute_input,

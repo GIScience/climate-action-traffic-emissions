@@ -43,6 +43,7 @@ def test_get_built_up_raster(default_aoi, mock_s3_built_up_raster):
     raster_dict = get_built_up_raster(default_aoi, mock_s3_built_up_raster)
     assert raster_dict['array'].ndim == 2
     assert raster_dict['array'].size > 0
-    assert raster_dict['array'][1][0] == 1882
+    assert raster_dict['array'][1][0] == 0
+    assert raster_dict['array'][1][1] == 803
     assert raster_dict['crs'] == pyproj.CRS('EPSG:4326')
     assert raster_dict['nodata'] == 0.0

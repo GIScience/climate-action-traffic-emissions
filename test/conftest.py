@@ -25,17 +25,7 @@ def default_compute_input() -> ComputeInput:
 @pytest.fixture
 def default_aoi() -> shapely.MultiPolygon:
     return shapely.MultiPolygon(
-        polygons=[
-            Polygon(
-                [
-                    [8.65, 49.39],
-                    [8.65, 49.43],
-                    [8.74, 49.43],
-                    [8.74, 49.39],
-                    [8.65, 49.39],
-                ]
-            )
-        ]
+        polygons=[Polygon([[8.655, 49.394], [8.655, 49.412], [8.699, 49.412], [8.699, 49.394], [8.655, 49.394]])]
     )
 
 
@@ -45,7 +35,7 @@ def small_aoi() -> shapely.Polygon:
 
 
 @pytest.fixture
-def road_test_aoi() -> shapely.MultiPolygon:
+def test_aoi() -> shapely.MultiPolygon:
     return shapely.MultiPolygon(
         polygons=[
             Polygon(
@@ -62,16 +52,16 @@ def road_test_aoi() -> shapely.MultiPolygon:
 
 
 @pytest.fixture
-def karlsruhe_aoi() -> shapely.MultiPolygon:
+def freiburg_aoi() -> shapely.MultiPolygon:
     return shapely.MultiPolygon(
         polygons=[
             Polygon(
                 [
-                    [8.4123, 48.9915],
-                    [8.4185, 48.9915],
-                    [8.4185, 48.9946],
-                    [8.4123, 48.9946],
-                    [8.4123, 48.9915],
+                    [7.779093, 48.009563],
+                    [7.815485, 48.009563],
+                    [7.815485, 48.037348],
+                    [7.779093, 48.037348],
+                    [7.779093, 48.009563],
                 ]
             )
         ]
@@ -148,3 +138,12 @@ def mock_s3_built_up_raster():
     with patch('rasterio.open', return_value=dataset):
         yield fake_url
     dataset.close()
+
+
+@pytest.fixture(scope='module')
+def vcr_config():
+    return {
+        'filter_headers': ['authorization'],
+        'record_mode': 'none',
+        'cassette_library_dir': 'test/resources/vcr_cassettes',
+    }

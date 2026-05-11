@@ -1,10 +1,10 @@
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+import pytest
 from approvaltests import verify
 from numpy.testing import assert_array_almost_equal
 from shapely.geometry import LineString
-from vcr import use_cassette
 
 from test.conftest import TEST_RESOURCES_DIR
 from traffic_emissions.components.traffic_volume import (
@@ -21,9 +21,10 @@ LINE_GEOM = gpd.GeoSeries(
 DEFAULT_GEOM = gpd.GeoSeries([LineString([(10000, 9900), (10000, 10100)])])
 
 
-@use_cassette('test/resources/vcr_cassettes/test_get_roads.yaml')
-def test_get_roads(operator, road_test_aoi):
-    road_gdf, total_length = get_roads(road_test_aoi, operator.ohsome)
+@pytest.mark.vcr
+def test_get_roads(operator, test_aoi):
+    test_time = '2025-10-01T12:00:00Z'
+    road_gdf, total_length = get_roads(test_aoi, operator.ohsome, target_timestamp=test_time)
     verify(road_gdf.to_csv())
     assert total_length == 83.0982247188029
 
@@ -61,7 +62,7 @@ def test_predict_traffic_volume():
     pd.testing.assert_frame_equal(received, expected)
 
 
-@use_cassette('test/resources/vcr_cassettes/test_traffic_volume.yaml')
+@pytest.mark.vcr
 def test_traffic_volume(operator, small_aoi):
     road_gdf = traffic_volume(
         aoi=small_aoi, ohsome=operator.ohsome, pop_raster_url=TEST_RESOURCES_DIR / 'pop_raster.tif'

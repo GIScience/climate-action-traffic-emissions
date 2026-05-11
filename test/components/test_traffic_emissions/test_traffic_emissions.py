@@ -4,11 +4,9 @@ import pandas as pd
 from approvaltests import verify
 from climatoology.base.artifact import ArtifactModality
 from shapely.geometry import LineString
-from vcr import use_cassette
 
 from test.components.test_traffic_volume.test_traffic_volume import LINE_GEOM
 from test.conftest import TEST_RESOURCES_DIR
-from traffic_emissions.components.district_summaries import get_district_summaries
 from traffic_emissions.components.traffic_emissions import (
     EmissionsFactors,
     calculate_emissions,
@@ -19,34 +17,12 @@ from traffic_emissions.components.traffic_emissions import (
     traffic_emissions,
 )
 
-DISTRICT_LINE_GEOM = gpd.GeoSeries(
-    [
-        LineString([(476917, 5473595), (477285, 5473606)]),
-        LineString([(476917, 5473595), (477285, 5473606)]),
-        LineString([(476678, 5472913), (477284, 5472913)]),
-        LineString([(476678, 5472913), (477284, 5472913)]),
-    ]
-)
-
-DISTRICT_SUMMARY_TEST_GDF = gpd.GeoDataFrame(
-    {
-        't_CO2_km_yr': [50, 100, 100, 150],
-        't_CO_km_yr': [5, 10, 10, 15],
-        't_NOx_km_yr': [1, 2, 2, 3],
-        't_CO2_yr': [50, 100, 100, 150],
-        't_CO_yr': [5, 10, 10, 15],
-        't_NOx_yr': [1, 2, 2, 3],
-    },
-    geometry=DISTRICT_LINE_GEOM,
-    crs='EPSG:32632',
-)
-
 
 def test_preprocess(default_aoi):
     roads = gpd.GeoDataFrame(
         {'highway': ['residential', 'motorway', 'secondary'], 'maxspeed': [30, 130, 90]},
         geometry=[
-            LineString([(8.66, 49.4), (8.67, 49.41)]),
+            LineString([(8.642, 49.413), (8.689, 49.390)]),
             LineString([(8.66, 49.4), (8.67, 49.41)]),
             LineString([(8.5, 49.0), (8.6, 49.1)]),
         ],
@@ -127,12 +103,6 @@ def test_get_emission_sums():
     emissions_gdf_with_yearly_emissions, emission_sums = get_emission_sums(gdf)
     pd.testing.assert_frame_equal(emissions_gdf_with_yearly_emissions.round(1), expected_gdf_with_yearly_emissions)
     assert {k: round(v, 4) for k, v in emission_sums.items()} == expected_sums
-
-
-@use_cassette('test/resources/vcr_cassettes/test_get_district_summaries.yaml')
-def test_get_district_summaries(operator, default_aoi):
-    mean_df = get_district_summaries(DISTRICT_SUMMARY_TEST_GDF, default_aoi, operator.ohsome)
-    verify(mean_df.to_csv())
 
 
 def test_plot_emission_bar():

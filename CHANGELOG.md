@@ -7,6 +7,10 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 
 ## [Unreleased](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/compare/1.0.0...main)
 
+### Changed
+
+- Speed up the tests using vcr cassette ([#43](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/43))
+
 ## [1.0.0](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/1.0.0) - 2026-04-30
 
 ### Added
