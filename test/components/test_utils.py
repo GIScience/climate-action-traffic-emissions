@@ -1,9 +1,10 @@
+import geopandas as gpd
 import pandas as pd
 import pyproj
 import rasterio
 from climatoology.base.artifact import ContinuousLegendData
+from geopandas import testing
 from pydantic_extra_types.color import Color
-from shapely import wkt
 
 from traffic_emissions.components.utils import (
     get_built_up_geom,
@@ -33,10 +34,9 @@ def test_get_built_up_geom():
             'crs': src.crs,
             'nodata': src.nodata,
         }
-    df = pd.read_csv('test/resources/built_up.csv')
-    geom = wkt.loads(df['geometry'].iloc[0])
+    expected = gpd.GeoSeries.from_wkt(pd.read_csv('test/resources/built_up.csv')['geometry'], crs='EPSG:32632')
     received = get_built_up_geom(raster_dict=raster_dict, traffic_gdf_crs=pyproj.CRS('EPSG:32632'))
-    assert received == geom
+    testing.assert_geoseries_equal(received, expected)
 
 
 def test_get_built_up_raster(default_aoi, mock_s3_built_up_raster):

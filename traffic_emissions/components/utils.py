@@ -13,13 +13,11 @@ from climatoology.base.artifact import ContinuousLegendData
 from matplotlib import colors
 from matplotlib.pyplot import colormaps
 from pydantic_extra_types.color import Color
-from pyproj import Transformer
 from rasterio.features import shapes
 from rasterio.mask import mask
 from rasterstats import gen_zonal_stats
-from shapely import MultiPolygon, box
+from shapely import box
 from shapely.geometry import mapping, shape
-from shapely.ops import unary_union
 
 MARKET_SHARES = {
     'petrol_car': 0.534,
@@ -96,12 +94,12 @@ def get_built_up_raster(poly: shapely.MultiPolygon, built_raster_url: str) -> Di
         }
 
 
-def get_built_up_geom(raster_dict: Dict[str, Any], traffic_gdf_crs: pyproj.CRS) -> shapely.MultiPolygon:
+def get_built_up_geom(raster_dict: Dict[str, Any], traffic_gdf_crs: pyproj.CRS) -> gpd.GeoSeries:
     """
     Extracts built-up area vector geometries from built-up raster.
     :param raster_dict: Dict with array and meta information of built-up raster.
     :param traffic_gdf_crs: CRS of traffic_gdf.
-    :return: GeoSeries with built-up areas as multipolygon.
+    :return: GeoSeries with built-up areas.
     """
     arr = raster_dict['array']
     raster_crs = raster_dict['crs']
@@ -109,12 +107,11 @@ def get_built_up_geom(raster_dict: Dict[str, Any], traffic_gdf_crs: pyproj.CRS) 
     nodata_value = raster_dict['nodata']
 
     mask = (~np.isnan(arr)) & (arr != nodata_value) & (arr != 0)
-    geoms = []
-    for geom, _ in shapes(arr, mask=mask, transform=transform):
-        geoms.append(shape(geom))
 
-    multipolygon: MultiPolygon = unary_union(geoms)
-    transformer = Transformer.from_crs(raster_crs, traffic_gdf_crs, always_xy=True)
-    multipolygon_proj = shapely.transform(multipolygon, transformer.transform, interleaved=False)
+    built_up = gpd.GeoSeries(
+        [shape(geom) for geom, _ in shapes(arr, mask=mask, transform=transform)],
+        crs=raster_crs,
+    )
+    built_up = built_up.to_crs(traffic_gdf_crs)
 
-    return multipolygon_proj
+    return built_up

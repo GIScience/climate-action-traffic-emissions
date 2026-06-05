@@ -116,7 +116,9 @@ def preprocess(
     """
     built_up = get_built_up_area(aoi_poly=aoi_poly, traffic_gdf_crs=gdf_traffic.crs, built_raster_url=built_raster_url)
     gdf_traffic['road_type'] = 'outside'
-    filtered = gdf_traffic[gdf_traffic.intersects(built_up, align=True)]
+    temp_built_up = gpd.GeoDataFrame(geometry=built_up)
+    idx = gdf_traffic.sjoin(temp_built_up, how='inner', predicate='intersects').index.unique()
+    filtered = gdf_traffic.loc[idx]
     gdf_traffic.loc[filtered.index, 'road_type'] = 'inside'
     gdf_traffic.loc[
         gdf_traffic['highway'].isin(
@@ -133,13 +135,13 @@ def preprocess(
 
 def get_built_up_area(
     aoi_poly: shapely.MultiPolygon, traffic_gdf_crs: pyproj.CRS, built_raster_url: str
-) -> shapely.MultiPolygon:
+) -> gpd.GeoSeries:
     """
     Gets built-up areas in the AOI as a GeoSeries.
     :param built_raster_url: URL of the built-up raster in the S3 storage
     :param aoi_poly: Area of interest as multipolygon.
     :param traffic_gdf_crs: CRS of traffic_gdf.
-    :return: GeoSeries with built-up areas as multipolygon.
+    :return: GeoSeries with built-up areas.
     """
     raster_dict = get_built_up_raster(aoi_poly, built_raster_url=built_raster_url)
     built_up = get_built_up_geom(raster_dict, traffic_gdf_crs)
