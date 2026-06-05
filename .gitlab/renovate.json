@@ -6,6 +6,7 @@
   "lockFileMaintenance": {
     "enabled": true
   },
+  "ignoreDeps": ["rasterstats"],
   "packageRules": [
     {
       "matchUpdateTypes": [
@@ -30,9 +31,6 @@
         "minor"
       ],
       "enabled": false
-    },
-    {
-      "ignoreDeps": ["rasterstats"]
     }
   ]
 }
