@@ -30,6 +30,9 @@
         "minor"
       ],
       "enabled": false
+    },
+    {
+      "ignoreDeps": ["rasterstats"]
     }
   ]
 }
