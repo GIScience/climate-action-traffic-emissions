@@ -1,6 +1,6 @@
 [project]
 name = "traffic-emissions"
-version = "1.0.0"
+version = "1.0.1"
 description = "This indicator computes carbon dioxide emissions from road traffic in an area of interest within Germany"
 authors = [
     { name = "Veit Ulrich", email = "veit.ulrich@heigit.org"},

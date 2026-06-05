@@ -5,11 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project mostly adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/compare/1.0.0...main)
+## [Unreleased](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/compare/1.0.1...main)
+
+## [1.0.1](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/1.0.1) - 2026-06-05
 
 ### Changed
 
 - Speed up the tests using vcr cassette ([#43](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/43))
+- Add limitation of plugin to Germany to plugin description ([#56](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/56))
 
 ## [1.0.0](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/1.0.0) - 2026-04-30
 
