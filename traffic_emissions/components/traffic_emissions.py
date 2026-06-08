@@ -12,6 +12,9 @@ from climatoology.base.artifact import Artifact, ArtifactMetadata, Legend
 from climatoology.base.artifact_creators import create_plotly_chart_artifact, create_vector_artifact
 from climatoology.base.baseoperator import AoiProperties
 from climatoology.base.computation import ComputationResources
+from geopandas import GeoDataFrame
+from pandas import Index
+from shapely import MultiPolygon
 
 from traffic_emissions.components.utils import (
     DENSITY_DIESEL,
@@ -114,23 +117,31 @@ def preprocess(
     :param gdf_traffic: GeoDataFrame of OSM road network with estimated traffic volumes
     :return: gdf_traffic: GeoDataFrame with roads and their attributes (inside city / outside city / motorway)
     """
-    built_up = get_built_up_area(aoi_poly=aoi_poly, traffic_gdf_crs=gdf_traffic.crs, built_raster_url=built_raster_url)
     gdf_traffic['road_type'] = 'outside'
-    temp_built_up = gpd.GeoDataFrame(geometry=built_up)
-    idx = gdf_traffic.sjoin(temp_built_up, how='inner', predicate='intersects').index.unique()
-    filtered = gdf_traffic.loc[idx]
-    gdf_traffic.loc[filtered.index, 'road_type'] = 'inside'
+
+    roads_in_cities_idx = roads_intersecting_cities(
+        aoi_poly=aoi_poly, roads=gdf_traffic, built_raster_url=built_raster_url
+    )
+    gdf_traffic.loc[roads_in_cities_idx, 'road_type'] = 'inside'
+
+    motorway_idx = gdf_traffic['highway'].isin(['motorway', 'motorway_link'])
     gdf_traffic.loc[
-        gdf_traffic['highway'].isin(
-            [
-                'motorway',
-                'motorway_link',
-            ]
-        ),
+        motorway_idx,
         'road_type',
     ] = 'motorway'
+
     gdf_traffic.maxspeed = pd.to_numeric(gdf_traffic.maxspeed, errors='coerce').astype('Int64')
+
     return gdf_traffic
+
+
+def roads_intersecting_cities(aoi_poly: MultiPolygon, built_raster_url: str, roads: GeoDataFrame) -> Index:
+    built_up = get_built_up_area(aoi_poly=aoi_poly, traffic_gdf_crs=roads.crs, built_raster_url=built_raster_url)
+
+    intersections = roads.sindex.query(built_up, predicate='intersects')
+    roads_in_cities_idx = roads.index[np.unique(intersections[1])]
+
+    return roads_in_cities_idx
 
 
 def get_built_up_area(
