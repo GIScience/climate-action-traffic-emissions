@@ -38,7 +38,7 @@ repository = "https://gitlab.heigit.org/climate-action/plugins/traffic-emissions
 [tool.poetry.group.test.dependencies]
 pytest = "^9.0.0"
 pytest-cov = "^7.0.0"
-responses = "^0.25.3"
+responses = "^0.26.0"
 vcrpy = {version = "^7.0.0", markers = "platform_python_implementation !='PyPy'"}
 approvaltests = "^15.2.1"
 
