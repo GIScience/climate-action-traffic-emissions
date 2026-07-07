@@ -144,6 +144,5 @@ def mock_s3_built_up_raster():
 def vcr_config():
     return {
         'filter_headers': ['authorization'],
-        'record_mode': 'none',
         'cassette_library_dir': 'test/resources/vcr_cassettes',
     }
