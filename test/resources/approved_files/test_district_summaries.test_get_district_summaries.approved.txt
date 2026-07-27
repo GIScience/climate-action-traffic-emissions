@@ -1,2 +1,0 @@
-,name,t_CO2_km_yr,t_CO_km_yr,t_NOx_km_yr,t_CO2_km2_yr,t_CO_km2_yr,t_NOx_km2_yr
-0,Bergheim,125.0,12.5,2.5,183.7286151885956,18.37286151885956,3.674572303771912

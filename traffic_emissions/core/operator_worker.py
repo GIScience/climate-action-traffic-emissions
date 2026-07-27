@@ -1,6 +1,6 @@
 # You may ask yourself why this file has such a strange name.
 # Well ... python imports: https://discuss.python.org/t/warning-when-importing-a-local-module-with-the-same-name-as-a-2nd-or-3rd-party-module/27799
-import logging
+import importlib
 from typing import List
 
 import geopandas as gpd
@@ -8,8 +8,8 @@ import rasterio
 import shapely
 from climatoology.base.baseoperator import AoiProperties, Artifact, BaseOperator, ComputationResources
 from climatoology.base.exception import ClimatoologyUserError
-from climatoology.base.plugin_info import PluginInfo
-from ohsome import OhsomeClient
+from climatoology.base.plugin_info import PluginInfo, get_climatoology_logger
+from ohsome_py2.client import OhsomeClient
 from pydantic_extra_types.language_code import LanguageAlpha2
 from rasterio.session import AWSSession
 
@@ -25,13 +25,23 @@ from traffic_emissions.core.info import get_info
 from traffic_emissions.core.input import ComputeInput
 from traffic_emissions.core.settings import Settings
 
-log = logging.getLogger(__name__)
+log = get_climatoology_logger(__name__)
 
 
 class Operator(BaseOperator[ComputeInput]):
     def __init__(self, settings: Settings):
         super().__init__()
-        self.ohsome = OhsomeClient()
+
+        version = importlib.metadata.version('traffic_emissions')
+        user_agent = 'climate-action-navigator-traffic-emissions/' + version
+
+        log.info(f'Running operator with {settings.feature_flag_ohsome2=}')
+        self.ohsome = OhsomeClient(
+            user_agent=user_agent,
+            base_url=settings.ohsome_base_url,
+            v2=settings.feature_flag_ohsome2,
+        )
+
         self.s3_client = AWSSession(
             endpoint_url=settings.data_s3_endpoint,
             aws_access_key_id=settings.data_s3_access_key,

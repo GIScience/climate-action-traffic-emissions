@@ -1,13 +1,18 @@
-import logging
 from datetime import timedelta
 from pathlib import Path
 
-from climatoology.base.plugin_info import Concern, PluginAuthor, PluginInfo, generate_plugin_info
+from climatoology.base.plugin_info import (
+    Concern,
+    PluginAuthor,
+    PluginInfo,
+    generate_plugin_info,
+    get_climatoology_logger,
+)
 from pydantic import HttpUrl
 
 from traffic_emissions.core.input import ComputeInput
 
-log = logging.getLogger(__name__)
+log = get_climatoology_logger(__name__)
 
 
 def get_info() -> PluginInfo:

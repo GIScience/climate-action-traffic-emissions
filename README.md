@@ -15,6 +15,8 @@ To run your plugin locally requires the following setup:
 We use [pytest](https://pytest.org) as a testing engine.
 Ensure all tests are passing by running `poetry run pytest`.
 
+To record new cassettes, make sure the `OHSOME_BASE_URL` is set in `.env`.
+
 #### Coverage
 
 To get a coverage report of how much of your code is run during testing, execute

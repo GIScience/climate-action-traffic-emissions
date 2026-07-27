@@ -1,0 +1,124 @@
+interactions:
+- request:
+    body: bpolys=%7B%22type%22%3A+%22FeatureCollection%22%2C+%22features%22%3A+%5B%7B%22id%22%3A+%220%22%2C+%22type%22%3A+%22Feature%22%2C+%22properties%22%3A+%7B%7D%2C+%22geometry%22%3A+%7B%22type%22%3A+%22MultiPolygon%22%2C+%22coordinates%22%3A+%5B%5B%5B%5B72.883%2C+42.16%5D%2C+%5B72.883%2C+42.161%5D%2C+%5B72.884%2C+42.161%5D%2C+%5B72.884%2C+42.16%5D%2C+%5B72.883%2C+42.16%5D%5D%5D%5D%7D%7D%5D%7D&filter=%28highway%3Dmotorway+or+highway%3Dmotorway_link+or+highway%3Dmotorway_junction+or+highway%3Dtrunk+or+highway%3Dtrunk_link+or+highway%3Dprimary+or+highway%3Dprimary_link+or+highway%3Dsecondary+or+highway%3Dsecondary_link+or+highway%3Dtertiary+or+highway%3Dtertiary_link%29+and+geometry%3Aline&properties=tags&clipGeometry=True
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '724'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      user-agent:
+      - ohsome-py/0.3.0
+    method: POST
+    uri: https://api.ohsome.org/v1/elements/geometry
+  response:
+    body:
+      string: "{\n  \"attribution\" : {\n    \"url\" : \"https://ohsome.org/copyrights\",\n
+        \   \"text\" : \"\xA9 OpenStreetMap contributors\"\n  },\n  \"apiVersion\"
+        : \"1.10.4\",\n  \"type\" : \"FeatureCollection\",\n  \"features\" : [{\n
+        \   \"type\" : \"Feature\",\n    \"geometry\" : {\n      \"type\" : \"LineString\",\n
+        \     \"coordinates\" : [\n        [\n          72.884,\n          42.1601433\n
+        \       ],\n        [\n          72.883,\n          42.1602217\n        ]\n
+        \     ]\n    },\n    \"properties\" : {\n      \"@osmId\" : \"way/234223125\",\n
+        \     \"@snapshotTimestamp\" : \"2026-06-19T10:00:00Z\",\n      \"highway\"
+        : \"trunk\",\n      \"int_ref\" : \"E 010;AH7\",\n      \"lanes\" : \"2\",\n
+        \     \"maxspeed\" : \"90\",\n      \"name\" : \"\u0411\u0438\u0448\u043A\u0435\u043A-\u041E\u0448\",\n
+        \     \"old_ref\" : \"\u041C-41\",\n      \"ref\" : \"\u042D\u041C-04\",\n
+        \     \"surface\" : \"asphalt\"\n    }\n  }]\n}\n"
+    headers:
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Headers:
+      - Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization
+      Access-Control-Allow-Methods:
+      - POST, GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '3600'
+      Connection:
+      - Keep-Alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/geo+json;charset=utf-8
+      Content-disposition:
+      - attachment;filename=ohsome.geojson
+      Date:
+      - Fri, 24 Jul 2026 12:34:45 GMT
+      Keep-Alive:
+      - timeout=5, max=100
+      Server:
+      - Apache/2.4.58 (Ubuntu)
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubdomains;
+      Transfer-Encoding:
+      - chunked
+      vary:
+      - accept-encoding
+    status:
+      code: 200
+      message: ''
+- request:
+    body: bpolys=%7B%22type%22%3A+%22FeatureCollection%22%2C+%22features%22%3A+%5B%7B%22id%22%3A+%220%22%2C+%22type%22%3A+%22Feature%22%2C+%22properties%22%3A+%7B%7D%2C+%22geometry%22%3A+%7B%22type%22%3A+%22MultiPolygon%22%2C+%22coordinates%22%3A+%5B%5B%5B%5B72.883%2C+42.16%5D%2C+%5B72.883%2C+42.161%5D%2C+%5B72.884%2C+42.161%5D%2C+%5B72.884%2C+42.16%5D%2C+%5B72.883%2C+42.16%5D%5D%5D%5D%7D%7D%5D%7D&filter=%28highway%3Dmotorway+or+highway%3Dmotorway_link+or+highway%3Dmotorway_junction+or+highway%3Dtrunk+or+highway%3Dtrunk_link+or+highway%3Dprimary+or+highway%3Dprimary_link+or+highway%3Dsecondary+or+highway%3Dsecondary_link+or+highway%3Dtertiary+or+highway%3Dtertiary_link%29+and+geometry%3Aline
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '690'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      user-agent:
+      - ohsome-py/0.3.0
+    method: POST
+    uri: https://api.ohsome.org/v1/elements/length
+  response:
+    body:
+      string: "{\n  \"attribution\" : {\n    \"url\" : \"https://ohsome.org/copyrights\",\n
+        \   \"text\" : \"\xA9 OpenStreetMap contributors\"\n  },\n  \"apiVersion\"
+        : \"1.10.4\",\n  \"result\" : [ {\n    \"timestamp\" : \"2026-06-19T10:00:00Z\",\n
+        \   \"value\" : 83.07\n  } ]\n}"
+    headers:
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Headers:
+      - Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization
+      Access-Control-Allow-Methods:
+      - POST, GET
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Max-Age:
+      - '3600'
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Connection:
+      - Keep-Alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 24 Jul 2026 12:34:46 GMT
+      Keep-Alive:
+      - timeout=5, max=100
+      Server:
+      - Apache/2.4.58 (Ubuntu)
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubdomains;
+      Transfer-Encoding:
+      - chunked
+      vary:
+      - accept-encoding
+    status:
+      code: 200
+      message: ''
+version: 1

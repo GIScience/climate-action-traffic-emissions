@@ -1,14 +1,19 @@
 import geopandas as gpd
+import geopandas.testing
+import pandas as pd
 import pytest
-from approvaltests import verify
+import shapely
 from climatoology.base.exception import ClimatoologyUserError
 from shapely.geometry.linestring import LineString
 
+from test.conftest import TEST_RESOURCES_DIR
 from traffic_emissions.components.district_summaries import (
     clean_admin_boundaries,
     get_admin_boundaries,
     get_district_summaries,
 )
+
+APPROVAL_FILES_DIR = TEST_RESOURCES_DIR / 'approved_files'
 
 DISTRICT_LINE_GEOM = gpd.GeoSeries(
     [
@@ -32,25 +37,42 @@ DISTRICT_SUMMARY_TEST_GDF = gpd.GeoDataFrame(
 )
 
 
+@pytest.mark.parametrize('ohsome_fixture', (['ohsome_client_v1', 'ohsome_client_v2']))
 @pytest.mark.vcr
-def test_get_district_summaries(operator, default_aoi):
-    mean_df = get_district_summaries(DISTRICT_SUMMARY_TEST_GDF, default_aoi, operator.ohsome)
-    verify(mean_df.to_csv())
+def test_get_district_summaries(ohsome_fixture, default_aoi, request):
+    ohsome_client = request.getfixturevalue(ohsome_fixture)
+
+    expected_df = pd.read_csv(APPROVAL_FILES_DIR / 'test_get_district_summaries.csv')
+
+    mean_df = get_district_summaries(DISTRICT_SUMMARY_TEST_GDF, default_aoi, ohsome_client)
+
+    pd.testing.assert_frame_equal(mean_df, expected_df)
 
 
+@pytest.mark.parametrize('ohsome_fixture', (['ohsome_client_v1', 'ohsome_client_v2']))
 @pytest.mark.vcr
-def test_get_district_summaries_no_intersection(operator, test_aoi):
+def test_get_district_summaries_no_intersection(ohsome_fixture, test_aoi, request):
+    ohsome_client = request.getfixturevalue(ohsome_fixture)
+
     with pytest.raises(
         ClimatoologyUserError,
         match=r'Could not be created because no administrative districts were found within the selected area',
     ):
-        get_district_summaries(DISTRICT_SUMMARY_TEST_GDF, test_aoi, operator.ohsome)
+        get_district_summaries(DISTRICT_SUMMARY_TEST_GDF, test_aoi, ohsome_client)
 
 
+@pytest.mark.parametrize('ohsome_fixture', (['ohsome_client_v1', 'ohsome_client_v2']))
 @pytest.mark.vcr
-def test_get_admin_boundaries(operator, freiburg_aoi):
-    boundaries = get_admin_boundaries(operator.ohsome, freiburg_aoi)
-    verify(boundaries.to_csv())
+def test_get_admin_boundaries(ohsome_fixture, freiburg_aoi, request):
+    ohsome_client = request.getfixturevalue(ohsome_fixture)
+
+    expected_df = pd.read_csv(APPROVAL_FILES_DIR / f'test_get_admin_boundaries[{ohsome_fixture}].csv')
+    expected_df['geom'] = expected_df['geom'].apply(shapely.wkt.loads)
+    expected_boundaries = gpd.GeoDataFrame(expected_df, geometry='geom', crs=4326)
+
+    boundaries = get_admin_boundaries(freiburg_aoi, ohsome_client)
+
+    geopandas.testing.assert_geodataframe_equal(boundaries, expected_boundaries, check_like=True)
 
 
 def test_clean_admin_boundaries(freiburg_aoi):

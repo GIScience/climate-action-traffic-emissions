@@ -1,3 +1,4 @@
+import os
 import uuid
 from pathlib import Path
 from unittest.mock import patch
@@ -7,6 +8,8 @@ import rasterio
 import shapely
 from climatoology.base.baseoperator import AoiProperties
 from climatoology.base.computation import ComputationScope
+from dotenv import load_dotenv
+from ohsome_py2.client import OhsomeClient
 from pydantic import SecretStr
 from shapely import Polygon
 
@@ -15,6 +18,21 @@ from traffic_emissions.core.operator_worker import Operator
 from traffic_emissions.core.settings import Settings
 
 TEST_RESOURCES_DIR = Path(__file__).parent / 'resources'
+
+load_dotenv()  # To load the `OHSOME_BASE_URL` environment variable, for recording new cassettes
+pytest_plugins = ('ohsome_py2.test.fixtures',)
+
+
+@pytest.fixture(scope='module')
+def vcr_config(vcr_config_ohsomepy2):
+    vcr_config_ohsomepy2.update(
+        {
+            'filter_headers': ['authorization'],
+            'cassette_library_dir': 'test/resources/vcr_cassettes',
+        }
+    )
+
+    return vcr_config_ohsomepy2
 
 
 @pytest.fixture
@@ -89,8 +107,20 @@ def operator():
         data_s3_bucket_name='test-bucket',
         pop_raster_object_name='pop',
         built_raster_object_name='built',
+        feature_flag_ohsome2=True,
+        ohsome_base_url=os.getenv('OHSOME_BASE_URL'),
     )
     yield Operator(default_settings)
+
+
+@pytest.fixture
+def ohsome_client_v2():
+    return OhsomeClient(user_agent='Climate Action Traffic Emissions Tests', v2=True)
+
+
+@pytest.fixture
+def ohsome_client_v1():
+    return OhsomeClient(base_url='', user_agent='Climate Action Traffic Emissions Tests', v2=False)
 
 
 @pytest.fixture
@@ -138,11 +168,3 @@ def mock_s3_built_up_raster():
     with patch('rasterio.open', return_value=dataset):
         yield fake_url
     dataset.close()
-
-
-@pytest.fixture(scope='module')
-def vcr_config():
-    return {
-        'filter_headers': ['authorization'],
-        'cassette_library_dir': 'test/resources/vcr_cassettes',
-    }

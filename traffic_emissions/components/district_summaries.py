@@ -4,9 +4,10 @@ import geopandas as gpd
 import pandas as pd
 import shapely
 from climatoology.base.exception import ClimatoologyUserError
-from ohsome import OhsomeClient
+from climatoology.base.logging import get_climatoology_logger
+from ohsome_py2.client import OhsomeClient
 
-from traffic_emissions.components.traffic_emissions import log
+log = get_climatoology_logger(__name__)
 
 
 def get_district_summaries(
@@ -15,7 +16,7 @@ def get_district_summaries(
     ohsome_client: OhsomeClient,
 ) -> pd.DataFrame | None:
     log.info('Creating summary charts of emissions by city district')
-    boundaries = get_admin_boundaries(ohsome_client, aoi)
+    boundaries = get_admin_boundaries(aoi, ohsome_client=ohsome_client)
 
     log.debug(f'Summarising emissions into {boundaries.shape[0]} boundaries')
     mean_df = get_mean_emissions(boundaries, emissions_gdf_with_yearly_emissions)
@@ -24,18 +25,19 @@ def get_district_summaries(
 
 
 def get_admin_boundaries(
-    ohsome_client: OhsomeClient, aoi: shapely.MultiPolygon, start_level: int = 9, stop_level: int = 10
+    aoi: shapely.MultiPolygon, ohsome_client: OhsomeClient, start_level: int = 9, stop_level: int = 10
 ) -> gpd.GeoDataFrame:
     admin_levels = list(range(start_level, stop_level + 1))
-    required_keys = ['admin_level', 'name']
+    osm_filter = f'geometry:polygon and boundary=administrative and admin_level in {tuple(admin_levels)}'
 
-    all_boundaries = ohsome_client.elements.geometry.post(
-        properties='tags',
-        bpolys=aoi,
-        filter=f'geometry:polygon and boundary=administrative and admin_level in {tuple(admin_levels)}',
-        clipGeometry=False,
-    ).as_dataframe(explode_tags=required_keys)
+    log.info('Querying admin boundaries from ohsome')
+    all_boundaries = ohsome_client.features_extraction(
+        aoi=aoi,
+        osm_filter=osm_filter,
+        clip=False,
+    )
 
+    log.info('Finished querying admin boundaries from ohsome')
     all_boundaries = clean_admin_boundaries(boundaries=all_boundaries, aoi=aoi)
 
     boundaries = None
@@ -46,14 +48,11 @@ def get_admin_boundaries(
             already_covered = shapely.union_all(boundaries.geometry)
             filler_boundaries = group[~group.geometry.within(already_covered.buffer(1e-6))]
             log.debug(f'Added {len(filler_boundaries)} from admin level {level}')
-            boundaries = gpd.GeoDataFrame(pd.concat([boundaries, filler_boundaries]), crs=boundaries.crs)
+            boundaries = pd.concat([boundaries, filler_boundaries])
 
         already_covered = shapely.union_all(boundaries.geometry)
         if already_covered.buffer(1e-6).contains(aoi):
             break
-
-    if boundaries is None:
-        return gpd.GeoDataFrame(columns=['geometry'] + required_keys)
 
     return boundaries
 
@@ -74,7 +73,8 @@ def clean_admin_boundaries(boundaries: gpd.GeoDataFrame, aoi: shapely.MultiPolyg
         )
 
     boundaries['admin_level'] = boundaries['admin_level'].astype(int)
-    boundaries = boundaries.drop(columns=['@other_tags', 'prop_covered'])
+    boundaries = boundaries[['geom', 'admin_level', 'name']]
+
     boundaries = boundaries.reset_index(drop=True)
     return boundaries
 

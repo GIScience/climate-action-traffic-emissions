@@ -7,6 +7,10 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 
 ## [Unreleased](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/compare/1.0.1...main)
 
+### Changed
+
+- Set `FEATURE_FLAG_OHSOME2=True` to use ohsome API v2 for OSM data extraction instead of ohsome API v1 via `ohsome-py` library ([#47](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/merge_requests/47))
+
 ## [1.0.1](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/1.0.1) - 2026-06-05
 
 ### Changed

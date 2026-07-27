@@ -1,4 +1,3 @@
-import logging
 from enum import Enum
 from pathlib import Path
 
@@ -8,7 +7,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import pyproj
 import shapely
-from climatoology.base.artifact import Artifact, ArtifactMetadata, Legend
+from climatoology.base.artifact import Artifact, ArtifactMetadata, Legend, get_climatoology_logger
 from climatoology.base.artifact_creators import create_plotly_chart_artifact, create_vector_artifact
 from climatoology.base.baseoperator import AoiProperties
 from climatoology.base.computation import ComputationResources
@@ -27,7 +26,7 @@ from traffic_emissions.components.utils import (
     get_colors_legend,
 )
 
-log = logging.getLogger(__name__)
+log = get_climatoology_logger(__name__)
 
 
 class EmissionsFactors(Enum):

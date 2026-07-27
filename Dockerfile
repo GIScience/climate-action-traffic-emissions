@@ -20,7 +20,9 @@ ENV PATH="$PATH:$POETRY_HOME/bin"
 
 COPY pyproject.toml poetry.lock ./
 
-RUN poetry install --no-ansi --no-interaction --without dev,test --no-root
+RUN --mount=type=secret,id=CI_JOB_TOKEN,env=CI_JOB_TOKEN \
+    git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.heigit.org".insteadOf "ssh://git@gitlab.heigit.org:2022" && \
+    poetry install --no-ansi --no-interaction --without dev,test --no-root
 
 COPY $PACKAGE_NAME $PACKAGE_NAME
 COPY resources resources

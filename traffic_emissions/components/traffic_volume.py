@@ -1,4 +1,3 @@
-import logging
 from pathlib import Path
 
 import geopandas as gpd
@@ -6,11 +5,11 @@ import joblib
 import numpy as np
 import pandas as pd
 import shapely
-from climatoology.base.artifact import Artifact, ArtifactMetadata, Legend
+from climatoology.base.artifact import Artifact, ArtifactMetadata, Legend, get_climatoology_logger
 from climatoology.base.artifact_creators import create_vector_artifact
 from climatoology.base.computation import ComputationResources
 from climatoology.base.exception import ClimatoologyUserError
-from ohsome import OhsomeClient
+from ohsome_py2.client import OhsomeClient
 
 from traffic_emissions.components.utils import (
     Topic,
@@ -19,16 +18,16 @@ from traffic_emissions.components.utils import (
     get_pop_raster,
 )
 
-log = logging.getLogger(__name__)
+log = get_climatoology_logger(__name__)
 
 
-def traffic_volume(aoi: shapely.MultiPolygon, ohsome: OhsomeClient, pop_raster_url: str) -> gpd.GeoDataFrame:
+def traffic_volume(aoi: shapely.MultiPolygon, pop_raster_url: str, ohsome: OhsomeClient) -> gpd.GeoDataFrame:
     """
     Estimates mean_dtv (daily traffic volume) for each road segment.
     :return: GeoDataFrame with following columns: geometry, highway, lanes, maxspeed, mean_dtv
     """
     log.info('Calculating average daily traffic volume')
-    road_gdf, total_length = get_roads(aoi, ohsome)
+    road_gdf, _ = get_roads(aoi, ohsome)
     road_gdf = get_road_populations(roads=road_gdf, pop_raster_url=pop_raster_url)
     road_gdf = predict_traffic_volume(road_gdf)
     return road_gdf
@@ -40,13 +39,12 @@ def get_roads(
     """
     Downloads and prepares OSM road network in the given AOI.
 
-    :param client: Ohsome client
+    :param client: ohsome client
     :param aoi_poly: Polygon of AOI (EPSG: 4326)
     :return: gdf_road: GeoDataFrame of OSM road network with highway, lanes, and maxspeed attributes
     :return: length_total: Length of the road network in the AOI in meters
     """
-    log.debug('Getting roads from OSM')
-    time = target_timestamp or client.end_timestamp
+    log.info('Getting roads from ohsome')
     highway_tags = [
         'motorway',
         'motorway_link',
@@ -63,18 +61,19 @@ def get_roads(
     tag_list = [f'highway={highway_tag}' for highway_tag in highway_tags]
     ohsome_filter = f'({" or ".join(tag_list)}) and geometry:line'
 
-    gdf_road = client.elements.geometry.post(
-        bpolys=aoi_poly, time=time, filter=ohsome_filter, clipGeometry=True, properties='tags'
-    ).as_dataframe(explode_tags=['highway', 'lanes', 'maxspeed'])
+    gdf_road = client.features_extraction(aoi=aoi_poly, osm_filter=ohsome_filter, clip=True)
+    gdf_road = gdf_road[['osm_id', 'osm_type', 'geom', 'highway', 'lanes', 'maxspeed']]
+
+    log.info('Finished getting roads from ohsome')
     if len(gdf_road) == 0:
         raise ClimatoologyUserError(
             'There are no roads in the selected area for which traffic emissions can be estimated. Please select a larger area. Traffic emissions cannot be estimated for residential or other minor roads.'
         )
-    gdf_road = gdf_road[['geometry', 'highway', 'lanes', 'maxspeed']]
+
     lanes = pd.to_numeric(gdf_road['lanes'], errors='coerce')
     gdf_road['lanes'] = lanes.where((lanes % 1 == 0) & (lanes.between(0, 255))).astype('Int8')
     gdf_road = gdf_road.to_crs(gdf_road.estimate_utm_crs())
-    length_total = gdf_road.length.sum()
+    length_total = client.features_stats(aoi=aoi_poly, osm_filter=ohsome_filter, measure='length')
     return gdf_road, length_total
 
 
@@ -118,7 +117,7 @@ def predict_traffic_volume(gdf_road: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     model = joblib.load(Path('resources/model.joblib'))
     imputer = joblib.load(Path('resources/imputer.joblib'))
 
-    x_aoi = gdf_road_reg_all.drop(columns='geometry')
+    x_aoi = gdf_road_reg_all.drop(columns='geom')
     train_cols = imputer.feature_names_in_
     x_aoi = x_aoi.reindex(columns=train_cols, fill_value=0)
     x_aoi_imp = imputer.transform(x_aoi)
