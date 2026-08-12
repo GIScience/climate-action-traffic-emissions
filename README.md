@@ -55,7 +55,7 @@ Images are automatically built and deployed in the [CI-pipeline](.gitlab-ci.yml)
 In case you want to manually build and run locally (e.g. to test a new feature in development), execute
 
 ```shell
-docker build --secret id=CI_JOB_TOKEN . --tag repo.heigit.org/climate-action/traffic-emissions:devel
+docker build --tag repo.heigit.org/climate-action/traffic-emissions:devel
 ```
 
 Note that this will overwrite any existing image with the same tag (i.e. the one you previously pulled from the Climate

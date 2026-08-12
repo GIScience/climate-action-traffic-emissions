@@ -34,6 +34,7 @@ def get_admin_boundaries(
     all_boundaries = ohsome_client.features_extraction(
         aoi=aoi,
         osm_filter=osm_filter,
+        tags='exploded',
         clip=False,
     )
 
