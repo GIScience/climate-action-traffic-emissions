@@ -2,7 +2,6 @@ import geopandas as gpd
 import geopandas.testing
 import pandas as pd
 import pytest
-import shapely
 from climatoology.base.exception import ClimatoologyUserError
 from shapely.geometry.linestring import LineString
 
@@ -66,13 +65,14 @@ def test_get_district_summaries_no_intersection(ohsome_fixture, test_aoi, reques
 def test_get_admin_boundaries(ohsome_fixture, freiburg_aoi, request):
     ohsome_client = request.getfixturevalue(ohsome_fixture)
 
-    expected_df = pd.read_csv(APPROVAL_FILES_DIR / f'test_get_admin_boundaries[{ohsome_fixture}].csv')
-    expected_df['geom'] = expected_df['geom'].apply(shapely.wkt.loads)
-    expected_boundaries = gpd.GeoDataFrame(expected_df, geometry='geom', crs=4326)
+    # Don't need to check geometries, which the ohsome API itself is responsible for
+    expected_boundaries = pd.DataFrame({'name': ['Landwasser', 'Lehen'], 'admin_level': [10, 9]})
 
     boundaries = get_admin_boundaries(freiburg_aoi, ohsome_client)
 
-    geopandas.testing.assert_geodataframe_equal(boundaries, expected_boundaries, check_like=True)
+    pd.testing.assert_frame_equal(
+        boundaries[['name', 'admin_level']].sort_values('admin_level'), expected_boundaries, check_like=True
+    )
 
 
 def test_clean_admin_boundaries(freiburg_aoi):

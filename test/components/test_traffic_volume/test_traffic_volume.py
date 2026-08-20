@@ -85,6 +85,7 @@ def test_predict_traffic_volume():
 def test_traffic_volume(ohsome_fixture, small_aoi, request):
     ohsome_client = request.getfixturevalue(ohsome_fixture)
 
+    # TODO: be more precise here - don't need to validate the ohsome geometries
     expected_df = pd.read_csv(
         APPROVAL_FILES_DIR / f'test_traffic_volume[{ohsome_fixture}].csv',
         dtype={'osm_id': str, 'maxspeed': str},
@@ -94,5 +95,4 @@ def test_traffic_volume(ohsome_fixture, small_aoi, request):
 
     road_gdf = traffic_volume(aoi=small_aoi, ohsome=ohsome_client, pop_raster_url=TEST_RESOURCES_DIR / 'pop_raster.tif')
     road_gdf['osm_id'] = road_gdf['osm_id'].astype(str)
-
     geopandas.testing.assert_geodataframe_equal(road_gdf, expected_traffic_volume, check_dtype=False)

@@ -2115,7 +2115,7 @@ urllib3 = ">=2.5.0,<3.0.0"
 
 [[package]]
 name = "ohsome-py2"
-version = "0.2.1"
+version = "0.3.0"
 description = "Basic Python wrappers for querying data from ohsome API v2"
 optional = false
 python-versions = ">=3.13"
@@ -2134,8 +2134,8 @@ shapely = ">=2.1.2"
 [package.source]
 type = "git"
 url = "https://gitlab.heigit.org/climate-action/utilities/ohsome-py2.git"
-reference = "0.2.1"
-resolved_reference = "65cf5ccace44c41b72472977ed9d171226414fd5"
+reference = "0.3.0"
+resolved_reference = "53ff251c0b6058b9545279e779d2af532aeb2bc6"
 
 [[package]]
 name = "packaging"
@@ -4442,4 +4442,4 @@ dev = ["pytest", "setuptools"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13.5,<3.14"
-content-hash = "1420b80ab46ea6c951b443d9daef0071155968e4eee5db6895509edb8b66e11e"
+content-hash = "e98d65b8a6dca9bfdc91b9d0027d7fa0daa0a6545b323b31a470ed55d8bdf07b"
