@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project mostly adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/compare/1.1.1...main)
+## [Unreleased](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/compare/1.1.2...main)
+
+## [1.1.2](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/1.1.2) - 2026-08-26
+
+### Changed
+
+- Updated ohsome-py2 to use the latest ohsome v2 API schema
 
 ## [1.1.1](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/1.1.1) - 2026-08-20
 
