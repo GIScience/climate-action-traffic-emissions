@@ -5,7 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project mostly adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/compare/1.1.2...main)
+## [Unreleased](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/compare/1.1.3...main)
+
+## [1.1.3](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/1.1.3) - 2026-09-10
+
+### Added
+
+Add AOI constraint to enable selection of AOIs in Germany only ([#66](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/66))
+
+### Changed
+
+- Update Climatoology to 7.4.0
+- Remove check_aoi function as it is already controlled by front-end
 
 ## [1.1.2](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/1.1.2) - 2026-08-26
 

@@ -3,11 +3,9 @@
 import importlib
 from typing import List
 
-import geopandas as gpd
 import rasterio
 import shapely
 from climatoology.base.baseoperator import AoiProperties, Artifact, BaseOperator, ComputationResources
-from climatoology.base.exception import ClimatoologyUserError
 from climatoology.base.plugin_info import PluginInfo, get_climatoology_logger
 from ohsome_py2.client import OhsomeClient
 from pydantic_extra_types.language_code import LanguageAlpha2
@@ -61,8 +59,6 @@ class Operator(BaseOperator[ComputeInput]):
         params: ComputeInput,
         language: LanguageAlpha2,
     ) -> List[Artifact]:
-        self.check_aoi(aoi, aoi_properties)
-
         # this is the process to access S3 stored rasters directly, the alternative is to use pre-signed URLs
         with rasterio.Env(self.s3_client, AWS_VIRTUAL_HOSTING=False):
             road_gdf = traffic_volume(aoi=aoi, ohsome=self.ohsome, pop_raster_url=self.pop_raster_url)
@@ -81,13 +77,3 @@ class Operator(BaseOperator[ComputeInput]):
         artifacts.extend(emission_artifacts)
 
         return artifacts
-
-    @staticmethod
-    def check_aoi(aoi: shapely.MultiPolygon, aoi_properties: AoiProperties) -> None:
-        germany = gpd.read_file('resources/germany_buffered_boundaries.json')
-        inside_germany = aoi.within(germany.geometry)
-        if not inside_germany[0]:
-            raise ClimatoologyUserError(
-                f'For now, estimates of traffic emissions are only available for Germany. {aoi_properties.name} is '
-                'outside Germany. We are working on expanding the tool to other countries'
-            )
