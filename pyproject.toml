@@ -39,7 +39,7 @@ repository = "https://gitlab.heigit.org/climate-action/plugins/traffic-emissions
 pytest = "^9.0.0"
 pytest-cov = "^7.0.0"
 responses = "^0.26.0"
-approvaltests = "^15.2.1"
+approvaltests = "^19.0.0"
 pytest-recording = "^0.13.4"
 python-dotenv = "^1.2.2"
 
