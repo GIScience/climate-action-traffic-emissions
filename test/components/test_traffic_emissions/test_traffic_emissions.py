@@ -1,7 +1,6 @@
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-from approvaltests import verify
 from climatoology.base.artifact import ArtifactModality
 from shapely.geometry import LineString
 
@@ -67,10 +66,19 @@ def test_traffic_emissions(default_aoi):
         geometry=LINE_GEOM,
         crs='EPSG:4326',
     )
+    expected_road_types = pd.Series(
+        ['outside', 'motorway', 'outside', 'outside', 'outside', 'outside'], name='road_type'
+    )
+    expected_co2_emissions = pd.Series([71.6, 82.4, 59.2, 350.7, 589.3, 711.9], name='t_CO2_km_yr')
+    expected_co_emissions = pd.Series([1.2, 1.4, 1.0, 5.8, 9.7, 11.7], name='t_CO_km_yr')
+    expected_nox_emissions = pd.Series([0.2, 0.2, 0.2, 0.9, 1.6, 1.9], name='t_NOx_km_yr')
     emissions_gdf = traffic_emissions(
         road_gdf=roads, aoi_poly=default_aoi, built_raster_url=TEST_RESOURCES_DIR / 'built_up_raster.tif'
     )
-    verify(emissions_gdf.to_csv())
+    pd.testing.assert_series_equal(emissions_gdf['road_type'], expected_road_types)
+    pd.testing.assert_series_equal(emissions_gdf['t_CO2_km_yr'].round(1), expected_co2_emissions)
+    pd.testing.assert_series_equal(emissions_gdf['t_CO_km_yr'].round(1), expected_co_emissions)
+    pd.testing.assert_series_equal(emissions_gdf['t_NOx_km_yr'].round(1), expected_nox_emissions)
 
 
 def test_get_emission_sums():

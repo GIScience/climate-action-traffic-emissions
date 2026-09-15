@@ -7,6 +7,14 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 
 ## [Unreleased](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/compare/1.1.3...main)
 
+### Changed
+
+- Update climatoology to 7.4.1
+
+### Removed
+
+- Remove approvaltests
+
 ## [1.1.3](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/1.1.3) - 2026-09-10
 
 ### Added
