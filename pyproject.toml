@@ -35,6 +35,9 @@ dependencies = [
 [project.urls]
 repository = "https://gitlab.heigit.org/climate-action/plugins/traffic-emissions"
 
+[project.scripts]
+plugin = "traffic_emissions.plugin:start"
+
 [tool.poetry.group.test.dependencies]
 pytest = "^9.0.0"
 pytest-cov = "^7.0.0"
