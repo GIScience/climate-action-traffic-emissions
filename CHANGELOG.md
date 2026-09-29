@@ -18,6 +18,7 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 ### Fixed
 
 - bloated docker image by using python-slim and only the required files
+- only get necessary tags from Ohsome ([#68](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/68))
 
 ## [1.1.3](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/1.1.3) - 2026-09-10
 

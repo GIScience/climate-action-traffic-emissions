@@ -61,7 +61,9 @@ def get_roads(
     tag_list = [f'highway={highway_tag}' for highway_tag in highway_tags]
     ohsome_filter = f'({" or ".join(tag_list)}) and geometry:line'
 
-    gdf_road = client.features_extraction(aoi=aoi_poly, osm_filter=ohsome_filter, tags='exploded', clip=True)
+    gdf_road = client.features_extraction(
+        aoi=aoi_poly, osm_filter=ohsome_filter, tags=['highway', 'lanes', 'maxspeed'], clip=True
+    )
     gdf_road = gdf_road[['osm_id', 'osm_type', 'geom', 'highway', 'lanes', 'maxspeed']]
 
     log.info('Finished getting roads from ohsome')
