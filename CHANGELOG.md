@@ -19,6 +19,8 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 
 - bloated docker image by using python-slim and only the required files
 - only get necessary tags from Ohsome ([#68](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/68))
+- Replace np.logspace by np.geomspace in `get_colors_legend` to avoid floating point errors ([#69](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/69))
+- Make sure `color_series` only contains valid positive values ([#70](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/70))
 
 ## [1.1.3](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/1.1.3) - 2026-09-10
 

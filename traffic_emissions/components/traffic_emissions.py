@@ -291,9 +291,10 @@ def build_traffic_emissions_artifact(
 ) -> Artifact:
     gas_name = gas.value.get('name')
     display_name = gas.value.get('display_name')
-    color, legend = get_colors_legend(emissions_gdf[f't_{gas_name}_km_yr'])
+    emissions_col = f't_{gas_name}_km_yr'
+    color, legend = get_colors_legend(emissions_gdf[emissions_col])
     emissions_gdf['color'] = color
-    emissions_gdf[f't_{gas_name}_km_yr'] = emissions_gdf[f't_{gas_name}_km_yr'].round(2)
+    emissions_gdf[emissions_col] = emissions_gdf[emissions_col].round(2)
     description_path = f'resources/artifact_descriptions/traffic_emissions_description/{gas_name}.md'
     traffic_emissions_metadata = ArtifactMetadata(
         name=f'Annual {display_name} emissions [t/road-km]',
@@ -307,7 +308,7 @@ def build_traffic_emissions_artifact(
         data=emissions_gdf,
         metadata=traffic_emissions_metadata,
         legend=Legend(legend_data=legend),
-        label=f't_{gas_name}_km_yr',
+        label=emissions_col,
         resources=resources,
     )
 

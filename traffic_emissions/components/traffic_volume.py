@@ -129,6 +129,9 @@ def predict_traffic_volume(gdf_road: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     gdf_road = gdf_road.merge(gdf_road_reg_all[['mean_dtv']], left_index=True, right_index=True)
     gdf_road = gdf_road[gdf_road.geometry.geom_type.isin(['LineString', 'MultiLineString'])]
 
+    # In rare cases, negative traffic values may occur here. The reason for this is unknown.
+    gdf_road = gdf_road[gdf_road['mean_dtv'].gt(0)]
+
     return gdf_road
 
 

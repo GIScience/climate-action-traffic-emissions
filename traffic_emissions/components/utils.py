@@ -53,7 +53,8 @@ def get_colors_legend(color_series: pd.Series) -> tuple[list[Color], ContinuousL
     cmap.set_under('#808080')
     color = [Color(colors.to_hex(col)) for col in cmap(norm(color_series))]
 
-    tick_values = np.logspace(np.log10(color_series.min()), np.log10(color_series.max()), num=5)
+    tick_values = np.geomspace(color_series.min(), color_series.max(), num=5)
+
     if color_series.min() < 10:
         ticks = {f'{round(v, 1):n}': norm(v) for v in tick_values}
     else:
