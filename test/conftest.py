@@ -29,6 +29,7 @@ def vcr_config(vcr_config_ohsomepy2):
         {
             'filter_headers': ['authorization'],
             'cassette_library_dir': 'test/resources/vcr_cassettes',
+            'match_on': ['method', 'scheme', 'host', 'port', 'path', 'query', 'body'],
         }
     )
 
