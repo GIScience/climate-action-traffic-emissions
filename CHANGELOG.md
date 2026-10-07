@@ -7,6 +7,10 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 
 ## [Unreleased](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/compare/1.1.4...main)
 
+### Changed
+
+- Updated pandas to v3
+
 ## [1.1.4](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/1.1.4) - 2026-10-05
 
 ### Changed
