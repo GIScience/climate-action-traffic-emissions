@@ -61,21 +61,21 @@ The speed-dependent fuel consumption is further weighted by the market shares of
 
 | Vehicle Type       | Market Share |
 |--------------------|--------------|
-| Petrol car         | 0.534        |
-| Diesel car         | 0.25         |
-| Motorcycle         | 0.082        |
+| Petrol car         | 0.522        |
+| Diesel car         | 0.245         |
+| Motorcycle         | 0.088        |
 | Bus                | 0.001        |
-| Rigid truck        | 0.062        |
+| Rigid truck        | 0.067        |
 | Articulated truck  | 0.004        |
-| Other              | 0.042        |
+| Other              | 0.043        |
 
 For roads without speed limit information, we assume fixed traveling speeds. Using the fuel consumption functions above, this leads us to the following emission factors for roads without speed information:
 
 | Road type                        | Speed [km/h] | g CO₂ / veh-km | g CO / veh-km | g NOₓ / veh-km |
 |----------------------------------|--------------|-------------------|------------------|-------------------|
-| Motorways                        | 120          | 203.64            | 1.25             | 0.52              |
-| Roads outside of built-up areas  | 70           | 153.69            | 0.94             | 0.39              |
-| Roads inside of built-up areas   | 30           | 196.91            | 1.20             | 0.50              |
+| Motorways                        | 120          | 204.6            | 1.25             | 0.53              |
+| Roads outside of built-up areas  | 70           | 153.3            | 0.94             | 0.39              |
+| Roads inside of built-up areas   | 30           | 195.9            | 1.20             | 0.50              |
 
 
 ## Limitations

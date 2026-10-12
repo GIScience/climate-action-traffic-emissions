@@ -46,9 +46,9 @@ def test_calculate_emissions():
         },
         geometry=LINE_GEOM,
     )
-    expected_co2 = pd.Series([59.05, np.nan, 74.46, 71.9, 56.21, np.nan], name='t_CO2_km_yr')
-    expected_co = pd.Series([0.97, np.nan, 1.23, 1.19, 0.93, np.nan], name='t_CO_km_yr')
-    expected_nox = pd.Series([0.16, np.nan, 0.2, 0.19, 0.15, np.nan], name='t_NOx_km_yr')
+    expected_co2 = pd.Series([58.67, np.nan, 74.68, 71.5, 55.95, np.nan], name='t_CO2_km_yr')
+    expected_co = pd.Series([0.36, np.nan, 0.46, 0.44, 0.34, np.nan], name='t_CO_km_yr')
+    expected_nox = pd.Series([0.15, np.nan, 0.19, 0.18, 0.14, np.nan], name='t_NOx_km_yr')
     received = calculate_emissions(roads)
 
     pd.testing.assert_series_equal(received['t_CO2_km_yr'].round(2), expected_co2)
@@ -69,9 +69,9 @@ def test_traffic_emissions(default_aoi):
     expected_road_types = pd.Series(
         ['outside', 'motorway', 'outside', 'outside', 'outside', 'outside'], name='road_type'
     )
-    expected_co2_emissions = pd.Series([71.6, 82.4, 59.2, 350.7, 589.3, 711.9], name='t_CO2_km_yr')
-    expected_co_emissions = pd.Series([1.2, 1.4, 1.0, 5.8, 9.7, 11.7], name='t_CO_km_yr')
-    expected_nox_emissions = pd.Series([0.2, 0.2, 0.2, 0.9, 1.6, 1.9], name='t_NOx_km_yr')
+    expected_co2_emissions = pd.Series([71.1, 82.6, 59.1, 349.1, 585.5, 707.3], name='t_CO2_km_yr')
+    expected_co_emissions = pd.Series([0.4, 0.5, 0.4, 2.1, 3.6, 4.3], name='t_CO_km_yr')
+    expected_nox_emissions = pd.Series([0.2, 0.2, 0.2, 0.9, 1.5, 1.8], name='t_NOx_km_yr')
     emissions_gdf = traffic_emissions(
         road_gdf=roads, aoi_poly=default_aoi, built_raster_url=TEST_RESOURCES_DIR / 'built_up_raster.tif'
     )

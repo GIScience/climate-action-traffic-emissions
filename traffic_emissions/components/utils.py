@@ -20,13 +20,13 @@ from shapely import box
 from shapely.geometry import mapping, shape
 
 MARKET_SHARES = {
-    'petrol_car': 0.534,
-    'diesel_car': 0.25,
-    'motorcycle': 0.082,
+    'petrol_car': 0.522,
+    'diesel_car': 0.245,
+    'motorcycle': 0.088,
     'bus': 0.001,
-    'rigid_truck': 0.062,
+    'rigid_truck': 0.067,
     'articulated_truck': 0.004,
-    'other': 0.042,
+    'other': 0.043,
 }
 
 

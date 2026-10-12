@@ -11,6 +11,7 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 
 - Updated pandas to v3
 - Update CI and dockerfile to simplify and correct poetry installing location
+- Updated emission factors according to most recent data
 
 ## [1.1.4](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/releases/1.1.4) - 2026-10-05
 

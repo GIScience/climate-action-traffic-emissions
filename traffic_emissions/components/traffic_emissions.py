@@ -33,28 +33,28 @@ class EmissionsFactors(Enum):
     CO2 = {  # dead: disable
         'name': 'CO2',
         'column': 't_CO2_km_yr',
-        'fuel': 2389,
-        'motorway': 204,
-        'inside': 197,
-        'outside': 154,
+        'fuel': 2380,
+        'motorway': 204.6,
+        'inside': 195.9,
+        'outside': 153.3,
         'display_name': 'CO₂',
     }
     CO = {  # dead: disable
         'name': 'CO',
         'column': 't_CO_km_yr',
-        'fuel': 39.4,
-        'motorway': 3.36,
-        'inside': 3.25,
-        'outside': 2.54,
+        'fuel': 14.6,
+        'motorway': 1.25,
+        'inside': 1.20,
+        'outside': 0.94,
         'display_name': 'CO',
     }
     NOx = {  # dead: disable
         'name': 'NOx',
         'column': 't_NOx_km_yr',
-        'fuel': 6.3,
-        'motorway': 0.54,
-        'inside': 0.52,
-        'outside': 0.41,
+        'fuel': 6.1,
+        'motorway': 0.53,
+        'inside': 0.50,
+        'outside': 0.39,
         'display_name': 'NOₓ',
     }
 
@@ -276,6 +276,7 @@ def plot_emission_bar(df, gas, city, unit_name, unit_column) -> go.Figure:
 
     fig.update_layout(
         xaxis_title=f'Mean annual {display_name} emissions [{unit_name}]',
+        xaxis_tickformat=',~f',
         yaxis_title='District',
         yaxis=dict(automargin=True),
         showlegend=False,
