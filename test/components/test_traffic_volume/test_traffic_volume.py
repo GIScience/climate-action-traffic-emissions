@@ -85,7 +85,6 @@ def test_predict_traffic_volume():
 def test_traffic_volume(ohsome_fixture, small_aoi, request):
     ohsome_client = request.getfixturevalue(ohsome_fixture)
 
-    # TODO: avoid having to read from a file here
     expected_df = pd.read_csv(
         APPROVAL_FILES_DIR / f'test_traffic_volume[{ohsome_fixture}].csv',
         dtype={'osm_id': str, 'maxspeed': str},
