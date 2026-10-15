@@ -9,7 +9,7 @@ from traffic_emissions.core.settings import Settings
 log = logging.getLogger(__name__)
 
 
-def start() -> NoReturn:
+def main() -> NoReturn:
     settings = Settings()
     operator = Operator(settings)
 
@@ -18,4 +18,4 @@ def start() -> NoReturn:
 
 
 if __name__ == '__main__':
-    start()
+    main()
