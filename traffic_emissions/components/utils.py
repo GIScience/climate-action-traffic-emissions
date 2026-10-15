@@ -50,7 +50,7 @@ DENSITY_DIESEL = 820
 def get_colors_legend(color_series: pd.Series) -> tuple[list[Color], ContinuousLegendData]:
     norm = colors.LogNorm(vmin=color_series.min(), vmax=color_series.max())
     cmap = colormaps.get('YlOrRd')
-    cmap.set_under('#808080')
+    cmap.with_extremes(under='#808080')
     color = [Color(colors.to_hex(col)) for col in cmap(norm(color_series))]
 
     tick_values = np.geomspace(color_series.min(), color_series.max(), num=5)
