@@ -33,11 +33,10 @@ class Operator(BaseOperator[ComputeInput]):
         version = importlib.metadata.version('traffic_emissions')
         user_agent = 'climate-action-navigator-traffic-emissions/' + version
 
-        log.info(f'Running operator with {settings.feature_flag_ohsome2=}')
+        log.info('Running operator with ohsome v2')
         self.ohsome = OhsomeClient(
             user_agent=user_agent,
             base_url=settings.ohsome_base_url,
-            v2=settings.feature_flag_ohsome2,
         )
 
         self.s3_client = AWSSession(

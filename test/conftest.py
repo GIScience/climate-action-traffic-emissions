@@ -108,20 +108,14 @@ def operator():
         data_s3_bucket_name='test-bucket',
         pop_raster_object_name='pop',
         built_raster_object_name='built',
-        feature_flag_ohsome2=True,
         ohsome_base_url=os.getenv('OHSOME_BASE_URL'),
     )
     yield Operator(default_settings)
 
 
 @pytest.fixture
-def ohsome_client_v2():
-    return OhsomeClient(user_agent='Climate Action Traffic Emissions Tests', v2=True)
-
-
-@pytest.fixture
-def ohsome_client_v1():
-    return OhsomeClient(base_url='', user_agent='Climate Action Traffic Emissions Tests', v2=False)
+def ohsome_client():
+    return OhsomeClient(user_agent='Climate Action Traffic Emissions Tests')
 
 
 @pytest.fixture

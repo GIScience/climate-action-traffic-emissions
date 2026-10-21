@@ -36,11 +36,8 @@ DISTRICT_SUMMARY_TEST_GDF = gpd.GeoDataFrame(
 )
 
 
-@pytest.mark.parametrize('ohsome_fixture', (['ohsome_client_v1', 'ohsome_client_v2']))
 @pytest.mark.vcr
-def test_get_district_summaries(ohsome_fixture, default_aoi, request):
-    ohsome_client = request.getfixturevalue(ohsome_fixture)
-
+def test_get_district_summaries(ohsome_client, default_aoi):
     expected_df = pd.read_csv(APPROVAL_FILES_DIR / 'test_get_district_summaries.csv')
 
     mean_df = get_district_summaries(DISTRICT_SUMMARY_TEST_GDF, default_aoi, ohsome_client)
@@ -48,11 +45,8 @@ def test_get_district_summaries(ohsome_fixture, default_aoi, request):
     pd.testing.assert_frame_equal(mean_df, expected_df)
 
 
-@pytest.mark.parametrize('ohsome_fixture', (['ohsome_client_v1', 'ohsome_client_v2']))
 @pytest.mark.vcr
-def test_get_district_summaries_no_intersection(ohsome_fixture, test_aoi, request):
-    ohsome_client = request.getfixturevalue(ohsome_fixture)
-
+def test_get_district_summaries_no_intersection(ohsome_client, test_aoi):
     with pytest.raises(
         ClimatoologyUserError,
         match=r'Could not be created because no administrative districts were found within the selected area',
@@ -60,18 +54,17 @@ def test_get_district_summaries_no_intersection(ohsome_fixture, test_aoi, reques
         get_district_summaries(DISTRICT_SUMMARY_TEST_GDF, test_aoi, ohsome_client)
 
 
-@pytest.mark.parametrize('ohsome_fixture', (['ohsome_client_v1', 'ohsome_client_v2']))
 @pytest.mark.vcr
-def test_get_admin_boundaries(ohsome_fixture, freiburg_aoi, request):
-    ohsome_client = request.getfixturevalue(ohsome_fixture)
-
+def test_get_admin_boundaries(ohsome_client, freiburg_aoi, request):
     # Don't need to check geometries, which the ohsome API itself is responsible for
     expected_boundaries = pd.DataFrame({'name': ['Landwasser', 'Lehen'], 'admin_level': [10, 9]})
 
     boundaries = get_admin_boundaries(freiburg_aoi, ohsome_client)
 
     pd.testing.assert_frame_equal(
-        boundaries[['name', 'admin_level']].sort_values('admin_level'), expected_boundaries, check_like=True
+        boundaries[['name', 'admin_level']].sort_values('admin_level').set_index('name'),
+        expected_boundaries.set_index('name'),
+        check_like=True,
     )
 
 

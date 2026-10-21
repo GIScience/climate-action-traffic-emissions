@@ -24,13 +24,10 @@ LINE_GEOM = gpd.GeoSeries(
 DEFAULT_GEOM = gpd.GeoSeries([LineString([(10000, 9900), (10000, 10100)])])
 
 
-@pytest.mark.parametrize('ohsome_fixture', (['ohsome_client_v1', 'ohsome_client_v2']))
 @pytest.mark.vcr
-def test_get_roads(ohsome_fixture, test_aoi, request):
-    ohsome_client = request.getfixturevalue(ohsome_fixture)
-
+def test_get_roads(ohsome_client, test_aoi):
     expected_df = pd.read_csv(
-        APPROVAL_FILES_DIR / f'test_get_roads[{ohsome_fixture}].csv',
+        APPROVAL_FILES_DIR / 'test_get_roads[ohsome_client_v2].csv',
         dtype={'osm_id': str, 'lanes': int, 'maxspeed': str},
     )
     expected_df['geom'] = expected_df['geom'].apply(shapely.wkt.loads)
@@ -80,13 +77,10 @@ def test_predict_traffic_volume():
     pd.testing.assert_frame_equal(received, expected)
 
 
-@pytest.mark.parametrize('ohsome_fixture', (['ohsome_client_v1', 'ohsome_client_v2']))
 @pytest.mark.vcr
-def test_traffic_volume(ohsome_fixture, small_aoi, request):
-    ohsome_client = request.getfixturevalue(ohsome_fixture)
-
+def test_traffic_volume(ohsome_client, small_aoi):
     expected_df = pd.read_csv(
-        APPROVAL_FILES_DIR / f'test_traffic_volume[{ohsome_fixture}].csv',
+        APPROVAL_FILES_DIR / 'test_traffic_volume[ohsome_client_v2].csv',
         dtype={'osm_id': str, 'maxspeed': str},
     )
 
@@ -96,4 +90,6 @@ def test_traffic_volume(ohsome_fixture, small_aoi, request):
     # Don't check the geometries because that is up to ohsome
     expected_df = expected_df.drop(columns='geom')
     road_gdf = road_gdf.drop(columns='geom')
-    pd.testing.assert_frame_equal(road_gdf, expected_df, check_dtype=False)
+    pd.testing.assert_frame_equal(
+        road_gdf.set_index('osm_id'), expected_df.set_index('osm_id'), check_dtype=False, check_like=True
+    )
