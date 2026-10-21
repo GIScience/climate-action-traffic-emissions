@@ -13,6 +13,10 @@ and this project mostly adheres to [Semantic Versioning](https://semver.org/spec
 - Update CI and dockerfile to simplify and correct poetry installing location
 - Updated emission factors according to most recent data
 
+### Fix
+
+- Use CoveredByGeomConstraint to limit the computations to the boundaries of Germany ([#67](https://gitlab.heigit.org/climate-action/plugins/traffic-emissions/-/work_items/67))
+
 ### Removed
 
 - ohsome v1 support

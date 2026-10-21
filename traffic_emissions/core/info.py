@@ -1,8 +1,7 @@
 from datetime import timedelta
 from pathlib import Path
 
-import geopandas as gpd
-from climatoology.base.aoi import CoveredByGeomConstraint
+from climatoology.base.aoi import CoveredByBoundaryConstraint
 from climatoology.base.plugin_info import (
     Concern,
     PluginAuthor,
@@ -11,7 +10,6 @@ from climatoology.base.plugin_info import (
     get_climatoology_logger,
 )
 from pydantic import HttpUrl
-from shapely.geometry import mapping
 
 from traffic_emissions.core.input import ComputeInput
 
@@ -36,12 +34,12 @@ def get_info() -> PluginInfo:
             website=HttpUrl('https://heigit.org/heigit-team/'),
         ),
     ]
-    germany = gpd.read_file('resources/germany_buffered_boundaries.geojson').buffer(2500).to_crs(4326)
+
     aoi_constraints = [
         [
-            CoveredByGeomConstraint(
+            CoveredByBoundaryConstraint(
                 description='Germany',
-                geom=mapping(germany.union_all()),
+                osm_ids=[-51477],
             ),
         ]
     ]
